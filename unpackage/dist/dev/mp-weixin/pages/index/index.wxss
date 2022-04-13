@@ -1,0 +1,12 @@
+
+.container {
+	padding: 20px;
+	font-size: 14px;
+	line-height: 24px;
+}
+.function-wrap{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+

@@ -1,0 +1,1 @@
+<view class="container"><view class="function-wrap"><block wx:for="{{functionList}}" wx:for-item="item" wx:for-index="index"><index-item vue-id="{{'8dd740cc-1-'+index}}" name="{{item.name}}" icon="{{item.icon}}" data-event-opts="{{[['^click',[['goto',['$0'],[[['functionList','',index,'url']]]]]]]}}" bind:click="__e" bind:__l="__l"></index-item></block></view></view>
