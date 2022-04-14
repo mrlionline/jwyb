@@ -1,11 +1,20 @@
 <template>
 	<view class="container">
+		<uni-nav-bar :statusBar="true">
+		    <view>标题栏</view>
+		    <template v-slot:left>
+		      <view>left</view>
+		    </template>
+		    <template v-slot:right>
+		      <view>right</view>
+		    </template>
+		  </uni-nav-bar>
 		<view class="function-wrap">
 			<index-item
 				v-for="(item,index) in functionList"
 				:name="item.name"
 				:icon="item.icon"
-				@click="goto(item.url)"
+				@click="goto(item.url)" 
 			></index-item>
 		</view>
 	</view>
@@ -44,9 +53,7 @@
 
 <style>
 	.container {
-		padding: 20px;
 		font-size: 14px;
-		line-height: 24px;
 	}
 	.function-wrap{
 		display: flex;
