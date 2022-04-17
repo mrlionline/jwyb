@@ -9,7 +9,7 @@
 	|-- committee-detail	总委会/分委会
 	|-- committee-member	星委会成员列表
 	|-- committee-group		星小组星系
-	|-- committee-member-detail		人员详情
+	|-- committee-person-detail		人员详情
 	|-- capsule	星空胶囊
 |-- login 登录
 </pre>
