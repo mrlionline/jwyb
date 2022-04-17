@@ -1,6 +1,13 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/index/committee/committee-list",
+    "pages/index/committee/committee-detail",
+    "pages/index/committee/committee-member",
+    "pages/index/committee/committee-group",
+    "pages/index/committee/committee-person-detail",
+    "pages/index/capsule/capsule",
+    "pages/login/login"
   ],
   "subPackages": [],
   "window": {
@@ -9,6 +16,5 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "usingComponents": {},
-  "sitemapLocation": "sitemap.json"
+  "usingComponents": {}
 }
