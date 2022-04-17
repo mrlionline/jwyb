@@ -1,12 +1,15 @@
 <template>
 	<view>
-		<view>星小组信息</view>
+		<view>星小组信息,id-{{committeeId}}</view>
 		<view @click="goto()">王小刚</view>
 	</view>
 </template>
 
 <script>
 	export default {
+		props:[
+			'committeeId'
+		],
 		data() {
 			return {
 				

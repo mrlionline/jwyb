@@ -6,8 +6,8 @@
 			:scrollable="false"
 			@change="tabChange"
 		></u-tabs>
-		<committeeMember v-if="tabIndex === 0" :id="id"></committeeMember>
-		<committeeGroup v-if="tabIndex === 1"></committeeGroup>
+		<committeeMember v-if="tabIndex === 0" :committeeId="id"></committeeMember>
+		<committeeGroup v-if="tabIndex === 1" :committeeId="id"></committeeGroup>
 	</view>
 </template>
 

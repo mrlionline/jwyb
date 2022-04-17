@@ -1,1 +1,0 @@
-<view><text>李双双</text><text data-event-opts="{{[['tap',[['goto']]]]}}" bindtap="__e">王小刚</text></view>
