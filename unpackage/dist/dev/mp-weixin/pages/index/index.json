@@ -1,7 +1,6 @@
 {
-  "navigationBarTitleText": "首页",
+  "navigationBarTitleText": "uni-app",
   "usingComponents": {
-    "uni-nav-bar": "/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar",
-    "index-item": "/components/index-item/index-item"
+    "u-button": "/uni_modules/uview-ui/components/u-button/u-button"
   }
 }

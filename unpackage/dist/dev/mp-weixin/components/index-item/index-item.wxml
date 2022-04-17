@@ -1,1 +1,0 @@
-<view data-event-opts="{{[['tap',[['c']]]]}}" class="index-item" bindtap="__e"><view class="icon" style="{{'background:'+(icon)+';'}}"></view><text>{{name}}</text></view>

@@ -1,1 +1,0 @@
-<view style="height:100vh;"><swiper style="height:100%;" indicator-dots="{{false}}" autoplay="{{false}}" vertical="{{true}}"><block wx:for="{{pageList}}" wx:for-item="pageItem" wx:for-index="__i0__"><swiper-item style="{{'background:'+(pageItem.background)+';'}}"><view class="swiper-item uni-bg-red">{{pageItem.name}}</view></swiper-item></block></swiper></view>

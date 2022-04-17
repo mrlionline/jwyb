@@ -1,43 +1,16 @@
 {
-	"pages": [
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "首页"
+				"navigationBarTitleText": "uni-app"
 			}
-		},{
-            "path" : "pages/start-committee/start-committee",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "星委会"
-            }
-            
-        }
-        ,{
-            "path" : "pages/committee-page/committee-page",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": ""
-            }
-            
-        }
-        ,{
-            "path" : "pages/start-capsule/start-capsule",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "星空胶囊",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8",
-		"app-plus": {
-			"background": "#efeff4"
-		}
+		"backgroundColor": "#F8F8F8"
 	}
 }

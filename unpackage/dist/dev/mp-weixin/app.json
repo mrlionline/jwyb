@@ -1,9 +1,6 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/start-committee/start-committee",
-    "pages/committee-page/committee-page",
-    "pages/start-capsule/start-capsule"
+    "pages/index/index"
   ],
   "subPackages": [],
   "window": {
@@ -12,5 +9,6 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
 }

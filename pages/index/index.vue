@@ -1,63 +1,61 @@
 <template>
-	<view class="container">
-		<uni-nav-bar :statusBar="true">
-		    <view>标题栏</view>
-		    <template v-slot:left>
-		      <view>left</view>
-		    </template>
-		    <template v-slot:right>
-		      <view>right</view>
-		    </template>
-		  </uni-nav-bar>
-		<view class="function-wrap">
-			<index-item
-				v-for="(item,index) in functionList"
-				:name="item.name"
-				:icon="item.icon"
-				@click="goto(item.url)" 
-			></index-item>
-		</view>
+	<view class="content">
+		<u-button type="primary" text="确定"></u-button>
 	</view>
 </template>
 
 <script>
+	import apis from '../../http/apis.js'
 	export default {
 		data() {
 			return {
-				functionList: [
-					{
-						icon: 'red',
-						name: '星空胶囊',
-						url: '/pages/start-capsule/start-capsule'
-					},
-					{
-						icon: 'blue',
-						name: '星委会',
-						url: '/pages/start-committee/start-committee'
-					}
-				]
+				title: 'Hello'
 			}
 		},
+		onLoad() {
+
+		},
+		created() {
+			let params = {
+				columnId: 0,
+				minId: 0,
+				pageSize: 10,
+				column: 'id,post_id,title,author_name,cover,published_at,comments_count'
+			  }
+			apis.getNews(params).then(res =>{
+				console.log('success', res)
+			})
+		},
 		methods: {
-			goto(url){
-				uni.navigateTo({
-					url: url,
-					fail(err) {
-						console.log(err)
-					}
-				})
-			}
+
 		}
 	}
 </script>
 
 <style>
-	.container {
-		font-size: 14px;
-	}
-	.function-wrap{
+	.content {
 		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.logo {
+		height: 200rpx;
+		width: 200rpx;
+		margin-top: 200rpx;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 50rpx;
+	}
+
+	.text-area {
+		display: flex;
+		justify-content: center;
+	}
+
+	.title {
+		font-size: 36rpx;
+		color: #8f8f94;
 	}
 </style>

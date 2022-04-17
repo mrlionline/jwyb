@@ -1,0 +1,20 @@
+{
+  "uni-app": {
+    "scripts": {
+      "jwyb-test": {
+        "title": "测试环境",
+        "env": {
+          "UNI_PLATFORM": "mp-weixin",
+          "NODE_TYPE": "test"
+        }
+      },
+      "jwyb-prod": {
+        "title": "正式环境",
+        "env": {
+          "UNI_PLATFORM": "mp-weixin",
+          "NODE_TYPE": "production"
+        }
+      }
+    }
+  }
+}
