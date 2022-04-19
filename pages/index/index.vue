@@ -1,8 +1,9 @@
 <template>
 	<view class="content">
-		<u-button class="btn" type="primary" text="星空胶囊" @click="goto('./capsule/capsule')"></u-button>
-		<u-button class="btn" type="primary" :plain="true" text="星委会" @click="goto('./committee/committee-list')"></u-button>
-		<u-button class="btn" type="primary" text="登录页" @click="goto('../login/login')"></u-button>
+		<page-header :title="title" :showBack="false"></page-header>
+		<view class="container">
+			<home-item v-for="item in list" :item="item"></home-item>
+		</view>
 	</view>
 </template>
 
@@ -10,8 +11,23 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				title: '',
+				list: [
+					{
+						name: '星空胶囊',
+						url: '',
+						imgSrc: ''
+					},
+					{
+						name: '星委会',
+						url: '/pages/committee-list/committee-list',
+						imgSrc: ''
+					}
+				]
 			}
+		},
+		created() {
+			this.title = this.$Route.meta.title
 		},
 		methods: {
 			goto(url){
@@ -24,8 +40,19 @@
 </script>
 
 <style>
-	.btn{
-		width: 300px;
-		margin-right: 10px;
+	.container{
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		padding: 34px 24px;
+		width: 100%;
+		height: 79%;
+		background: #FFFFFF;
+		z-index: 1;
+		overflow-y: auto;
+		border-top-left-radius: 24px;
+		border-top-right-radius: 24px;
 	}
 </style>

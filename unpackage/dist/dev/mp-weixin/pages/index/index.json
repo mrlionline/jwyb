@@ -1,6 +1,6 @@
 {
-  "navigationBarTitleText": "首页",
   "usingComponents": {
-    "u-button": "/uni_modules/uview-ui/components/u-button/u-button"
+    "page-header": "/components/page-header/page-header",
+    "home-item": "/components/home-item/home-item"
   }
 }

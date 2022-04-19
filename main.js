@@ -1,5 +1,7 @@
 import App from './App'
 import uView from '@/uni_modules/uview-ui'
+import {router,RouterMount} from './router/router.js'  //路径换成自己的
+Vue.use(router)
 Vue.use(uView)
 
 // #ifndef VUE3
