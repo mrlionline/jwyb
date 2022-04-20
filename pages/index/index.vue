@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<page-header :title="title" :showBack="false"></page-header>
+		<page-header title="首页" :showBack="false"></page-header>
 		<view class="container">
 			<home-item v-for="item in list" :item="item"></home-item>
 		</view>
@@ -11,7 +11,6 @@
 	export default {
 		data() {
 			return {
-				title: '',
 				list: [
 					{
 						name: '星空胶囊',
@@ -20,14 +19,13 @@
 					},
 					{
 						name: '星委会',
-						url: '/pages/committee-list/committee-list',
+						url: '/pages/committee/committee-list',
 						imgSrc: ''
 					}
 				]
 			}
 		},
 		created() {
-			this.title = this.$Route.meta.title
 		},
 		methods: {
 			goto(url){

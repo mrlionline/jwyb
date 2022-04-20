@@ -96,10 +96,10 @@ var components
 try {
   components = {
     pageHeader: function() {
-      return __webpack_require__.e(/*! import() | components/page-header/page-header */ "components/page-header/page-header").then(__webpack_require__.bind(null, /*! @/components/page-header/page-header.vue */ 160))
+      return __webpack_require__.e(/*! import() | components/page-header/page-header */ "components/page-header/page-header").then(__webpack_require__.bind(null, /*! @/components/page-header/page-header.vue */ 170))
     },
     homeItem: function() {
-      return __webpack_require__.e(/*! import() | components/home-item/home-item */ "components/home-item/home-item").then(__webpack_require__.bind(null, /*! @/components/home-item/home-item.vue */ 167))
+      return __webpack_require__.e(/*! import() | components/home-item/home-item */ "components/home-item/home-item").then(__webpack_require__.bind(null, /*! @/components/home-item/home-item.vue */ 177))
     }
   }
 } catch (e) {
@@ -169,7 +169,6 @@ var _default =
 {
   data: function data() {
     return {
-      title: '',
       list: [
       {
         name: '星空胶囊',
@@ -178,14 +177,13 @@ var _default =
 
       {
         name: '星委会',
-        url: '/pages/committee-list/committee-list',
+        url: '/pages/committee/committee-list',
         imgSrc: '' }] };
 
 
 
   },
   created: function created() {
-    this.title = this.$Route.meta.title;
   },
   methods: {
     goto: function goto(url) {

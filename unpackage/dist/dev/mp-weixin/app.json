@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/index/my/my",
-    "pages/committee-list/committee-list"
+    "pages/committee/committee-list",
+    "pages/login/login"
   ],
   "subPackages": [],
   "window": {
@@ -13,8 +14,8 @@
     "backgroundColor": "#F8F8F8"
   },
   "tabBar": {
-    "color": "#7A7E83",
-    "selectedColor": "#3cc51f",
+    "color": "#444251",
+    "selectedColor": "#444251",
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [

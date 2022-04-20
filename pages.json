@@ -16,7 +16,15 @@
             
         }
         ,{
-            "path" : "pages/committee-list/committee-list",
+            "path" : "pages/committee/committee-list",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },{
+            "path" : "pages/login/login",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -26,8 +34,8 @@
         }
     ],
 	"tabBar": {
-		"color": "#7A7E83",
-		"selectedColor": "#3cc51f",
+		"color": "#444251",
+		"selectedColor": "#444251",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
 		"list": [{
