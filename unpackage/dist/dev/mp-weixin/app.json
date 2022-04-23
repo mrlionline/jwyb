@@ -1,9 +1,12 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/index/my/my",
     "pages/committee/committee-list",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/capsule/capsule",
+    "pages/login/reset-password",
+    "pages/committee/committee-person-list",
+    "pages/committee/committee-person-detail"
   ],
   "subPackages": [],
   "window": {
@@ -13,26 +16,5 @@
     "navigationStyle": "custom",
     "backgroundColor": "#F8F8F8"
   },
-  "tabBar": {
-    "color": "#444251",
-    "selectedColor": "#444251",
-    "borderStyle": "black",
-    "backgroundColor": "#ffffff",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "iconPath": "static/logo.png",
-        "selectedIconPath": "static/logo.png",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/index/my/my",
-        "iconPath": "static/logo.png",
-        "selectedIconPath": "static/logo.png",
-        "text": "我的"
-      }
-    ]
-  },
-  "usingComponents": {},
-  "sitemapLocation": "sitemap.json"
+  "usingComponents": {}
 }

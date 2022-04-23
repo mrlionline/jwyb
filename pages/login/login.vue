@@ -61,7 +61,12 @@
 					</view>
 				</template>
 				<view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view>
-				<view class="login-btn" :class="{'login-btn-disabled': loginBtnIsDisabled}" :disabled="loginBtnIsDisabled" @click="login">登录</view>
+				<view
+					class="login-btn"
+					:class="{'login-btn-disabled': loginBtnIsDisabled}"
+					:disabled="loginBtnIsDisabled" 
+					@click="login"
+				>登录</view>
 			</view>
 		</view>
 	</view>
@@ -89,7 +94,15 @@
 			},
 			login(){
 				if(this.loginBtnIsDisabled) return
-				console.log('login')
+				uni.setStorage({
+					key: 'token',
+					data: 'hello',
+					success: function () {
+						uni.redirectTo({
+							url: '/pages/index/index'
+						})
+					}
+				});
 			},
 			getVerCode(){
 				if(this.gettingVerCode) return

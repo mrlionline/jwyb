@@ -1,1 +1,0 @@
-<view><view>成员星系</view><view data-event-opts="{{[['tap',[['goto']]]]}}" bindtap="__e">主委-李小红</view></view>

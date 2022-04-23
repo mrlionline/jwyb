@@ -1,7 +1,6 @@
 <template>
 	<view>
-		<page-header title="我的" :showBack="false"></page-header>
-		<view class="container">
+		<view class="my-container">
 			<view class="user-info">
 				<view class="user-star-tag">
 					<text>三星店员</text>
@@ -14,7 +13,7 @@
 					<image v-for="star in userInfo.star" src="/static/my/star@3x.png"></image>
 				</view>
 			</view>
-			<view class="btn-wrap btn-wrap-reset-pwd">
+			<view class="btn-wrap btn-wrap-reset-pwd" @click="goReset">
 				<u-icon size="20px" name="edit-pen"></u-icon>
 				<text class="btn-text">修改密码</text>
 				<view class="arrow-right">
@@ -28,7 +27,13 @@
 				</view>
 			</view>
 		</view>
-		<u-modal :show="logoutConfirm" :showCancelButton="true" confirmColor="#E20812" @cancel="logoutConfirm = false">
+		<u-modal
+			:show="logoutConfirm"
+			:showCancelButton="true"
+			confirmColor="#E20812"
+			@cancel="logoutConfirm = false"
+			@confirm="logout"
+		>
 				<text style="font-weight: bold;">您确定要退出登录吗？</text>
 		</u-modal>
 	</view>
@@ -47,13 +52,23 @@
 			}
 		},
 		methods: {
-			
+			logout(){
+				uni.clearStorage();
+				uni.reLaunch({
+					url: '/pages/login/login'
+				})
+			},
+			goReset(){
+				uni.navigateTo({
+					url: '/pages/login/reset-password'
+				});
+			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	.container{
+	.my-container{
 		position: fixed;
 		bottom: 0;
 		display: flex;

@@ -13,7 +13,9 @@
 	export default {
 		data() {
 			return {
-				
+				committeeList: [
+					{}
+				]
 			}
 		},
 		methods: {
@@ -27,11 +29,9 @@
 		position: fixed;
 		bottom: 0;
 		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		padding: 34px 24px;
+		padding: 24px;
 		width: 100%;
-		height: 88.2%;
+		height: calc(100vh - var(--status-bar-height) - 44px);
 		background: #FFFFFF;
 		z-index: 1;
 		overflow-y: auto;

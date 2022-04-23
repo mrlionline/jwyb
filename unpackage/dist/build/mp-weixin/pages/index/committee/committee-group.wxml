@@ -1,1 +1,0 @@
-<view><view>星小组信息</view><view data-event-opts="{{[['tap',[['goto']]]]}}" bindtap="__e">王小刚</view></view>

@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "u-tabs": "/uni_modules/uview-ui/components/u-tabs/u-tabs",
-    "committee-member": "/pages/index/committee/committee-member",
-    "committee-group": "/pages/index/committee/committee-group"
-  }
-}

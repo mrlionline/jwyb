@@ -1,19 +1,17 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/index/committee/committee-list",
-    "pages/index/committee/committee-detail",
-    "pages/index/committee/committee-member",
-    "pages/index/committee/committee-group",
-    "pages/index/committee/committee-person-detail",
-    "pages/index/capsule/capsule",
-    "pages/login/login"
+    "pages/committee/committee-list",
+    "pages/login/login",
+    "pages/capsule/capsule",
+    "pages/login/reset-password"
   ],
   "subPackages": [],
   "window": {
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "white",
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#F8F8F8",
+    "navigationStyle": "custom",
     "backgroundColor": "#F8F8F8"
   },
   "usingComponents": {},
