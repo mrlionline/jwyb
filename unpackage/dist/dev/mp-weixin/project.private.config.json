@@ -37,6 +37,27 @@
           "name": "星委会",
           "pathName": "pages/committee/committee-list",
           "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "河北分委会",
+          "pathName": "pages/committee/committee-person-list",
+          "query": "name=河北分委会&id=1",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "全国总委会",
+          "pathName": "pages/committee/committee-person-list",
+          "query": "name=全国总委会&id=0",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "星小组信息-成员信息",
+          "pathName": "pages/committee/committee-person-detail",
+          "query": "id=2&name=王小刚2",
           "scene": null,
           "launchMode": "default"
         }

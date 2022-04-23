@@ -2,6 +2,7 @@
   "navigationBarTitleText": "",
   "enablePullDownRefresh": false,
   "usingComponents": {
-    "page-header": "/components/page-header/page-header"
+    "page-header": "/components/page-header/page-header",
+    "u-icon": "/uni_modules/uview-ui/components/u-icon/u-icon"
   }
 }
