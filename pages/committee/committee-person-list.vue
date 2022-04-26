@@ -33,7 +33,7 @@
 				>
 					<view class="group-info" @click="groupItemClick(groupItem)">
 						<view class="group-logo">
-							<image src="/static/my/star@3x.png"></image>
+							<image src="/static/group.png"></image>
 						</view>
 						<view class="group-info-content">
 							<view class="gi-name">{{groupItem.groupName}}</view>
@@ -307,13 +307,10 @@
 					display: inline-block;
 					width: 80rpx;
 					height: 80rpx;
-					border-radius: 100%;
-					background-color: #F0F3FE;
-					padding: 16rpx;
 					margin-right: 32rpx;
 					image{
-						max-width: 100%;
-						max-height: 100%;
+						width: 100%;
+						height: 100%;
 					}
 				}
 				.group-info-content{

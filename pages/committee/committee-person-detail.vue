@@ -17,6 +17,7 @@
 						<text class="bi-base-text">工作状态：<text>{{baseInfo.jobStatus}}</text></text>
 						<text class="bi-base-text">性别：{{baseInfo.gender}}</text>
 						<text class="bi-base-text">职位：{{baseInfo.position}}</text>
+						<text class="bi-base-text">所属团队：{{baseInfo.groupName}}</text>
 					</view>
 				</view>
 			</view>
@@ -44,7 +45,8 @@
 					mobile: '13112344321',
 					position: '主管',
 					gender: '男',
-					jobStatus: '正常'
+					jobStatus: '正常',
+					groupName: '天津营销团队'
 				},
 				positionWay: [
 					'总委会/互帮互助执委',
@@ -64,14 +66,14 @@
 						year: '2021',
 						title: '三星店员',
 						desc: '您参加了星空训练营第三期活动，并获得升星勋章',
-						image: '/static/apply.png'
+						image: '/static/home/level-1-personnel.png'
 					},
 					{
 						date: '2/25',
 						year: '2021',
 						title: '四星店员',
 						desc: '您参加了星空训练营第三期活动，并获得升星勋章',
-						image: '/static/apply.png'
+						image: '/static/home/level-2-leader.png'
 					}
 				]
 			}

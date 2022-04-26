@@ -2,14 +2,15 @@
 	<view>
 		<page-header title=" " :showBack="false"></page-header>
 		<view class="container">
+			<image class="main-bg" src="/static/login-bg.png"></image>
 			<view class="page-title">
-				<view class="page-title-first">{{pageTitleFirst}}</view>
-				<view class="page-title-second">请输入您的账号和密码登录</view>
+				<view class="page-title-first">绝味人 在一起</view>
+				<view class="page-title-second">{{pageTitleSecond}}</view>
 			</view>
 			<view class="login-form">
 				<template v-if="loginType === 'password'">
 					<view class="input-wrap">
-						<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+						<image class="inp-icon" src="/static/icon-msg.png"></image>
 						<view class="divider"></view>
 						<u--input
 							class="input-node"
@@ -19,7 +20,7 @@
 						  ></u--input>
 					</view>
 					<view class="input-wrap">
-						<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+						<image class="inp-icon" src="/static/icon-pwd.png"></image>
 						<view class="divider"></view>
 						<u-input
 							class="input-node"
@@ -36,7 +37,7 @@
 				</template>
 				<template v-if="loginType === 'verCode'">
 					<view class="input-wrap">
-						<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+						<image class="inp-icon" src="/static/icon-mobile.png"></image>
 						<view class="divider"></view>
 						<u--input
 							class="input-node"
@@ -46,7 +47,7 @@
 						  ></u--input>
 					</view>
 					<view class="input-wrap">
-						<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+						<image class="inp-icon" src="/static/icon-pwd.png"></image>
 						<view class="divider"></view>
 						<u-input
 							class="input-node"
@@ -119,11 +120,11 @@
 			}
 		},
 		computed: {
-			pageTitleFirst: function(){
+			pageTitleSecond: function(){
 				if(this.loginType === 'password'){
-					return '账号密码登录'
+					return '请输入您的账号和密码登录'
 				}else if(this.loginType === 'verCode'){
-					return '手机验证码登录'
+					return '请输入您的手机号和验证码登录'
 				}
 			},
 			toggleLoginTypeText: function(){
@@ -164,6 +165,13 @@
 		z-index: 1;
 		border-top-left-radius: 24px;
 		border-top-right-radius: 24px;
+		.main-bg{
+			position: absolute;
+			bottom: 0;
+			width: 750rpx;
+			height: 320rpx;
+			z-index: -100;
+		}
 	}
 	.page-title{
 		position: absolute;
@@ -193,6 +201,10 @@
 			margin-bottom: 24px;
 			border-radius: 8px;
 			border: 1px solid #D7D9DB;
+			.inp-icon{
+				width: 44rpx;
+				height: 44rpx;
+			}
 			.divider{
 				width: 1px;
 				height: 76rpx;

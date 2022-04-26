@@ -3,7 +3,7 @@
 		<view class="home-container">
 			<home-item v-for="item in list" :item="item"></home-item>
 		</view>
-		<image class="promote-star-fixed" src="/static/apply.png" @click="goCapsule"></image>
+		<image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image>
 		<u-modal 
 			:show="promoteShow"
 			width="654rpx"
@@ -13,7 +13,7 @@
 			@close="promoteShow = false"
 		>
 			<view class="promote-box">
-				<image src="/static/apply.png"></image>
+				<image :src="upModalImg"></image>
 				<view class="congratulations">恭喜您获得升星勋章</view>
 				<view class="thanks">感谢您对公司的努力付出</view>
 				<button class="see" @click="goCapsule">查看我的星路历程</button>
@@ -27,16 +27,20 @@
 		data() {
 			return {
 				promoteShow: false,
+				upInfo: {
+					level: 3,
+					identity: 'leader'
+				},
 				list: [
 					{
 						name: '星空胶囊',
 						url: '/pages/capsule/capsule',
-						imgSrc: ''
+						imgSrc: '/static/home/home-capsule.png'
 					},
 					{
 						name: '星委会',
 						url: '/pages/committee/committee-list',
-						imgSrc: ''
+						imgSrc: '/static/home/home-committee.png'
 					}
 				]
 			}
@@ -55,6 +59,11 @@
 			goCapsule(){
 				this.promoteShow = false
 				this.goto('/pages/capsule/capsule')
+			}
+		},
+		computed: {
+			upModalImg: function(){
+				return `/static/home/level-${this.upInfo.level}-${this.upInfo.identity}.png`
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 <template>
 	<view class="home-item" @click="goto()">
-		<image src="/static/apply.png"></image>
+		<image :src="item.imgSrc"></image>
 		<text>{{item.name}}</text>
 	</view>
 </template>
@@ -37,8 +37,8 @@
 		background: #FFFFFF;
 	}
 	.home-item image{
-		width: 136rpx;
-		height: 136rpx;
+		width: 176rpx;
+		height: 176rpx;
 	}
 	.home-item text{
 		font-size: 15px;

@@ -3,9 +3,8 @@
 		<!-- <view class="ph-status-space"></view>
 		<view class="ph-navbar-space"></view> -->
 		<view class="ph-content">
-			<view class="status_bar"><!-- 这里是状态栏 --></view>
 			<view class="ph-wrap">
-				<image class="ph-bg-img" src="/static/apply.png"></image>
+				<image class="ph-bg-img" src="/static/bg.png"></image>
 				<u-navbar
 					:leftIconSize="backArrowSize"
 					:title="title"
@@ -67,22 +66,18 @@
 		right: 0;
 		z-index: -1;
 	}
-	.status_bar {
-		height: var(--status-bar-height);
-		width: 100%;
-		background: linear-gradient(to right, #2F1AB5,#567DF4);
-	}
 	.ph-wrap{
 		position: relative;
-		width: 100%;
-		height: 646rpx;
-		background: linear-gradient(to right, #2F1AB5,#567DF4);
+		width: 750rpx;
+		height: 640rpx;
+		background: #2F1AB5;
 		.ph-bg-img{
 			position: absolute;
 			top: 0;
-			right: 0;
-			max-width: 200px;
-			height: 200px;
+			left: 0;
+			right:0;
+			width: 750rpx;
+			height: 640rpx;
 		}
 	}
 </style>

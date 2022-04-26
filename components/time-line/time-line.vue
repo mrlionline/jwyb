@@ -6,7 +6,7 @@
 				<view class="time-year">{{item.year}}</view>
 			</view>
 			<view class="dot">
-				<image src="/static/dot.png"></image>
+				<image src="/static/time-line-dot.png"></image>
 			</view>
 			<view class="content-wrap">
 				<view class="title">{{item.title}}</view>
@@ -53,9 +53,9 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			width: 24px;
-			height: 24px;
-			padding: 4px;
+			width: 48rpx;
+			height: 48rpx;
+			padding: 8rpx;
 			image{
 				max-width: 100%;
 				max-height: 100%;
@@ -73,7 +73,7 @@
 				max-width: calc(100% + 12px);
 				min-height: 130rpx;
 				padding-left: 20px;
-				margin-left: -12px;
+				margin-left: -24rpx;
 				border-left: 1px solid #BECEFF;
 				overflow: hidden;
 				&.no-border-left{
