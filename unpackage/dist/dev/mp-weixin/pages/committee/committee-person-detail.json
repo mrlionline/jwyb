@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "page-header": "/components/page-header/page-header",
-    "time-line": "/components/time-line/time-line"
-  }
-}

@@ -1,1 +1,0 @@
-<view><page-header vue-id="0d557aed-1" title="{{title}}" bind:__l="__l"></page-header><view class="container"><view>全国总委会</view><view>河北星委会</view></view></view>

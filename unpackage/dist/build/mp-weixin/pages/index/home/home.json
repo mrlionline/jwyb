@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "home-item": "/components/home-item/home-item",
-    "u-modal": "/uni_modules/uview-ui/components/u-modal/u-modal"
-  },
-  "component": true
-}
