@@ -1,1 +1,0 @@
-<view data-event-opts="{{[['tap',[['goto']]]]}}" class="home-item" bindtap="__e"><image src="/static/apply.png"></image><text>{{item.name}}</text></view>
