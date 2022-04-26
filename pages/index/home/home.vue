@@ -30,8 +30,8 @@
 				list: [
 					{
 						name: '星空胶囊',
-						url: '',
-						imgSrc: '/pages/capsule/capsule'
+						url: '/pages/capsule/capsule',
+						imgSrc: ''
 					},
 					{
 						name: '星委会',
