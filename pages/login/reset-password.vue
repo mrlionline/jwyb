@@ -4,7 +4,7 @@
 		<view class="container">
 			<view class="login-form">
 				<view class="input-wrap">
-					<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+					<image class="inp-icon" src="/static/icon-pwd.png"></image>
 					<view class="divider"></view>
 					<u--input
 						class="input-node"
@@ -15,7 +15,7 @@
 					  ></u--input>
 				</view>
 				<view class="input-wrap">
-					<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+					<image class="inp-icon" src="/static/icon-pwd.png"></image>
 					<view class="divider"></view>
 					<u-input
 						class="input-node"
@@ -24,13 +24,13 @@
 						v-model="newPassword"
 						:password="!showNewPassword"
 					  >
-						<template slot="suffix">
+						<!-- <template slot="suffix">
 							<u-icon size="20px" :name="showNewPassword ? 'eye' : 'eye-off'" @click="showNewPassword = !showNewPassword"></u-icon>
-						</template>
+						</template> -->
 					  </u-input>
 				</view>
 				<view class="input-wrap">
-					<u-icon name="grid-fill" color="#444251" size="22"></u-icon>
+					<image class="inp-icon" src="/static/icon-pwd.png"></image>
 					<view class="divider"></view>
 					<u-input
 						class="input-node"
@@ -39,9 +39,9 @@
 						v-model="confirmNewPassword"
 						:password="!showConfirmNewPassword"
 					  >
-						<template slot="suffix">
+						<!-- <template slot="suffix">
 							<u-icon size="20px" :name="showConfirmNewPassword ? 'eye' : 'eye-off'" @click="showConfirmNewPassword = !showConfirmNewPassword"></u-icon>
-						</template>
+						</template> -->
 					  </u-input>
 				</view>
 				<view
@@ -117,6 +117,10 @@
 			margin-bottom: 16px;
 			border-radius: 8px;
 			border: 1px solid #D7D9DB;
+			.inp-icon{
+				width: 44rpx;
+				height: 44rpx;
+			}
 			.divider{
 				width: 1px;
 				height: 76rpx;

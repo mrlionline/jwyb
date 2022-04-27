@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+		<view class="home-title">绝味人 在一起</view>
 		<view class="home-container">
 			<home-item v-for="item in list" :item="item"></home-item>
 		</view>
@@ -70,6 +71,14 @@
 </script>
 
 <style lang="scss">
+	.home-title{
+		position: fixed;
+		left: 48rpx;
+		bottom: calc(79% + 48rpx);
+		font-size: 20px;
+		line-height: 20px;
+		color: #FFFFFF;
+	}
 	.home-container{
 		position: fixed;
 		bottom: 0;

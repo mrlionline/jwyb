@@ -23,7 +23,7 @@
 			>
 				<view class="item-border-left" :style="{'background-color': '#F2731E'}"></view>
 				<view class="committee-item">
-					<image class="item-icon" src="/static/star2.png"></image>
+					<image class="item-icon" src="/static/star1.png"></image>
 					<text class="item-name">市场星委会</text>
 					<view class="item-arrow">
 						<u-icon name="arrow-right"></u-icon>
