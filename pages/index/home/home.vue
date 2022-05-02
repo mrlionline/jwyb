@@ -35,7 +35,7 @@
 				list: [
 					{
 						name: '星空胶囊',
-						url: '/pages/capsule/capsule',
+						url: '/pagesCapsule/capsule/capsule',
 						imgSrc: '/static/home/home-capsule.png'
 					},
 					{
@@ -59,7 +59,7 @@
 			},
 			goCapsule(){
 				this.promoteShow = false
-				this.goto('/pages/capsule/capsule')
+				this.goto('/pagesCapsule/capsule/capsule')
 			}
 		},
 		computed: {
