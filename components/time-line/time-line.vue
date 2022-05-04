@@ -10,7 +10,13 @@
 			</view>
 			<view class="content-wrap">
 				<view class="title">{{item.title}}</view>
-				<view class="content" :class="{'no-border-left' : index === list.length - 1}">
+				<view
+					class="content"
+					:class="{
+						'linear-gradient': theme === 'dark' && index === list.length - 1,
+						'no-border-left' : index === list.length - 1
+					}"
+				>
 					<view class="desc">{{item.desc}}</view>
 					<view class="image" v-if="item.image">
 						<image :src="item.image"></image>
@@ -27,6 +33,10 @@
 		props: {
 			theme: {
 				type: String,
+				validator: function (value) {
+					// 这个值必须匹配下列字符串中的一个
+					return ['light', 'dark'].indexOf(value) !== -1
+				},
 				default: 'light'
 			},
 			list: Array
@@ -65,7 +75,7 @@
 			width: calc(100% - 88rpx - 24px);
 			.title{
 				padding-left: 10px;
-				line-height: 24px;
+				line-height: 48rpx;
 				font-size: 15px;
 				color: #444251;
 			}
@@ -101,11 +111,23 @@
 		}
 	}
 	.theme-dark{
-		.time-line-item .time{
-			color: #FFE164;
+		.time-line-item .time,
+		.time-line-item .content-wrap .title{
+			color: #FFD940;
 		}
-		.time-line-item .content-wrap .title,
-		.time-line-item .content-wrap .content .desc,{
+		.time-line-item .content-wrap .linear-gradient{
+			position: relative;
+		}
+		.time-line-item .content-wrap .linear-gradient::before{
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			width: 1px;
+			background-image: linear-gradient(180deg, #BECEFF, transparent);
+		}
+		.time-line-item .content-wrap .content .desc{
 			color: #FFFFFF;
 		}
 		.time-line-item .content-wrap .content .image{
