@@ -61,6 +61,20 @@
 						  </u-input>
 					</view>
 				</template>
+				<view class="input-wrap">
+					<image class="inp-icon" src="/static/icon-pwd.png"></image>
+					<view class="divider"></view>
+					<u-input
+						class="input-node"
+						placeholder="输入图片验证码"
+						border="none"
+						v-model="imgVerCode"
+					  >
+						<template slot="suffix">
+							<image mode="widthFix" style="width: 140rpx;" :src="imgVerCodeSrc"></image>
+						</template>
+					  </u-input>
+				</view>
 				<view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view>
 				<view
 					class="login-btn"
@@ -87,7 +101,9 @@
 				showPassword: false,
 				gettingVerCode: false,
 				countDown: SECOND,
-				timer: null
+				timer: null,
+				imgVerCodeSrc: '',
+				imgVerCode: ''
 			}
 		},
 		methods: {
@@ -158,6 +174,11 @@
 					clearInterval(this.timer)
 					this.gettingVerCode = false
 				})
+			},
+			formula(){
+				loginApis.formula().then(res =>{
+					this.imgVerCodeSrc = res
+				})
 			}
 		},
 		computed: {
@@ -189,6 +210,9 @@
 					return '获取验证码'
 				}
 			}
+		},
+		created() {
+			this.formula()
 		}
 	}
 </script>
