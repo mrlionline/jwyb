@@ -42,6 +42,7 @@
 </template>
 
 <script>
+	import indexApis from '../../../http/apis-index.js'
 	export default {
 		data() {
 			return {
@@ -61,9 +62,11 @@
 		},
 		methods: {
 			logout(){
-				uni.clearStorage();
-				uni.reLaunch({
-					url: '/pages/login/login'
+				indexApis.logout().then(() =>{
+					uni.clearStorage();
+					uni.reLaunch({
+						url: '/pages/login/login'
+					})
 				})
 			},
 			goReset(){

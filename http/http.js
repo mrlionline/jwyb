@@ -53,9 +53,9 @@ const http = (url, methods, {data, noToken, noToast} = {}) =>{
 		    success: (res) => {
 				console.log('res', res)
 		        if(res.statusCode === 200){	// http状态200
-						resolve(res.data)	// 此行待删除
-					if(res.data.code === 200){	// 接口code码200
-						resolve(res.data.data)
+						// resolve(res.data)	// 此行待删除
+					if(res.data.resultCode === "Success"){	// 接口resultCode为'Success'为成功
+						resolve(res.data.dataSet)
 					}else if(!noToast){
 						uni.showToast({
 							title:res.data.msg,

@@ -74,6 +74,7 @@
 </template>
 
 <script>
+	import loginApis from '../../http/apis-login.js'
 	const SECOND = 60
 	export default {
 		data() {
@@ -95,9 +96,40 @@
 			},
 			login(){
 				if(this.loginBtnIsDisabled) return
+				if(this.loginType === 'password'){
+					this.loginByPassword()
+				}else if(this.loginType === 'verCode'){
+					this.loginByVerCode()
+				}
+			},
+			loginByPassword(){
+				const params = {
+					accountType: 'MOBILE',
+					formulaResult: '',
+					login: this.number,
+					loginType: 'APP',
+					password: this.password
+				}
+				loginApis.login(params).then(res =>{
+					this.loginSuccess(res)
+				})
+			},
+			loginByVerCode(){
+				const params = {
+					accountType: 'MOBILE',
+					formulaResult: '',
+					login: this.mobile,
+					loginType: 'APP',
+					smsCode: this.verCode
+				}
+				loginApis.loginForPhone(params).then(res =>{
+					this.loginSuccess(res)
+				})
+			},
+			loginSuccess(res){
 				uni.setStorage({
 					key: 'token',
-					data: 'hello',
+					data: res.authorization,
 					success: function () {
 						uni.redirectTo({
 							url: '/pages/index/index'
@@ -117,6 +149,15 @@
 					}
 					this.countDown--
 				}, 1000)
+				const params = {
+					phoneNumber: this.mobile,
+					templateId: 1
+					
+				}
+				loginApis.sendSmsCode(params).catch(err =>{
+					clearInterval(this.timer)
+					this.gettingVerCode = false
+				})
 			}
 		},
 		computed: {
