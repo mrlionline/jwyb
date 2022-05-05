@@ -3,24 +3,25 @@
 		<page-header :title="title"></page-header>
 		<view class="container">
 			<view class="tabs" v-if="!isGlobal">
-				<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 0}" @click="activeTabIndex = 0">成员星系</text>
-				<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 1}" @click="activeTabIndex = 1">星小组信息</text>
+				<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 0}" @click="tabChange(0)">成员星系</text>
+				<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 1}" @click="tabChange(1)">星小组信息</text>
 			</view>
 			
 			<view class="position-list" v-show="activeTabIndex === 0">
 				<view class="position-item" v-for="positionItem in positionList">
-					<view class="pi-title">{{positionItem.position}}</view>
-					<view class="member-box">
-						<view class="member-item" v-for="(member,index) in positionItem.memberList">
-							<image class="memeber-head" src="/static/header.jpg"></image>
+					<view class="pi-title">{{positionItem.name}}</view>
+					<view v-if="positionItem.userInfos && positionItem.userInfos.length" class="member-box">
+						<view class="member-item" v-for="(member,index) in positionItem.userInfos">
+							<image v-if="member.avatar" class="memeber-head" :src="member.avatar"></image>
+							<image v-if="!member.avatar" class="memeber-head" src="/static/header.jpg"></image>
 							<view class="member-info">
 								<text style="font-size: 15px;">{{member.name}}</text>
 								<text style="font-size: 13px;">{{member.mobile}}</text>
 								<view>
-									<image style="width: 14px; height: 14px;" v-for="star in member.starNum" src="../../static/my/star@3x.png"></image>
+									<image style="width: 14px; height: 14px;" v-for="star in 5" src="../../static/my/star@3x.png"></image>
 								</view>
 							</view>
-							<text class="member-start-level">{{member.starLevel}}</text>
+							<text class="member-start-level">{{member.starLevel || '五星主管'}}</text>
 						</view>
 					</view>
 				</view>
@@ -36,17 +37,26 @@
 							<image src="/pagesCommittee/static/group.png"></image>
 						</view>
 						<view class="group-info-content">
-							<view class="gi-name">{{groupItem.groupName}}</view>
-							<view class="gi-leader">组长：{{groupItem.leader}}</view>
-							<view class="gi-member">组员：{{groupItem.groupName}}</view>
+							<view class="gi-name">{{groupItem.name}}</view>
+							<view class="gi-leader">组长：{{groupItem.leader.name}}</view>
+							<view class="gi-member">组员：{{groupItem.members.slice(0, 3).map(item => item.name).join('、')}}
+							{{(groupItem.members && groupItem.members.length > 3) ? ('等' + groupItem.members.length + '人') : ''}}
+							</view>
 						</view>
 						<view class="gi-arrow">
 							<u-icon name="arrow-down"></u-icon>
 						</view>
 					</view>
 					<view class="member-list" :class="{'member-list-show': groupItem.open}">
-						<view class="member-item" v-for="memberItem in groupItem.member" @click="goDetail(memberItem)">
-							<text class="member-position">{{memberItem.position}}</text>
+						<view class="member-item" @click="goDetail(groupItem.leader)">
+							<text class="member-position">组长</text>
+							<text style="color: #444251;">{{groupItem.leader.name}}</text>
+							<view class="member-item-arrow">
+								<u-icon name="arrow-right"></u-icon>
+							</view>
+						</view>
+						<view class="member-item" v-for="memberItem in groupItem.members" @click="goDetail(memberItem)">
+							<text class="member-position">组员</text>
 							<text style="color: #444251;">{{memberItem.name}}</text>
 							<view class="member-item-arrow">
 								<u-icon name="arrow-right"></u-icon>
@@ -60,6 +70,7 @@
 </template>
 
 <script>
+	import committeeApi from '../../http/apis-committee.js'
 	export default {
 		data() {
 			return {
@@ -67,7 +78,12 @@
 				title: '',
 				activeTabIndex: 0,
 				positionList: [],
-				groupList: []
+				groupList: [],
+				page: {
+					pageSize: 30,
+					pageNum: 1,
+					totalNumber: 0
+				}
 			}
 		},
 		methods: {
@@ -81,123 +97,68 @@
 				groupItem.open = !groupItem.open
 			},
 			getMemberStar(){
-				this.positionList = [
-					{
-						position: '主委',
-						memberList: [
-							{
-								name: '李霞红',
-								mobile: '13112341234',
-								starNum: 5,
-								starLevel: '五星主管'
-							}
-						]
-					},
-					{
-						position: '政委员',
-						memberList: [
-							{
-								name: '李霞红',
-								mobile: '13112341234',
-								starNum: 4,
-								starLevel: '四星主管'
-							}
-						]
-					},
-					{
-						position: '顾问',
-						memberList: [
-							{
-								name: '李霞红',
-								mobile: '13112341234',
-								starNum: 3,
-								starLevel: '三星主管'
-							},
-							{
-								name: '李霞红',
-								mobile: '13112341234',
-								starNum: 3,
-								starLevel: '三星主管'
-							},{
-								name: '李霞红',
-								mobile: '13112341234',
-								starNum: 3,
-								starLevel: '三星主管'
-							}
-						]
-					}
-				]
+				committeeApi.getMemberById(this.id).then(res => {
+					this.positionList = res.starCouncilPositions;
+					// this.positionList = [
+					// 	{
+					// 		position: '主委',
+					// 		memberList: [
+					// 			{
+					// 				name: '李霞红',
+					// 				mobile: '13112341234',
+					// 				starNum: 5,
+					// 				starLevel: '五星主管'
+					// 			}
+					// 		]
+					// 	},
+					// ]
+				})
+				
 			},
-			getGroupList(){
-				this.groupList = [
-					{
-						groupName: '津一战区小组',
-						leader: '王小刚',
-						open: false,
-						member: [
-							{
-								name: '王小刚',
-								position: '组长',
-								id: '0'
-							},
-							{
-								name: '王小刚1',
-								position: '组员1',
-								id: '1'
-							},
-							{
-								name: '王小刚2',
-								position: '组员2',
-								id: '2'
-							},
-							{
-								name: '王小刚3',
-								position: '组员3',
-								id: '3'
-							}
-						]
-					},
-					{
-						groupName: '津一战区小组',
-						leader: '王大牛',
-						open: false,
-						member: [
-							{
-								name: '王大牛',
-								position: '组长',
-								id: '4'
-							},
-							{
-								name: '王大牛1',
-								position: '组员1',
-								id: '5'
-							},
-							{
-								name: '王大牛2',
-								position: '组员2',
-								id: '6'
-							},
-							{
-								name: '王大牛3',
-								position: '组员3',
-								id: '7'
-							}
-						]
+			tabChange(index) {
+				if (this.activeTabIndex === index) {
+					return; 
+				}
+				this.activeTabIndex = index
+				if (this.activeTabIndex === 0) {
+					this.getMemberStar()
+				}
+				if (this.activeTabIndex === 1) {
+					this.getGroupList(true)
+				}
+			},
+			getGroupList(reset){
+				if (reset) {
+					this.page = {
+						pageSize: 10,
+						pageNum: 1,
+						totalNumber: 0,
 					}
-				]
+				} else {
+					this.page.pageNum += 1
+				}
+				committeeApi.getGroupList(this.id, this.page).then(res => {
+					this.groupList = res.dataSet.map(item => ({ ...item, open: false }));
+					this.page = {
+						pageSize: res.pageSize,
+						pageNum: res.pageNum,
+						totalNumber: res.totalNumber,
+					}
+				})
+				
 			}
 		},
-		onLoad (option) { //option为object类型，会序列化上个页面传递的参数
-			this.id = option.id
-			this.title = option.name
+		created() {	
+			// this.getMemberStar()
+			// this.getGroupList()
 		},
-		created() {
+		onLoad(query) {
+			this.id = query.id;
 			this.getMemberStar()
-			this.getGroupList()
 		},
 		computed: {
 			isGlobal: function(){
-				return this.id === '' || this.id === '0'
+				return this.id === '' || this.id === '1'
 			}
 		}
 	}

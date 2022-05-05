@@ -1,5 +1,5 @@
 {
-    "name" : "TODO小帮手",
+    "name" : "绝味人 在一起",
     "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx49405ac97ea2825b",
+        "appid" : "wxa213e24a3a8119c2",
         "setting" : {
             "urlCheck" : false
         },

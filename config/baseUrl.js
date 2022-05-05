@@ -1,7 +1,6 @@
 let baseUrl = ''
-
 if(process.env.NODE_TYPE == 'test'){
-	baseUrl = 'https://unidemo.dcloud.net.cn/'
+	baseUrl = 'http://172.21.20.208:30004'
 }else if(process.env.NODE_TYPE == 'production'){
 	baseUrl = 'production/'
 }

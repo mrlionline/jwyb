@@ -39,15 +39,14 @@ function logout(){
 	})
 }
 
-const http = (url, methods, {data, noToken, noToast} = {}) =>{
+const http = (url, method, {data, noToken, noToast, fullRes} = {}) =>{
 	return new Promise((resolve, reject) =>{
 		const header = noToken ? null : {
 			"Authorization" : uni.getStorageSync('token')
 		}
-		
 		uni.request({
 		    url: baseUrl + url,
-			methods,
+			method,
 		    data,
 		    header,
 		    success: (res) => {
@@ -55,7 +54,7 @@ const http = (url, methods, {data, noToken, noToast} = {}) =>{
 		        if(res.statusCode === 200){	// http状态200
 						// resolve(res.data)	// 此行待删除
 					if(res.data.resultCode === "Success"){	// 接口resultCode为'Success'为成功
-						resolve(res.data.dataSet)
+						resolve(fullRes ? res.data : res.data.dataSet)
 					}else if(!noToast){
 						uni.showToast({
 							title:res.data.msg,

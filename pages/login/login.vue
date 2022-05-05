@@ -66,12 +66,12 @@
 					<view class="divider"></view>
 					<u-input
 						class="input-node"
-						placeholder="输入图片验证码"
+						placeholder="输入验证码"
 						border="none"
 						v-model="imgVerCode"
 					  >
 						<template slot="suffix">
-							<image mode="widthFix" style="width: 140rpx;" :src="imgVerCodeSrc"></image>
+							<image style="width: 160rpx;height: 80rpx;" :src="imgVerCodeSrc"></image>
 						</template>
 					  </u-input>
 				</view>
@@ -177,7 +177,7 @@
 			},
 			formula(){
 				loginApis.formula().then(res =>{
-					this.imgVerCodeSrc = res
+					this.imgVerCodeSrc = res.replace(/[\r\n]/g, '')
 				})
 			}
 		},
