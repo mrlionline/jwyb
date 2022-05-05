@@ -61,8 +61,12 @@ const http = (url, methods, {data, noToken, noToast} = {}) =>{
 							title:res.data.msg,
 							icon:'none'
 						})
+						reject(res.data)
+					}else {
+						reject(res.data)
 					}
 				}else {
+					reject(res)
 					errorHandle(res.statusCode, noToast)
 				}
 		    },
