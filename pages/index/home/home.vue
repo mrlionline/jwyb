@@ -40,7 +40,7 @@
 					},
 					{
 						name: '星委会',
-						url: '/pages/committee/committee-list',
+						url: '/pagesCommittee/committee/committee-list',
 						imgSrc: '/static/home/home-committee.png'
 					}
 				]

@@ -33,7 +33,7 @@
 				>
 					<view class="group-info" @click="groupItemClick(groupItem)">
 						<view class="group-logo">
-							<image src="/static/group.png"></image>
+							<image src="/pagesCommittee/static/group.png"></image>
 						</view>
 						<view class="group-info-content">
 							<view class="gi-name">{{groupItem.groupName}}</view>
@@ -74,7 +74,7 @@
 			goDetail(item){
 				console.log('###', item)
 				uni.navigateTo({
-					url: `/pages/committee/committee-person-detail?id=${item.id}&name=${item.name}`
+					url: `/pagesCommittee/committee/committee-person-detail?id=${item.id}&name=${item.name}`
 				})
 			},
 			groupItemClick(groupItem){

@@ -220,7 +220,7 @@
 		},
 		data() {
 			return {
-				current: 6,
+				current: 0,
 				musicOn: true,
 				music: null,
 				step2SelectedIndex: 0,

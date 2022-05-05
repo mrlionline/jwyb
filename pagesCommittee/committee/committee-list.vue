@@ -8,7 +8,7 @@
 			>
 				<view class="item-border-left" :style="{'background-color': '#567DF4'}"></view>
 				<view class="committee-item">
-					<image class="item-icon" src="/static/star2.png"></image>
+					<image class="item-icon" src="/pagesCommittee/static/star2.png"></image>
 					<text class="item-name">全国总委会</text>
 					<view class="item-arrow">
 						<u-icon name="arrow-right"></u-icon>
@@ -23,7 +23,7 @@
 			>
 				<view class="item-border-left" :style="{'background-color': '#F2731E'}"></view>
 				<view class="committee-item">
-					<image class="item-icon" src="/static/star1.png"></image>
+					<image class="item-icon" src="/pagesCommittee/static/star1.png"></image>
 					<text class="item-name">市场星委会</text>
 					<view class="item-arrow">
 						<u-icon name="arrow-right"></u-icon>
@@ -31,7 +31,7 @@
 				</view>
 				<view class="committee-list">
 					<view class="committee-list-item" v-for="(item,index) in marketCommitteeList" @click.stop="goto(item)">
-						<image src="/static/star1.png"></image>
+						<image src="/pagesCommittee/static/star3.png"></image>
 						<text>{{item.name}}</text>
 						<view class="item-arrow-sm">
 							<u-icon name="arrow-right"></u-icon>
@@ -55,7 +55,7 @@
 		methods: {
 			goto(item){
 				uni.navigateTo({
-					url: `/pages/committee/committee-person-list?id=${item.id}&name=${item.name}`
+					url: `/pagesCommittee/committee/committee-person-list?id=${item.id}&name=${item.name}`
 				})
 			},
 			marketClick(){
