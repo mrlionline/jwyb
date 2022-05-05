@@ -26,7 +26,7 @@
 		},
 		methods: {
 			outClick(){
-				// this.$emit('click')
+				this.$emit('click')
 			}
 		}
 	}

@@ -139,16 +139,67 @@
 				</swiper-item>
 				<swiper-item>
 					<view class="capsule-step step5">
-						<scroll-view :scroll-y="true" style="height: 100vh; color: #fff;">
-							<view style="padding-top: 218rpx;text-align: center; font-size: 24px;">
+						<scroll-view :scroll-y="true" style="height: 100vh; padding-top: 220rpx; color: #fff;">
+							<view style="text-align: center; font-size: 24px;">
 								<view style="margin-bottom: 16rpx;">亲爱的王晓红！</view>
 								<view>您已和绝味一起走过<text style="color: #FFD940">{{step5Day}}</text>天</view>
 							</view>
-							<view style="padding: 96rpx 48rpx 228rpx;">
+							<view style="padding: 96rpx 48rpx 428rpx;">
 								<time-line theme="dark" :list="step5TimeLineList"></time-line>
 							</view>
 							<view style="position: fixed; bottom: 120rpx; text-align: center; width: 100%;">
 								<app-button text="星语心愿"></app-button>
+							</view>
+						</scroll-view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="capsule-step step6 por">
+						<view class="textarea-wrap" :class="{'hide': step6SubmitWish}">
+							<view class="title">星语心愿</view>
+							<view class="textarea-bg">
+								<textarea v-model="step6Text" maxlength="-1" placeholder-style="font-size:15px;line-height: 180rpx;" placeholder="快与大家分享自己的星语心愿吧"/>
+							</view>
+						</view>
+						<view class="aircraft" :class="{'fly': step6SubmitWish}">
+							<image src="/pagesCapsule/static/capsule/submit-success.png"></image>
+							<!-- <view class="text">您的星语心愿发布成功</view> -->
+						</view>
+						<view class="aircraft-success" v-if="step6SubmitSuccess">
+							<image src="/pagesCapsule/static/capsule/submit-success.png"></image>
+							<view class="text">您的星语心愿发布成功</view>
+						</view>
+						<view class="aircraft-success" v-if="step6SubmitFail">
+							<image src="/pagesCapsule/static/capsule/submit-fail.png"></image>
+							<view class="text">您的星语心愿发布失败</view>
+						</view>
+						<view class="btn-wrap">
+							<template v-if="!step6SubmitWish">
+								<app-button width="304rpx" text="取消" type="default"></app-button>
+								<app-button width="304rpx" text="发布" @click="submitWish()"></app-button>
+							</template>
+							<template v-if="step6SubmitWish">
+								<app-button width="304rpx" text="重新许愿" type="default" @click="resetWish"></app-button>
+								<app-button width="304rpx" text="再次回顾"></app-button>
+							</template>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="capsule-step step7">
+						<scroll-view :scroll-y="true" style="height: 100%;">
+							<view class="level">
+								<image class="level-icon" src="/static/home/level-1-personnel.png"></image>
+								<text>三星店员</text>
+								<view class="star-box">
+									<image v-for="star in 3" src="/static/start3.png"></image>
+								</view>
+							</view>
+							<view class="same-level-box">
+								<view class="same-level-item por" v-for="(item,index) in step7List">
+									<text>{{item.name}}</text>
+									<text>{{item.shop}}</text>
+								</view>
 							</view>
 						</scroll-view>
 					</view>
@@ -169,11 +220,11 @@
 		},
 		data() {
 			return {
-				current: 0,
+				current: 6,
 				musicOn: true,
 				music: null,
 				step2SelectedIndex: 0,
-				step3Selected: 0,
+				step3Selected: null,
 				step5Day: 0,
 				step5Timer: '',
 				step5TimeLineList: [
@@ -197,10 +248,95 @@
 						desc: '您参加了星空训练营第三期活动，并获得升星勋章',
 						image: '/static/home/level-2-leader.png'
 					}
+				],
+				step6Text: '',
+				step6SubmitWish: false,
+				step6SubmitSuccess: false,
+				step6SubmitFail: false,
+				step7List: [
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					},
+					{
+						name: '王子红',
+						shop: '长沙市一店'
+					}
 				]
 			}
 		},
 		methods: {
+			resetWish(){
+				this.step6SubmitWish = false
+				this.step6SubmitSuccess = false
+				this.step6SubmitFail = false
+			},
+			submitWish(){
+				this.step6SubmitWish = true
+				setTimeout(() =>{
+					this.step6SubmitFail = true
+				}, 1000)
+			},
 			musicClick() {
 				if (this.musicOn) {
 					this.musicOn = false
@@ -229,7 +365,7 @@
 						this.current = 1
 					},0)
 				}
-				if(this.current >= 3 && this.step3Selected === 0){
+				if(this.current >= 3 && !this.step3Selected){
 					setTimeout(() =>{
 						this.current = 2
 					},0)
@@ -257,6 +393,7 @@
 				
 			},
 			chooseStep2(index){
+				this.step3Selected = null
 				setTimeout(() =>{
 					this.step2SelectedIndex = index
 					this.current = 2
@@ -731,6 +868,174 @@
 			.member1{
 				margin-top: -78rpx;
 				margin-left: 246rpx;
+			}
+		}
+		.step6{
+			height: 100vh;
+			padding: 256rpx 48rpx 280rpx;
+			@keyframes wishHide {
+				0%{
+					transform: none;
+					opacity: 1;
+				}
+				60%{
+					opacity: 1;
+				}
+				100%{
+					opacity: 0;
+					transform: scale(0.2, 0.2) matrix(0.866, 0.5, 0, 0.866, 0, 0);
+				}
+				
+			}
+			.textarea-wrap{
+				width: 100%;
+				height: 100%;
+				background: rgba(117,151,255,0.40);
+				border: 1px solid #567DF4;
+				box-shadow: 0 2px 10px 0 rgba(0,0,0,0.05), inset 0 1px 3px 0 rgba(0,0,0,0.50);
+				border-radius: 8px;
+				padding: 0 48rpx;
+				&.hide{
+					animation: wishHide .5s ease-in forwards;
+				}
+				.title{
+					line-height: 33px;
+					font-size: 24px;
+					color: #FFFFFF;
+					margin-top: 48rpx;
+					margin-bottom: 80rpx;
+					text-align: center;
+				}
+				.textarea-bg{
+					height: calc(100% - 128rpx - 33px);
+					// background: url("/pagesCapsule/static/capsule/line-bg.png");
+					// background-size: 100% 44px;
+					// background-repeat: repeat-y;
+					textarea{
+						color: #fff;
+						font-size: 15px;
+						// line-height: 80rpx;
+						width: 100%;
+						height: 100%;
+						word-break: break-all;
+					}
+				}
+			}
+			.aircraft{
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translateY(-50%);
+				text-align: center;
+				width: 100%;
+				opacity: 0;
+				// transition: .5s;
+				image{
+					width: 320rpx;
+					height: 320rpx;
+				}
+				@keyframes fly {
+					0%{
+						transform: translateY(-50%);
+					}
+					100%{
+						transform: translate(-50%, -200%) scale(0, 0);
+					}
+				}
+				&.fly{
+					opacity: 1;
+					animation: fly .5s .5s forwards;
+				}
+			}
+			.aircraft-success{
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translateY(-50%);
+				text-align: center;
+				width: 100%;
+				image{
+					width: 320rpx;
+					height: 320rpx;
+				}
+				.text{
+					color: #fff;
+					text-align: center;
+					font-size: 18px;
+					margin-top: 40rpx;
+				}
+			}
+			.btn-wrap{
+				display: flex;
+				justify-content: space-between;
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				height: 280rpx;
+				width: 100%;
+				padding: 64rpx 48rpx 0;
+			}
+		}
+		.step7{
+			padding: 0 48rpx;
+			padding-top: 220rpx;
+			height: 100vh;
+			.level{
+				position: relative;
+				width: 100%;
+				height: 96rpx;
+				padding-left: 112rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				.level-icon{
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 96rpx;
+					height: 96rpx;
+				}
+				text{
+					font-size: 14px;
+					color: #FFFFFF;
+				}
+				.star-box{
+					height: 16rpx;
+					font-size: 0;
+					margin-top: 16rpx;
+					image{
+						width: 16rpx;
+						height: 16rpx;
+						margin-right: 2rpx;
+					}
+				}
+			}
+			.same-level-box{
+				padding: 26rpx 0;
+				.same-level-item{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					height: 144rpx;
+					background: rgba(117,151,255,0.40);
+					border: 1px solid #567DF4;
+					box-shadow: 0 2px 10px 0 rgba(0,0,0,0.05);
+					border-radius: 8px;
+					margin-bottom: 16rpx;
+					overflow: hidden;
+					color: #fff;
+					&::before{
+						content: "";
+						position: absolute;
+						left: 0;
+						top: 0;
+						width: 28rpx;
+						height: 100%;
+						background: #567DF4;
+					}
+				}
 			}
 		}
 	}
