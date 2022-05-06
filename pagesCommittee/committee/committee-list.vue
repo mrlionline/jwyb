@@ -4,7 +4,7 @@
 		<view class="container">
 			<view
 				class="committee-item-group"
-				@click="goto({id:'0',name:'全国总委会'})"
+				@click="goto({id:committeeTree.id,name:'全国总委会'})"
 			>
 				<view class="item-border-left" :style="{'background-color': '#567DF4'}"></view>
 				<view class="committee-item">
@@ -30,7 +30,7 @@
 					</view>
 				</view>
 				<view class="committee-list">
-					<view class="committee-list-item" v-for="(item,index) in marketCommitteeList" @click.stop="goto(item)">
+					<view class="committee-list-item" v-for="(item,index) in committeeTree.children" @click.stop="goto(item)">
 						<image src="/pagesCommittee/static/star3.png"></image>
 						<text>{{item.name}}</text>
 						<view class="item-arrow-sm">
@@ -45,11 +45,13 @@
 </template>
 
 <script>
+	import committeeApi from '../../http/apis-committee.js'
 	export default {
 		data() {
 			return {
 				marketCommitteeShow: false,
-				marketCommitteeList: []
+				marketCommitteeList: [],
+				committeeTree: {}
 			}
 		},
 		methods: {
@@ -63,12 +65,9 @@
 			}
 		},
 		created() {
-			for (let i = 1; i < 101; i++) {
-				this.marketCommitteeList.push({
-					name: '河北分委会' + i,
-					id: i + ''
-				})
-			}
+			committeeApi.getCommittee().then(res => {
+				this.committeeTree = res;
+			})
 		}
 	}
 </script>

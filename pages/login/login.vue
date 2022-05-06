@@ -66,16 +66,16 @@
 					<view class="divider"></view>
 					<u-input
 						class="input-node"
-						placeholder="输入图片验证码"
+						placeholder="输入验证码"
 						border="none"
 						v-model="imgVerCode"
 					  >
 						<template slot="suffix">
-							<image mode="widthFix" style="width: 140rpx;" :src="imgVerCodeSrc"></image>
+							<image @click="formula" style="width: 160rpx;height: 80rpx;" :src="imgVerCodeSrc"></image>
 						</template>
 					  </u-input>
 				</view>
-				<view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view>
+				<!-- <view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view> -->
 				<view
 					class="login-btn"
 					:class="{'login-btn-disabled': loginBtnIsDisabled}"
@@ -121,13 +121,15 @@
 			loginByPassword(){
 				const params = {
 					accountType: 'MOBILE',
-					formulaResult: '',
+					formulaResult: this.imgVerCode,
 					login: this.number,
 					loginType: 'APP',
 					password: this.password
 				}
 				loginApis.login(params).then(res =>{
 					this.loginSuccess(res)
+				}).catch(e => {
+					this.formula()
 				})
 			},
 			loginByVerCode(){
@@ -143,6 +145,7 @@
 				})
 			},
 			loginSuccess(res){
+				uni.setStorageSync('userInfo', res.userInfo)
 				uni.setStorage({
 					key: 'token',
 					data: res.authorization,
@@ -177,7 +180,7 @@
 			},
 			formula(){
 				loginApis.formula().then(res =>{
-					this.imgVerCodeSrc = res
+					this.imgVerCodeSrc = res.replace(/[\r\n]/g, '')
 				})
 			}
 		},
@@ -198,7 +201,7 @@
 			},
 			loginBtnIsDisabled: function(){
 				if(this.loginType === 'password'){
-					return this.number.trim() === '' || this.password.trim() === ''
+					return this.number.trim() === '' || this.password.trim() === '' || this.imgVerCode.trim() === ''
 				}else if(this.loginType === 'verCode'){
 					return this.mobile.trim() === '' || this.verCode.trim() === ''
 				}

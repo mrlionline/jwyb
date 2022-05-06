@@ -6,7 +6,8 @@
 				<view class="card-title">基本信息</view>
 				<view class="base-info-wrap">
 					<view class="bi-head">
-						<image src="/static/header.jpg"></image>
+						<image v-if="baseInfo.avatar" :src="baseInfo.avatar"></image>
+						<image v-if="!baseInfo.avatar"  src="/static/header.jpg"></image>
 					</view>
 					<view class="bi-content">
 						<view class="bi-name">
@@ -14,39 +15,41 @@
 							<text class="bi-level">四星店员</text>
 						</view>
 						<text class="bi-base-text">电话：{{baseInfo.mobile}}</text>
-						<text class="bi-base-text">工作状态：<text>{{baseInfo.jobStatus}}</text></text>
-						<text class="bi-base-text">性别：{{baseInfo.gender}}</text>
-						<text class="bi-base-text">职位：{{baseInfo.position}}</text>
-						<text class="bi-base-text">所属团队：{{baseInfo.groupName}}</text>
+						<text class="bi-base-text">工作状态：<text>{{baseInfo.workStatus || '正常'}}</text></text>
+						<text class="bi-base-text">性别：{{baseInfo.sex || '保密'}}</text>
+						<text class="bi-base-text">职位：{{baseInfo.title || '-'}}</text>
+						<text class="bi-base-text">所属团队：{{baseInfo.deptArr[baseInfo.deptArr.length - 1] || '-'}}</text>
 					</view>
 				</view>
 			</view>
-			<view class="card">
+<!-- 			<view class="card">
 				<view class="card-title">星委会职位</view>
 				<view class="position-way" v-for="position in positionWay">·{{position}}</view>
 			</view>
 			<view class="card">
 				<view class="card-title">星路历程</view>
 				<time-line :list="timeLineList"></time-line>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
 
 <script>
+	import committeeApi from '../../http/apis-committee.js'
 	export default {
 		data() {
 			return {
 				id: '',
 				title: '',
 				baseInfo: {
-					name: '王小刚',
-					starLevel: '四星店员',
-					mobile: '13112344321',
-					position: '主管',
-					gender: '男',
-					jobStatus: '正常',
-					groupName: '天津营销团队'
+					name: '',
+					starLevel: '',
+					mobile: '',
+					position: '',
+					gender: '',
+					jobStatus: '',
+					groupName: '',
+					deptArr: []
 				},
 				positionWay: [
 					'总委会/互帮互助执委',
@@ -79,12 +82,34 @@
 			}
 		},
 		methods: {
-			
+			getUserInfo() {
+				committeeApi.getUserInfoById(this.id).then(res => {
+					console.log(res)
+					this.baseInfo = res
+					this.baseInfo.deptArr = this.getDeptArr(res.deprecatedList)
+				})
+			},
+			getDeptArr(deptTree) {
+				const res = []
+				let node = deptTree[0]
+				while (node) {
+					res.push(node.name)
+					if (node.childDeptList && node.childDeptList.length) {
+						node = node.childDeptList[0]
+					} else {
+						break
+					}
+				}
+				return res
+			}
 		},
 		onLoad (option) { //option为object类型，会序列化上个页面传递的参数
 			this.id = option.id
 			this.title = option.name
+			this.getUserInfo()
 		},
+		
+		
 	}
 </script>
 
