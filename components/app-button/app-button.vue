@@ -40,6 +40,7 @@
 		color: #fff;
 		text-align: center;
 		border-radius: 24px;
+		font-size: 18px;
 	}
 	.default{
 		background: rgba(117,151,255,0.40);

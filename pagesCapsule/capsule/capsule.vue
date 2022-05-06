@@ -4,7 +4,7 @@
 			:titleStyle="{color: '#fff'}" @leftClick="back()"></u-navbar>
 		<view class="capsule-wrap">
 			<view class="bg">
-				<image src="/pagesCapsule/static/capsule/capsule-bg.png"></image>
+				<image src="/pagesCapsule/static/capsule/capsule-bg1.png"></image>
 			</view>
 			<swiper
 				style="height: 100%;"
@@ -15,7 +15,10 @@
 				@animationfinish="animationfinish($event)"
 				@change="currentChange($event)">
 				<swiper-item>
-					<view class="capsule-step step1 flex por">
+					<view class="capsule-step step0 flex por" v-if="current === 0 || current === 1">
+						<view class="bg1">
+							<image mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg2.png"></image>
+						</view>
 						<view class="text-wrap" v-show="current === 0">
 							<view class="name">
 								<view style="animation-delay:1s;" class="ld ld-fall-ttb-in">王小红</view>
@@ -30,16 +33,19 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step has-tips step2 por">
+					<view class="capsule-step has-tips step1 por" v-if="current === 0 || current === 1 || current === 2">
+						<view class="bg1">
+							<image mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg2.png"></image>
+						</view>
 						<view class="choose-tips">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
-							<view class="btn btn1 por" @click="chooseStep2(1)" style="margin-bottom: 80rpx;">
+							<view class="btn btn1 por" @click="chooseStep1(1)" style="margin-bottom: 80rpx;">
 								<view class="corner tl"></view>
 								<view class="corner br"></view>
 								<image style="animation-delay:1s;" class="text ld ld-rush-ltr-in" src="/pagesCapsule/static/capsule/step2-btn1-icon.png"></image>
 								<view style="animation-delay:1s;" class="text ld ld-rush-rtl-in">营销星系</view>
 							</view>
-							<view class="btn btn2 por" @click="chooseStep2(2)">
+							<view class="btn btn2 por" @click="chooseStep1(2)">
 								<view class="corner tl"></view>
 								<view class="corner br"></view>
 								<image style="animation-delay:1s;" class="text ld ld-rush-ltr-in" src="/pagesCapsule/static/capsule/step2-btn2-icon.png"></image>
@@ -49,96 +55,101 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step has-tips step3 por">
-						<template v-if="step2SelectedIndex === 1">
-							<view class="choose-tips">请点击您的所属片区</view>
-							<view class="content por">
-								<view class="section xinan" :class="{'step3-active': step3Selected === 1}" @click="chooseStep3(1)">
-									<image class="default" src="/pagesCapsule/static/capsule/step3-xinan.png"></image>
-									<image class="active" src="/pagesCapsule/static/capsule/step3-xinan-active.png"></image>
-									<image class="twinkle" src="/pagesCapsule/static/capsule/step3-xinan.png"></image>
-									<view class="text">西南片区</view>
-								</view>
-								<view class="section huazhong" :class="{'step3-active': step3Selected === 2}" @click="chooseStep3(2)">
-									<image class="default" src="/pagesCapsule/static/capsule/step3-huazhong.png"></image>
-									<image class="active" src="/pagesCapsule/static/capsule/step3-huazhong-active.png"></image>
-									<image class="twinkle" src="/pagesCapsule/static/capsule/step3-huazhong.png"></image>
-									<view class="text">华中片区</view>
-								</view>
-								<view class="section huadong" :class="{'step3-active': step3Selected === 3}" @click="chooseStep3(3)">
-									<image class="default" src="/pagesCapsule/static/capsule/step3-huadong.png"></image>
-									<image class="active" src="/pagesCapsule/static/capsule/step3-huadong-active.png"></image>
-									<image class="twinkle" src="/pagesCapsule/static/capsule/step3-huadong.png"></image>
-									<view class="text">华东片区</view>
-								</view>
-								<view class="section beifang" :class="{'step3-active': step3Selected === 4}" @click="chooseStep3(4)">
-									<image class="default" mode="widthFix" src="/pagesCapsule/static/capsule/step3-beifang.png"></image>
-									<image class="active" mode="widthFix" src="/pagesCapsule/static/capsule/step3-beifang-active.png"></image>
-									<image mode="widthFix" class="twinkle" src="/pagesCapsule/static/capsule/step3-beifang.png"></image>
-									<view class="text">北方片区</view>
-								</view>
-								<view class="section huanan" :class="{'step3-active': step3Selected === 5}" @click="chooseStep3(5)">
-									<image class="default" mode="widthFix" src="/pagesCapsule/static/capsule/step3-huanan.png"></image>
-									<image class="active" mode="widthFix" src="/pagesCapsule/static/capsule/step3-huanan-active.png"></image>
-									<image mode="widthFix" class="twinkle" src="/pagesCapsule/static/capsule/step3-huanan.png"></image>
-									<view class="text">华南片区</view>
-								</view>
+					<view class="capsule-step has-tips step2 por" v-if="current === 1 || current === 2 || current === 3">
+						<view class="choose-tips">请点击您的所属片区</view>
+						<view class="content por">
+							<view class="section xinan" :class="{'step3-active': step3Selected === 1}" @click="chooseStep2(1)">
+								<image class="default" src="/pagesCapsule/static/capsule/step3-xinan.png"></image>
+								<image class="active" src="/pagesCapsule/static/capsule/step3-xinan-active.png"></image>
+								<image class="twinkle" src="/pagesCapsule/static/capsule/step3-xinan.png"></image>
+								<view class="text">西南片区</view>
 							</view>
-						</template>
-						<template v-if="step2SelectedIndex === 2">
-							<view class="choose-tips">请点击您的所属星球</view>
-							<view class="content por">
-								<!-- <view class="section section0">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
-								</view> -->
-								<view class="section section1" :class="{'step3-active': step3Selected === 6}" @click="chooseStep3(6)">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
-									<view class="text">xx星球</view>
-								</view>
-								<view class="section section2" :class="{'step3-active': step3Selected === 7}" @click="chooseStep3(7)">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/2.png"></image>
-									<view class="text">xx星球</view>
-								</view>
-								<view class="section section3" :class="{'step3-active': step3Selected === 8}" @click="chooseStep3(8)">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/3.png"></image>
-									<view class="text">xx星球</view>
-								</view>
-								<view class="section section4" :class="{'step3-active': step3Selected === 9}" @click="chooseStep3(9)">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/4.png"></image>
-									<view class="text">xx星球</view>
-								</view>
-								<view class="section section5" :class="{'step3-active': step3Selected === 10}" @click="chooseStep3(10)">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/5.png"></image>
-									<view class="text">xx星球</view>
-								</view>
-								<view class="section section6" :class="{'step3-active': step3Selected === 11}" @click="chooseStep3(11)">
-									<image mode="widthFix" src="/pagesCapsule/static/capsule/6.png"></image>
-									<view class="text">xx星球</view>
-								</view>
+							<view class="section huazhong" :class="{'step3-active': step3Selected === 2}" @click="chooseStep2(2)">
+								<image class="default" src="/pagesCapsule/static/capsule/step3-huazhong.png"></image>
+								<image class="active" src="/pagesCapsule/static/capsule/step3-huazhong-active.png"></image>
+								<image class="twinkle" src="/pagesCapsule/static/capsule/step3-huazhong.png"></image>
+								<view class="text">华中片区</view>
 							</view>
-						</template>
+							<view class="section huadong" :class="{'step3-active': step3Selected === 3}" @click="chooseStep2(3)">
+								<image class="default" src="/pagesCapsule/static/capsule/step3-huadong.png"></image>
+								<image class="active" src="/pagesCapsule/static/capsule/step3-huadong-active.png"></image>
+								<image class="twinkle" src="/pagesCapsule/static/capsule/step3-huadong.png"></image>
+								<view class="text">华东片区</view>
+							</view>
+							<view class="section beifang" :class="{'step3-active': step3Selected === 4}" @click="chooseStep2(4)">
+								<image class="default" mode="widthFix" src="/pagesCapsule/static/capsule/step3-beifang.png"></image>
+								<image class="active" mode="widthFix" src="/pagesCapsule/static/capsule/step3-beifang-active.png"></image>
+								<image mode="widthFix" class="twinkle" src="/pagesCapsule/static/capsule/step3-beifang.png"></image>
+								<view class="text">北方片区</view>
+							</view>
+							<view class="section huanan" :class="{'step3-active': step3Selected === 5}" @click="chooseStep2(5)">
+								<image class="default" mode="widthFix" src="/pagesCapsule/static/capsule/step3-huanan.png"></image>
+								<image class="active" mode="widthFix" src="/pagesCapsule/static/capsule/step3-huanan-active.png"></image>
+								<image mode="widthFix" class="twinkle" src="/pagesCapsule/static/capsule/step3-huanan.png"></image>
+								<view class="text">华南片区</view>
+							</view>
+						</view>
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step has-tips step4">
-						<view class="choose-tips">请点击您所获星级可查看同星级家人</view>
-						<scroll-view :scroll-y="true" style="height: calc(100vh - 240rpx);">
-							<image class="icon leader3" src="/pagesCapsule/static/capsule/step4-leader3.png"></image>
-							<image class="icon leader2" src="/pagesCapsule/static/capsule/step4-leader2.png"></image>
-							<image class="icon leader1" src="/pagesCapsule/static/capsule/step4-leader1.png"></image>
-							<image class="icon member5" src="/pagesCapsule/static/capsule/step4-member5.png"></image>
-							<image class="icon member4" src="/pagesCapsule/static/capsule/step4-member4.png"></image>
-							<image class="icon member3" src="/pagesCapsule/static/capsule/step4-member3.png"></image>
-							<image class="icon member2" src="/pagesCapsule/static/capsule/step4-member2.png"></image>
-							<image class="icon member1" src="/pagesCapsule/static/capsule/step4-member1.png"></image>
-							<view style="padding-bottom:120rpx; text-align: center;">
-								<app-button text="查看我的星路历程"></app-button>
+					<view class="capsule-step has-tips step3 por" v-if="current === 2 || current === 3 || current === 4">
+						<view class="choose-tips">请点击您的所属星球</view>
+						<view class="content por">
+							<!-- <view class="section section0">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
+							</view> -->
+							<view class="section section1" :class="{'step3-active': step3Selected === 6}" @click="chooseStep3(6)">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
+								<view class="text">xx星球</view>
+							</view>
+							<view class="section section2" :class="{'step3-active': step3Selected === 7}" @click="chooseStep3(7)">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/2.png"></image>
+								<view class="text">xx星球</view>
+							</view>
+							<view class="section section3" :class="{'step3-active': step3Selected === 8}" @click="chooseStep3(8)">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/3.png"></image>
+								<view class="text">xx星球</view>
+							</view>
+							<view class="section section4" :class="{'step3-active': step3Selected === 9}" @click="chooseStep3(9)">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/4.png"></image>
+								<view class="text">xx星球</view>
+							</view>
+							<view class="section section5" :class="{'step3-active': step3Selected === 10}" @click="chooseStep3(10)">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/5.png"></image>
+								<view class="text">xx星球</view>
+							</view>
+							<view class="section section6" :class="{'step3-active': step3Selected === 11}" @click="chooseStep3(11)">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/6.png"></image>
+								<view class="text">xx星球</view>
+							</view>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
+						<scroll-view :scroll-y="true" style="height: 100vh;">
+							<view class="content-box por">
+								<image style="width: 750rpx; height: 2800rpx;" mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg3.png"></image>
+								<view class="content">
+									<view class="choose-tips">请点击您所获星级可查看同星级家人</view>
+									<image class="icon leader3" src="/pagesCapsule/static/capsule/step4-leader3.png"></image>
+									<image class="icon leader2" src="/pagesCapsule/static/capsule/step4-leader2.png"></image>
+									<image class="icon leader1" src="/pagesCapsule/static/capsule/step4-leader1.png"></image>
+									<image class="icon member5" src="/pagesCapsule/static/capsule/step4-member5.png"></image>
+									<image class="icon member4" src="/pagesCapsule/static/capsule/step4-member4.png"></image>
+									<image class="icon member3" src="/pagesCapsule/static/capsule/step4-member3.png"></image>
+									<image class="icon member2" src="/pagesCapsule/static/capsule/step4-member2.png"></image>
+									<image class="icon member1" src="/pagesCapsule/static/capsule/step4-member1.png"></image>
+									<view style="width: 100%; text-align: center;">
+										<app-button text="查看我的星路历程"></app-button>
+									</view>
+								</view>
 							</view>
 						</scroll-view>
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step5">
+					<view class="capsule-step step5" v-if="current === 4 || current === 5 || current === 6">
 						<scroll-view :scroll-y="true" style="height: 100vh; padding-top: 220rpx; color: #fff;">
 							<view style="text-align: center; font-size: 24px;">
 								<view style="margin-bottom: 16rpx;">亲爱的王晓红！</view>
@@ -154,7 +165,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step6 por">
+					<view class="capsule-step step6 por" v-if="current === 5 || current === 6 || current === 7">
 						<view class="textarea-wrap" :class="{'hide': step6SubmitWish}">
 							<view class="title">星语心愿</view>
 							<view class="textarea-bg">
@@ -186,7 +197,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step7">
+					<view class="capsule-step step7" v-if="current === 6 || current === 7">
 						<scroll-view :scroll-y="true" style="height: 100%;">
 							<view class="level">
 								<image class="level-icon" src="/static/home/level-1-personnel.png"></image>
@@ -223,7 +234,8 @@
 				current: 0,
 				musicOn: true,
 				music: null,
-				step2SelectedIndex: 0,
+				step1SelectedIndex: 0,
+				step2Selected: null,
 				step3Selected: null,
 				step5Day: 0,
 				step5Timer: '',
@@ -359,24 +371,32 @@
 				uni.navigateBack()
 			},
 			currentChange(e) {
+				
+			},
+			animationfinish(e){
+				console.log(this.current)
 				this.current = e.detail.current
-				if(this.current >= 2 && this.step2SelectedIndex === 0){
+				if(this.current >= 2 && this.step1SelectedIndex === 0){
 					setTimeout(() =>{
 						this.current = 1
 					},0)
 				}
-				if(this.current >= 3 && !this.step3Selected){
+				if(this.current >= 3 && !this.step2Selected){
 					setTimeout(() =>{
 						this.current = 2
 					},0)
 				}
-			},
-			animationfinish(e){
-				console.log(this.current)
-				if(this.current === 4){
+				if(this.current >= 4 && !this.step3Selected){
+					setTimeout(() =>{
+						this.current = 3
+					},0)
+				}
+				
+				if(this.current === 5){
 					this.initStep5()
 				}else {
 					this.step5Day = 0
+					clearInterval(this.step5Timer)
 				}
 			},
 			initStep5(){
@@ -392,17 +412,25 @@
 				},delay)
 				
 			},
+			chooseStep1(index){
+				this.step2Selected = null
+				this.step3Selected = null
+				setTimeout(() =>{
+					this.step1SelectedIndex = index
+					this.current++
+				}, 20)
+			},
 			chooseStep2(index){
 				this.step3Selected = null
 				setTimeout(() =>{
-					this.step2SelectedIndex = index
-					this.current = 2
+					this.step2Selected = index
+					this.current++
 				}, 20)
 			},
 			chooseStep3(index){
 				setTimeout(() =>{
 					this.step3Selected = index
-					this.current = 3
+					this.current++
 				}, 20)
 			}
 		},
@@ -429,6 +457,17 @@
 			height: 100%;
 
 			image {
+				width: 100%;
+				height: 100%;
+			}
+		}
+		.bg1{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			image{
 				width: 100%;
 				height: 100%;
 			}
@@ -499,7 +538,8 @@
 			transform: translateX(-50%);
 		}
 
-		.step1 {
+		.step0 {
+			height: 100vh;
 			.text-wrap {
 				position: absolute;
 				bottom: 240rpx;
@@ -560,7 +600,7 @@
 			}
 		}
 
-		.step2 {
+		.step1 {
 			.btn-wrap {
 				position: absolute;
 				bottom: 232rpx;
@@ -655,7 +695,8 @@
 				}
 			}
 		}
-		.step3{
+		.step2{
+			padding-top: 240rpx;
 			height: 100vh;
 			.content{
 				height: calc(100% - 22px);
@@ -775,6 +816,36 @@
 						animation-delay: .2s;
 					}
 				}
+			}
+		}
+		.step3{
+			height: 100vh;
+			.content{
+				height: calc(100% - 22px);
+				.section{
+					position: absolute;
+					font-size: 0;
+					.text{
+						position: absolute;
+						top: 100%;
+						left: 0;
+						right: 0;
+						font-size: 14px;
+						color: #57A1FF;
+						text-align: center;
+					}
+					.active{
+						display: none;
+					}
+					&.step3-active{
+						.default{
+							display: none;
+						}
+						.active{
+							display: block;
+						}
+					}
+				}
 				.section1{
 					top: 6.8%;
 					left: 26%;
@@ -839,8 +910,17 @@
 				width: 348rpx;
 				height: 348rpx;
 			}
+			.content-box{
+				font-size: 0;
+			}
+			.content{
+				position: absolute;
+				top: 240rpx;
+				width: 100%;
+			}
 			.leader3{
 				margin-left: 120rpx;
+				margin-top: 154rpx;
 			}
 			.leader2{
 				margin-top: -42rpx;

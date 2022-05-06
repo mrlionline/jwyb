@@ -33,11 +33,11 @@
 					identity: 'leader'
 				},
 				list: [
-					// {
-					// 	name: '星空胶囊',
-					// 	url: '/pagesCapsule/capsule/capsule',
-					// 	imgSrc: '/static/home/home-capsule.png'
-					// },
+					{
+						name: '星空胶囊',
+						url: '/pagesCapsule/capsule/capsule',
+						imgSrc: '/static/home/home-capsule.png'
+					},
 					{
 						name: '星委会',
 						url: '/pagesCommittee/committee/committee-list',
