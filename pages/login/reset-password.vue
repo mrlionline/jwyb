@@ -57,6 +57,7 @@
 </template>
 
 <script>
+	import loginApi from '../../http/apis-login.js'
 	export default {
 		data() {
 			return {
@@ -78,10 +79,24 @@
 			reset(){
 				if(this.resetBtnIsDisabled) return
 				if(this.newPassword === this.confirmNewPassword){
-					
+					loginApi.resetPwd({
+						oldPassword: this.oldPassword,
+						password: this.newPassword
+					}).then(res => {
+						this.showToast('修改成功，将返回登录')
+						setTimeout(() => {
+							this.loginout()
+						}, 2000)
+					})
 				}else {
 					this.showToast('两次密码输入不一致')
 				}
+			},
+			loginout() {
+				uni.clearStorage();
+				uni.reLaunch({
+					url: '/pages/login/login'
+				})
 			}
 		},
 		computed: {

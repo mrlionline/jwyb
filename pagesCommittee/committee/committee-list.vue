@@ -9,7 +9,7 @@
 				<view class="item-border-left" :style="{'background-color': '#567DF4'}"></view>
 				<view class="committee-item">
 					<image class="item-icon" src="/pagesCommittee/static/star2.png"></image>
-					<text class="item-name">{{committeeTree.name}}</text>
+					<text class="item-name">全国总委会</text>
 					<view class="item-arrow">
 						<u-icon name="arrow-right"></u-icon>
 					</view>

@@ -7,14 +7,15 @@
 					<image src="/static/star-1-leader.png"></image>
 				</view>
 				<view class="user-header">
-					<image :src="userInfo.headerUrl"></image>
+					<image v-if="userInfo.avatar" :src="userInfo.avatar"></image>
+					<image v-if="!userInfo.avatar" src="/static/header.jpg"></image>
 				</view>
 				<view class="user-name">{{userInfo.name}}</view>
 			</view>
-			<view class="user-position">
+<!-- 			<view class="user-position">
 				<text class="up-title">我的职位</text>
 				<view class="position-item" v-for="item in userInfo.positionList">{{item}}</view>
-			</view>
+			</view> -->
 			<view class="btn-wrap btn-wrap-reset-pwd" @click="goReset">
 				<u-icon size="20px" name="edit-pen"></u-icon>
 				<text class="btn-text">修改密码</text>
@@ -47,33 +48,33 @@
 		data() {
 			return {
 				userInfo: {
-					headerUrl: '/static/header.jpg',
-					name: '李霞红',
-					star: 3,
-					positionList: [
-						'·总委会/互帮互助执委',
-						'·天津星委会/主委',
-						'·天津星委会/互帮互助执委',
-						'·天津星委会/第一星小组组员'
-					]
+					avatar: '/static/header.jpg',
+					name: ''
 				},
 				logoutConfirm: false
 			}
 		},
 		methods: {
 			logout(){
-				indexApis.logout().then(() =>{
-					uni.clearStorage();
-					uni.reLaunch({
-						url: '/pages/login/login'
-					})
+				uni.clearStorage();
+				uni.reLaunch({
+					url: '/pages/login/login'
 				})
+				// indexApis.logout().then(() =>{
+				// 	uni.clearStorage();
+				// 	uni.reLaunch({
+				// 		url: '/pages/login/login'
+				// 	})
+				// })
 			},
 			goReset(){
 				uni.navigateTo({
 					url: '/pages/login/reset-password'
 				});
 			}
+		},
+		created() {
+			this.userInfo = uni.getStorageSync('userInfo')
 		}
 	}
 </script>

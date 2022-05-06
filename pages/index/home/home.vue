@@ -4,7 +4,7 @@
 		<view class="home-container">
 			<home-item v-for="item in list" :item="item"></home-item>
 		</view>
-		<image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image>
+		<!-- <image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image> -->
 		<u-modal 
 			:show="promoteShow"
 			width="654rpx"
@@ -33,11 +33,11 @@
 					identity: 'leader'
 				},
 				list: [
-					{
-						name: '星空胶囊',
-						url: '/pagesCapsule/capsule/capsule',
-						imgSrc: '/static/home/home-capsule.png'
-					},
+					// {
+					// 	name: '星空胶囊',
+					// 	url: '/pagesCapsule/capsule/capsule',
+					// 	imgSrc: '/static/home/home-capsule.png'
+					// },
 					{
 						name: '星委会',
 						url: '/pagesCommittee/committee/committee-list',
@@ -47,9 +47,9 @@
 			}
 		},
 		created() {
-			setTimeout(() =>{
-				this.promoteShow = true
-			}, 1000)
+			// setTimeout(() =>{
+			// 	this.promoteShow = true
+			// }, 1000)
 		},
 		methods: {
 			goto(url){
