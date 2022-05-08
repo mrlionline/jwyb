@@ -39,56 +39,38 @@
 						</view>
 						<view class="choose-tips">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
-							<view class="btn btn1 por" @click="chooseStep1(1)" style="margin-bottom: 80rpx;">
+							<view
+								class="btn por"
+								:class="i%2 === 0 ? 'btn1' : 'btn2'"
+								v-for="(galaxy, i) of galaxyInfo.list"
+								@click="chooseGalaxy(galaxy.id)"
+							>
 								<view class="corner tl"></view>
 								<view class="corner br"></view>
-								<image style="animation-delay:1s;" class="text ld ld-rush-ltr-in" src="/pagesCapsule/static/capsule/step2-btn1-icon.png"></image>
-								<view style="animation-delay:1s;" class="text ld ld-rush-rtl-in">营销星系</view>
-							</view>
-							<view class="btn btn2 por" @click="chooseStep1(2)">
-								<view class="corner tl"></view>
-								<view class="corner br"></view>
-								<image style="animation-delay:1s;" class="text ld ld-rush-ltr-in" src="/pagesCapsule/static/capsule/step2-btn2-icon.png"></image>
-								<view style="animation-delay:1s;" class="text ld ld-rush-rtl-in">供应链星系</view>
+								<image style="animation-delay:1s;" class="text ld ld-rush-ltr-in" :src="i%2 === 0 ? '/pagesCapsule/static/capsule/step2-btn1-icon.png' : '/pagesCapsule/static/capsule/step2-btn2-icon.png'"></image>
+								<view style="animation-delay:1s;" class="text ld ld-rush-rtl-in">{{galaxy.name}}</view>
 							</view>
 						</view>
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step has-tips step2 por" v-if="current === 1 || current === 2 || current === 3">
-						<view class="choose-tips">请点击您的所属片区</view>
-						<view class="content por">
-							<view class="section xinan" :class="{'step3-active': step3Selected === 1}" @click="chooseStep2(1)">
-								<image class="default" src="/pagesCapsule/static/capsule/step3-xinan.png"></image>
-								<image class="active" src="/pagesCapsule/static/capsule/step3-xinan-active.png"></image>
-								<image class="twinkle" src="/pagesCapsule/static/capsule/step3-xinan.png"></image>
-								<view class="text">西南片区</view>
+					<view class="capsule-step step2 por" v-if="current === 1 || current === 2 || current === 3">
+						<scroll-view :scroll-y="true" style="height: 100vh;">
+							<view class="choose-tips">请点击您的所属片区</view>
+							<view class="content">
+								<view
+									v-for="(nebula, index) of nebulaInfo.list"
+									class="section"
+									:class="['nebula' + (index+1), {'step3-active': nebulaInfo.selectedId === nebula.id}]"
+									@click="chooseStep2(nebula.id)"
+								>
+									<image mode="widthFix" class="default" :src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
+									<image mode="widthFix" class="active" :src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'-active.png'"></image>
+									<image mode="widthFix" class="twinkle" :src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
+									<view class="text">{{nebula.name}}</view>
+								</view>
 							</view>
-							<view class="section huazhong" :class="{'step3-active': step3Selected === 2}" @click="chooseStep2(2)">
-								<image class="default" src="/pagesCapsule/static/capsule/step3-huazhong.png"></image>
-								<image class="active" src="/pagesCapsule/static/capsule/step3-huazhong-active.png"></image>
-								<image class="twinkle" src="/pagesCapsule/static/capsule/step3-huazhong.png"></image>
-								<view class="text">华中片区</view>
-							</view>
-							<view class="section huadong" :class="{'step3-active': step3Selected === 3}" @click="chooseStep2(3)">
-								<image class="default" src="/pagesCapsule/static/capsule/step3-huadong.png"></image>
-								<image class="active" src="/pagesCapsule/static/capsule/step3-huadong-active.png"></image>
-								<image class="twinkle" src="/pagesCapsule/static/capsule/step3-huadong.png"></image>
-								<view class="text">华东片区</view>
-							</view>
-							<view class="section beifang" :class="{'step3-active': step3Selected === 4}" @click="chooseStep2(4)">
-								<image class="default" mode="widthFix" src="/pagesCapsule/static/capsule/step3-beifang.png"></image>
-								<image class="active" mode="widthFix" src="/pagesCapsule/static/capsule/step3-beifang-active.png"></image>
-								<image mode="widthFix" class="twinkle" src="/pagesCapsule/static/capsule/step3-beifang.png"></image>
-								<view class="text">北方片区</view>
-							</view>
-							<view class="section huanan" :class="{'step3-active': step3Selected === 5}" @click="chooseStep2(5)">
-								<image class="default" mode="widthFix" src="/pagesCapsule/static/capsule/step3-huanan.png"></image>
-								<image class="active" mode="widthFix" src="/pagesCapsule/static/capsule/step3-huanan-active.png"></image>
-								<image mode="widthFix" class="twinkle" src="/pagesCapsule/static/capsule/step3-huanan.png"></image>
-								<view class="text">华南片区</view>
-							</view>
-						</view>
+						</scroll-view>
 					</view>
 				</swiper-item>
 				<swiper-item>
@@ -224,7 +206,11 @@
 </template>
 
 <script>
+	import capsuleApi from '../../http/apis-capsule.js'
 	import next from './capsuleNext.vue'
+	const nebulaImgList = [
+		
+	]
 	export default {
 		components: {
 			next
@@ -234,9 +220,23 @@
 				current: 0,
 				musicOn: true,
 				music: null,
-				step1SelectedIndex: 0,
-				step2Selected: null,
-				step3Selected: null,
+				userInfo: null,
+				galaxyInfo: {
+					list: [],
+					selectedId: 0
+				},
+				nebulaInfo: {
+					list: [],
+					selectedId: null
+				},
+				starInfo: {
+					list: [],
+					selectedId: null
+				},
+				starLevelInfo: {
+					list: [],
+					selectedId: null
+				},
 				step5Day: 0,
 				step5Timer: '',
 				step5TimeLineList: [
@@ -376,17 +376,17 @@
 			animationfinish(e){
 				console.log(this.current)
 				this.current = e.detail.current
-				if(this.current >= 2 && this.step1SelectedIndex === 0){
+				if(this.current >= 2 && this.galaxyInfo.selectedId === 0){
 					setTimeout(() =>{
 						this.current = 1
 					},0)
 				}
-				if(this.current >= 3 && !this.step2Selected){
+				if(this.current >= 3 && !this.nebulaInfo.selectedId){
 					setTimeout(() =>{
 						this.current = 2
 					},0)
 				}
-				if(this.current >= 4 && !this.step3Selected){
+				if(this.current >= 4 && !this.starInfo.selectedId){
 					setTimeout(() =>{
 						this.current = 3
 					},0)
@@ -412,30 +412,110 @@
 				},delay)
 				
 			},
-			chooseStep1(index){
-				this.step2Selected = null
-				this.step3Selected = null
+			chooseGalaxy(id){
+				this.nebulaInfo = {list: [], selectedId: null}
+				this.starInfo = {list: [], selectedId: null}
+				this.getNebulaList(id)
 				setTimeout(() =>{
-					this.step1SelectedIndex = index
+					this.galaxyInfo.selectedId = id
 					this.current++
 				}, 20)
 			},
 			chooseStep2(index){
-				this.step3Selected = null
+				this.starInfo = {list: [], selectedId: null}
 				setTimeout(() =>{
-					this.step2Selected = index
+					this.nebulaInfo.selectedId = index
 					this.current++
 				}, 20)
 			},
 			chooseStep3(index){
 				setTimeout(() =>{
-					this.step3Selected = index
+					this.starInfo.selectedId = index
 					this.current++
 				}, 20)
+			},
+			getUserInfo(){
+				this.userInfo = uni.getStorageSync('userInfo');
+			},
+			getNebulaList(id){
+				capsuleApi.queryList(id).catch(res =>{
+					const imgNum = 4
+					res = [
+						{
+							name: '西南片区',
+							id: 1
+						},
+						{
+							name: '华中片区',
+							id: 2
+						},
+						{
+							name: '华东片区',
+							id: 3
+						},
+						{
+							name: '北方片区',
+							id: 4
+						},
+						{
+							name: '华南片区',
+							id: 5
+						},
+						{
+							name: '西南片区1',
+							id: 6
+						},
+						{
+							name: '华中片区1',
+							id: 7
+						},
+						{
+							name: '华东片区1',
+							id: 8
+						},
+						{
+							name: '北方片区1',
+							id: 9
+						},
+						{
+							name: '华南片区1',
+							id: 10
+						}
+					]
+					this.nebulaInfo.list = res.map((item,index) =>{
+						return {
+							...item,
+							imgIndex: index%imgNum + 1
+						}
+					})
+					console.log('this.nebulaInfo.list', this.nebulaInfo.list)
+				})
+			},
+			getGalaxyList(){
+				console.log('@@@@@@@@@@@@')
+				capsuleApi.queryList(0).catch(res =>{
+					// this.galaxyInfo.list = res
+					this.galaxyInfo.list = [
+						{
+							name: '营销星系1',
+							id: 1
+						},
+						{
+							name: '供应链星系2',
+							id: 2
+						},
+						{
+							name: '供应链星系3',
+							id: 3
+						}
+					]
+				})
 			}
 		},
 		created() {
 			this.playMusic()
+			this.getUserInfo()
+			this.getGalaxyList()
 		},
 		beforeDestroy() {
 			this.music.stop()
@@ -481,12 +561,13 @@
 				padding-top: 240rpx;
 			}
 			.choose-tips {
+				position: relative;
 				text-align: center;
 				font-size: 14px;
 				color: #FFFFFF;
 				width: 100%;
-				height: 22px;
 				line-height: 22px;
+				z-index: 1;
 			}
 		}
 
@@ -615,6 +696,10 @@
 					border-radius: 0 20px 0 20px;
 					padding-left: 260rpx;
 					transition: .1s;
+					margin-bottom: 80rpx;
+					&:last-child{
+						margin-bottom: 0;
+					}
 					.corner {
 						position: absolute;
 
@@ -696,10 +781,14 @@
 			}
 		}
 		.step2{
-			padding-top: 240rpx;
 			height: 100vh;
+			.choose-tips{
+				padding-top: calc(var(--status-bar-height) + 48px);
+			}
 			.content{
-				height: calc(100% - 22px);
+				display: flex;
+				flex-direction: column;
+				padding-bottom: 100rpx;
 				@keyframes twinkle {
 					0%{
 						opacity: 0;
@@ -719,13 +808,9 @@
 					animation: twinkle 2s linear infinite;
 				}
 				.section{
-					position: absolute;
+					position: relative;
 					font-size: 0;
 					.text{
-						position: absolute;
-						top: 100%;
-						left: 0;
-						right: 0;
 						font-size: 14px;
 						color: #57A1FF;
 						text-align: center;
@@ -742,59 +827,46 @@
 						}
 					}
 				}
-				.xinan{
+				.nebula1{
 					left: 23%;
 					width: 220rpx;
-					height: 220rpx;
 					image{
 						width: 220rpx;
-						height: 220rpx;
 					}
 					.twinkle{
 						width: 220rpx;
-						height: 220rpx;
 						animation-delay: .5s;
 					}
 				}
-				.huazhong{
+				.nebula2{
+					margin-top: -146rpx;
 					left: 66%;
-					top: 10%;
 					width: 178rpx;
-					height: 178rpx;
 					image{
 						width: 178rpx;
-						height: 178rpx;
 					}
 					.twinkle{
 						width: 178rpx;
-						height: 178rpx;
 						animation-duration: 3s;
 					}
 				}
-				.huadong{
+				.nebula3{
 					left: 50%;
-					top: 40%;
-					transform: translate(-50%,-50%);
-					width: 482rpx;
-					height: 482rpx;
+					transform: translateX(-50%);
+					width: 518rpx;
 					image{
-						width: 482rpx;
-						height: 482rpx;
+						width: 518rpx;
 					}
 					.twinkle{
-						width: 482rpx;
-						height: 482rpx;
+						width: 518rpx;
 					}
 					.text{
-						top: 85%;
 						color: #fff;
 					}
 				}
-				.beifang{
+				.nebula4{
 					left: 13.5%;
-					bottom: 20%;
 					width: 190rpx;
-					height: 130rpx;
 					image{
 						width: 190rpx;
 					}
@@ -803,17 +875,77 @@
 						animation-delay: 1s;
 					}
 				}
-				.huanan{
+				.nebula5{
+					margin-top: -70rpx;
 					left: 65%;
-					bottom: 12%;
+					width: 174rpx;
+					image{
+						width: 174rpx;
+					}
+					.twinkle{
+						width: 174rpx;
+						animation-delay: .2s;
+					}
+				}
+				.nebula6{
+					margin-top: -80rpx;
+					left: 15%;
+					width: 210rpx;
+					image{
+						width: 210rpx;
+					}
+					.twinkle{
+						width: 210rpx;
+						animation-delay: 1s;
+					}
+				}
+				.nebula7{
+					left: 50%;
+					transform: translateX(-50%);
+					width: 450rpx;
+					image{
+						width: 450rpx;
+					}
+					.twinkle{
+						width: 450rpx;
+					}
+					.text{
+						color: #fff;
+					}
+				}
+				.nebula8{
+					left: 15%;
+					width: 200rpx;
+					image{
+						width: 200rpx;
+					}
+					.twinkle{
+						width: 200rpx;
+						animation-delay: 1s;
+					}
+				}
+				.nebula9{
+					margin-top: -90rpx;
+					left: 65%;
 					width: 190rpx;
-					height: 130rpx;
 					image{
 						width: 190rpx;
 					}
 					.twinkle{
 						width: 190rpx;
 						animation-delay: .2s;
+					}
+				}
+				.nebula10{
+					margin-top: -100rpx;
+					left: 18%;
+					width: 220rpx;
+					image{
+						width: 220rpx;
+					}
+					.twinkle{
+						width: 220rpx;
+						animation-delay: 1s;
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<page-header :title="title"></page-header>
-		<view class="container">
+		<view class="container" :style="{'height': containerHeight}">
 			<scroll-view
 				:scroll-y="true"
 				class="scroll-view"
@@ -81,6 +81,7 @@
 	export default {
 		data() {
 			return {
+				containerHeight: `calc(100vh - ${getApp().globalData.statusBarHeight}px - 48px)`,
 				id: '',
 				title: '',
 				activeTabIndex: 0,
@@ -186,7 +187,7 @@
 		position: fixed;
 		bottom: 0;
 		width: 100%;
-		height: calc(100vh - var(--status-bar-height) - 44px);
+		// height: calc(100vh - var(--status-bar-height) - 44px);
 		background: #F5F6F7;
 		z-index: 1;
 		// overflow-y: auto;

@@ -35,7 +35,7 @@ function errorHandle (status, noToast) {
 function logout(){
 	uni.clearStorageSync();
 	uni.reLaunch({
-		url:'/pages/login'
+		url:'/pages/login/login'
 	})
 }
 

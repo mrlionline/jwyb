@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<page-header :title="title"></page-header>
-		<view class="container">
+		<view class="container" :style="{'height': containerHeight}">
 			<view class="card base-info">
 				<view class="card-title">基本信息</view>
 				<view class="base-info-wrap">
@@ -39,6 +39,7 @@
 	export default {
 		data() {
 			return {
+				containerHeight: `calc(100vh - ${getApp().globalData.statusBarHeight}px - 48px)`,
 				id: '',
 				title: '',
 				baseInfo: {
@@ -118,7 +119,7 @@
 		position: fixed;
 		bottom: 0;
 		width: 100%;
-		height: calc(100vh - var(--status-bar-height) - 44px);
+		// height: calc(100vh - var(--status-bar-height) - 44px);
 		background: #F5F6F7;
 		z-index: 1;
 		overflow-y: auto;

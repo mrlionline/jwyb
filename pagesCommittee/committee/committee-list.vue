@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<page-header title="星委会"></page-header>
-		<view class="container">
+		<view class="container" :style="{'height': containerHeight}">
 			<view
 				class="committee-item-group"
 				@click="goto({id:committeeTree.id,name:'全国总委会'})"
@@ -49,6 +49,7 @@
 	export default {
 		data() {
 			return {
+				containerHeight: `calc(100vh - ${getApp().globalData.statusBarHeight}px - 48px)`,
 				marketCommitteeShow: false,
 				marketCommitteeList: [],
 				committeeTree: {}
@@ -78,7 +79,7 @@
 		bottom: 0;
 		padding: 24px;
 		width: 100%;
-		height: calc(100vh - var(--status-bar-height) - 44px);
+		// height: calc(100vh - var(--status-bar-height) - 48px);
 		background: #F5F6F7;
 		z-index: 1;
 		overflow-y: auto;

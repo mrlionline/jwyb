@@ -1,5 +1,8 @@
 <script>
 	export default {
+		globalData: {
+			statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+		},
 		onLaunch: function() {
 			console.log('App Launch')
 		},
