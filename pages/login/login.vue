@@ -75,7 +75,7 @@
 						</template>
 					  </u-input>
 				</view>
-				<!-- <view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view> -->
+				<view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view>
 				<view
 					class="login-btn"
 					:class="{'login-btn-disabled': loginBtnIsDisabled}"
@@ -135,7 +135,7 @@
 			loginByVerCode(){
 				const params = {
 					accountType: 'MOBILE',
-					formulaResult: '',
+					formulaResult: this.imgVerCode,
 					login: this.mobile,
 					loginType: 'APP',
 					smsCode: this.verCode
@@ -158,6 +158,20 @@
 			},
 			getVerCode(){
 				if(this.gettingVerCode) return
+				if(!this.mobile) {
+					uni.showToast({
+						title: '请输入手机号码',
+						icon: 'none'
+					})
+					return
+				}
+				if(!this.imgVerCode) {
+					uni.showToast({
+						title: '请输入图形验证码',
+						icon: 'none'
+					})
+					return
+				}
 				this.gettingVerCode = true
 				this.countDown = SECOND
 				this.timer = setInterval(() =>{
@@ -170,16 +184,24 @@
 				}, 1000)
 				const params = {
 					phoneNumber: this.mobile,
-					templateId: 1
+					templateId: 1,
+					formulaResult: this.imgVerCode
 					
 				}
-				loginApis.sendSmsCode(params).catch(err =>{
+				loginApis.sendSmsCode(params).then(() => {
+					uni.showToast({
+						title: '验证码已发送',
+						icon: 'none'
+					})
+					this.formula()
+				}).catch(err =>{
 					clearInterval(this.timer)
 					this.gettingVerCode = false
 				})
 			},
 			formula(){
 				loginApis.formula().then(res =>{
+					this.imgVerCode = ''
 					this.imgVerCodeSrc = res.replace(/[\r\n]/g, '')
 				})
 			}
