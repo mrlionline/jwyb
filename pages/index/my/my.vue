@@ -12,10 +12,12 @@
 				</view>
 				<view class="user-name">{{userInfo.name}}</view>
 			</view>
-<!-- 			<view class="user-position">
+			<view class="user-position">
 				<text class="up-title">我的职位</text>
-				<view class="position-item" v-for="item in userInfo.positionList">{{item}}</view>
-			</view> -->
+				<view class="position-item" v-for="item in position">
+					· {{item.starCouncilName}} / {{item.positionName}}
+				</view>
+			</view>
 			<view class="btn-wrap btn-wrap-reset-pwd" @click="goReset">
 				<u-icon size="20px" name="edit-pen"></u-icon>
 				<text class="btn-text">修改密码</text>
@@ -51,21 +53,18 @@
 					avatar: '/static/header.jpg',
 					name: ''
 				},
-				logoutConfirm: false
+				logoutConfirm: false,
+				position: []
 			}
 		},
 		methods: {
 			logout(){
-				uni.clearStorage();
-				uni.reLaunch({
-					url: '/pages/login/login'
+				indexApis.logout().then(() =>{
+					uni.clearStorage();
+					uni.reLaunch({
+						url: '/pages/login/login'
+					})
 				})
-				// indexApis.logout().then(() =>{
-				// 	uni.clearStorage();
-				// 	uni.reLaunch({
-				// 		url: '/pages/login/login'
-				// 	})
-				// })
 			},
 			goReset(){
 				uni.navigateTo({
@@ -75,6 +74,7 @@
 		},
 		created() {
 			this.userInfo = uni.getStorageSync('userInfo')
+			this.position = uni.getStorageSync('position')
 		}
 	}
 </script>
