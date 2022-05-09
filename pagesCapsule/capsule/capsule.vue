@@ -21,7 +21,7 @@
 						</view>
 						<view class="text-wrap" v-show="current === 0">
 							<view class="name">
-								<view style="animation-delay:1s;" class="ld ld-fall-ttb-in">王小红</view>
+								<view style="animation-delay:1s;" class="ld ld-fall-ttb-in">{{userInfo.name}}</view>
 							</view>
 							<view style="animation-delay:1.5s;" class="welcome ld ld-bounce-in">
 								<view>欢迎来到</view>
@@ -33,11 +33,11 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step has-tips step1 por" v-if="current === 0 || current === 1 || current === 2">
+					<view class="capsule-step step1 por" v-if="current === 0 || current === 1 || current === 2">
 						<view class="bg1">
 							<image mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg2.png"></image>
 						</view>
-						<view class="choose-tips">请点击您的所属星系</view>
+						<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
 							<view
 								class="btn por"
@@ -56,13 +56,13 @@
 				<swiper-item>
 					<view class="capsule-step step2 por" v-if="current === 1 || current === 2 || current === 3">
 						<scroll-view :scroll-y="true" style="height: 100vh;">
-							<view class="choose-tips">请点击您的所属片区</view>
+							<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属片区</view>
 							<view class="content">
 								<view
 									v-for="(nebula, index) of nebulaInfo.list"
 									class="section"
 									:class="['nebula' + (index+1), {'step3-active': nebulaInfo.selectedId === nebula.id}]"
-									@click="chooseStep2(nebula.id)"
+									@click="chooseNebula(nebula.id)"
 								>
 									<image mode="widthFix" class="default" :src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
 									<image mode="widthFix" class="active" :src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'-active.png'"></image>
@@ -74,74 +74,58 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step has-tips step3 por" v-if="current === 2 || current === 3 || current === 4">
-						<view class="choose-tips">请点击您的所属星球</view>
-						<view class="content por">
-							<!-- <view class="section section0">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
-							</view> -->
-							<view class="section section1" :class="{'step3-active': step3Selected === 6}" @click="chooseStep3(6)">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
-								<view class="text">xx星球</view>
-							</view>
-							<view class="section section2" :class="{'step3-active': step3Selected === 7}" @click="chooseStep3(7)">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/2.png"></image>
-								<view class="text">xx星球</view>
-							</view>
-							<view class="section section3" :class="{'step3-active': step3Selected === 8}" @click="chooseStep3(8)">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/3.png"></image>
-								<view class="text">xx星球</view>
-							</view>
-							<view class="section section4" :class="{'step3-active': step3Selected === 9}" @click="chooseStep3(9)">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/4.png"></image>
-								<view class="text">xx星球</view>
-							</view>
-							<view class="section section5" :class="{'step3-active': step3Selected === 10}" @click="chooseStep3(10)">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/5.png"></image>
-								<view class="text">xx星球</view>
-							</view>
-							<view class="section section6" :class="{'step3-active': step3Selected === 11}" @click="chooseStep3(11)">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/6.png"></image>
-								<view class="text">xx星球</view>
-							</view>
-						</view>
-					</view>
-				</swiper-item>
-				<swiper-item>
-					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
+					<view class="capsule-step step3 por" v-if="current === 2 || current === 3 || current === 4">
 						<scroll-view :scroll-y="true" style="height: 100vh;">
-							<view class="content-box por">
-								<image style="width: 750rpx; height: 2800rpx;" mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg3.png"></image>
-								<view class="content">
-									<view class="choose-tips">请点击您所获星级可查看同星级家人</view>
-									<image class="icon leader3" src="/pagesCapsule/static/capsule/step4-leader3.png"></image>
-									<image class="icon leader2" src="/pagesCapsule/static/capsule/step4-leader2.png"></image>
-									<image class="icon leader1" src="/pagesCapsule/static/capsule/step4-leader1.png"></image>
-									<image class="icon member5" src="/pagesCapsule/static/capsule/step4-member5.png"></image>
-									<image class="icon member4" src="/pagesCapsule/static/capsule/step4-member4.png"></image>
-									<image class="icon member3" src="/pagesCapsule/static/capsule/step4-member3.png"></image>
-									<image class="icon member2" src="/pagesCapsule/static/capsule/step4-member2.png"></image>
-									<image class="icon member1" src="/pagesCapsule/static/capsule/step4-member1.png"></image>
-									<view style="width: 100%; text-align: center;">
-										<app-button text="查看我的星路历程"></app-button>
-									</view>
+							<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星球</view>
+							<view class="content por">
+								<!-- <view class="section section0">
+									<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
+								</view> -->
+								<view
+									v-for="(star,index) of starInfo.list"
+									class="section"
+									:class="['section' + (index + 1), {'step3-active': star.id === starInfo.selectedId}]"
+									@click="chooseStar(star.id)"
+								>
+									<image mode="widthFix" :src="'/pagesCapsule/static/capsule/' + star.imgIndex + '.png'"></image>
+									<view class="text">{{star.name}}</view>
 								</view>
 							</view>
 						</scroll-view>
 					</view>
 				</swiper-item>
 				<swiper-item>
+					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
+						<view class="content por">
+							<image style="width: 750rpx; height: 100vh;" mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg3.png"></image>
+							<view class="img-box">
+								<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您所获星级可查看同星级家人</view>
+								<image
+									class="icon"
+									:class="'icon' + (index+1)"
+									v-for="(level, index) of starLevelInfo.list"
+									:src="level.img"
+									@click="chooseStarLevel(level.id)"
+								></image>
+							</view>
+							<view class="btn-box">
+								<app-button text="查看我的星路历程"></app-button>
+							</view>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
 					<view class="capsule-step step5" v-if="current === 4 || current === 5 || current === 6">
 						<scroll-view :scroll-y="true" style="height: 100vh; padding-top: 220rpx; color: #fff;">
 							<view style="text-align: center; font-size: 24px;">
-								<view style="margin-bottom: 16rpx;">亲爱的王晓红！</view>
+								<view style="margin-bottom: 16rpx;">亲爱的{{userInfo.name}}！</view>
 								<view>您已和绝味一起走过<text style="color: #FFD940">{{step5Day}}</text>天</view>
 							</view>
 							<view style="padding: 96rpx 48rpx 428rpx;">
 								<time-line theme="dark" :list="step5TimeLineList"></time-line>
 							</view>
 							<view style="position: fixed; bottom: 120rpx; text-align: center; width: 100%;">
-								<app-button text="星语心愿"></app-button>
+								<app-button text="星语心愿" @click="current++"></app-button>
 							</view>
 						</scroll-view>
 					</view>
@@ -217,6 +201,7 @@
 		},
 		data() {
 			return {
+				navBarHeight: `calc(${getApp().globalData.statusBarHeight}px + 48px)`,
 				current: 0,
 				musicOn: true,
 				music: null,
@@ -345,9 +330,14 @@
 			},
 			submitWish(){
 				this.step6SubmitWish = true
-				setTimeout(() =>{
+				const params = {
+					context: this.step6Text
+				}
+				capsuleApi.add().then(res =>{
 					this.step6SubmitFail = true
-				}, 1000)
+				}).catch(() =>{
+					this.step6SubmitFail = false
+				})
 			},
 			musicClick() {
 				if (this.musicOn) {
@@ -400,6 +390,28 @@
 				}
 			},
 			initStep5(){
+				capsuleApi.queryUserInfo(-1).then(res =>{
+					res ={
+						starUserHis: [
+							{
+								"activityName": "123",
+								"ctime": "2022-05-08T14:41:00.035Z",
+								"latestLogo": 0,
+								"starName": "456"
+							}
+						]
+					}
+					this.step5TimeLineList = res.starUserHis.map(item =>{
+						const date = new Date(item.ctime)
+						return {
+							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							year: date.getFullYear(),
+							title: item.starName,
+							desc: item.activityName,
+							image: '/static/home/level-1-personnel.png'
+						}
+					})
+				})
 				const day = 500
 				const time = 1000
 				const delay = time / day
@@ -415,73 +427,65 @@
 			chooseGalaxy(id){
 				this.nebulaInfo = {list: [], selectedId: null}
 				this.starInfo = {list: [], selectedId: null}
+				this.starLevelInfo = {list: [], selectedId: null}
 				this.getNebulaList(id)
+				this.queryStarListByGalaxyId(id)
 				setTimeout(() =>{
 					this.galaxyInfo.selectedId = id
 					this.current++
 				}, 20)
 			},
-			chooseStep2(index){
+			chooseNebula(id){
 				this.starInfo = {list: [], selectedId: null}
+				this.getStarList(id)
 				setTimeout(() =>{
-					this.nebulaInfo.selectedId = index
+					this.nebulaInfo.selectedId = id
 					this.current++
 				}, 20)
 			},
-			chooseStep3(index){
+			chooseStar(id){
 				setTimeout(() =>{
-					this.starInfo.selectedId = index
+					this.starInfo.selectedId = id
+					this.current++
+				}, 20)
+			},
+			chooseStarLevel(id){
+				setTimeout(() =>{
+					this.starLevelInfo.selectedId = id
 					this.current++
 				}, 20)
 			},
 			getUserInfo(){
 				this.userInfo = uni.getStorageSync('userInfo');
+				console.log('!!!!!!!!!!!!!!!!', this.userInfo)
+			},
+			queryStarListByGalaxyId(id){
+				capsuleApi.queryStarListByGalaxyId(id).then(res =>{
+					const imgNum = 10
+					res = [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6},{id:7},{id:8},{id:9},{id:10}]
+					this.starLevelInfo.list = res.map((item,index) =>{
+						return {
+							...item,
+							img: '/pagesCapsule/static/capsule/step4-member'+(index+1)+'.png'
+						}
+					})
+				})
+			},
+			getStarList(id){
+				capsuleApi.queryList(id).then(res =>{
+					const imgNum = 6
+					this.starInfo.list = res.map((item,index) =>{
+						return {
+							...item,
+							imgIndex: index%imgNum + 1
+						}
+					})
+					console.log('this.starInfo.list', this.starInfo.list)
+				})
 			},
 			getNebulaList(id){
-				capsuleApi.queryList(id).catch(res =>{
+				capsuleApi.queryList(id).then(res =>{
 					const imgNum = 4
-					res = [
-						{
-							name: '西南片区',
-							id: 1
-						},
-						{
-							name: '华中片区',
-							id: 2
-						},
-						{
-							name: '华东片区',
-							id: 3
-						},
-						{
-							name: '北方片区',
-							id: 4
-						},
-						{
-							name: '华南片区',
-							id: 5
-						},
-						{
-							name: '西南片区1',
-							id: 6
-						},
-						{
-							name: '华中片区1',
-							id: 7
-						},
-						{
-							name: '华东片区1',
-							id: 8
-						},
-						{
-							name: '北方片区1',
-							id: 9
-						},
-						{
-							name: '华南片区1',
-							id: 10
-						}
-					]
 					this.nebulaInfo.list = res.map((item,index) =>{
 						return {
 							...item,
@@ -492,23 +496,8 @@
 				})
 			},
 			getGalaxyList(){
-				console.log('@@@@@@@@@@@@')
-				capsuleApi.queryList(0).catch(res =>{
-					// this.galaxyInfo.list = res
-					this.galaxyInfo.list = [
-						{
-							name: '营销星系1',
-							id: 1
-						},
-						{
-							name: '供应链星系2',
-							id: 2
-						},
-						{
-							name: '供应链星系3',
-							id: 3
-						}
-					]
+				capsuleApi.queryList(0).then(res =>{
+					this.galaxyInfo.list = res
 				})
 			}
 		},
@@ -557,9 +546,6 @@
 			min-height: 100vh;
 			background-color: transparent;
 			// padding-top: calc(var(--status-bar-height) + 48px);
-			&.has-tips{
-				padding-top: 240rpx;
-			}
 			.choose-tips {
 				position: relative;
 				text-align: center;
@@ -782,9 +768,6 @@
 		}
 		.step2{
 			height: 100vh;
-			.choose-tips{
-				padding-top: calc(var(--status-bar-height) + 48px);
-			}
 			.content{
 				display: flex;
 				flex-direction: column;
@@ -953,7 +936,6 @@
 		.step3{
 			height: 100vh;
 			.content{
-				height: calc(100% - 22px);
 				.section{
 					position: absolute;
 					font-size: 0;
@@ -1042,44 +1024,59 @@
 				width: 348rpx;
 				height: 348rpx;
 			}
-			.content-box{
+			.content{
+				height: 100vh;
 				font-size: 0;
 			}
-			.content{
+			.img-box{
 				position: absolute;
-				top: 240rpx;
-				width: 100%;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				overflow-y: scroll;
+				padding-bottom: 228rpx;
 			}
-			.leader3{
+			.btn-box{
+				position: fixed;
+				bottom: 120rpx;
+				width: 100%;
+				text-align: center;
+			}
+			.icon1{
 				margin-left: 120rpx;
 				margin-top: 154rpx;
 			}
-			.leader2{
+			.icon2{
 				margin-top: -42rpx;
 				margin-left: 24rpx;
 			}
-			.leader1{
+			.icon3{
 				margin-top: -210rpx;
 				margin-left: 352rpx;
 			}
-			.member5{
+			.icon4{
 				margin-top: -64rpx;
 				margin-left: 54rpx;
 			}
-			.member4{
+			.icon5{
 				margin-top: -108rpx;
 				margin-left: 352rpx;
 			}
-			.member3{
+			.icon6{
 				margin-left: 274rpx;
 			}
-			.member2{
+			.icon7{
 				margin-top: -98rpx;
 				margin-left: 54rpx;
 			}
-			.member1{
+			.icon8{
 				margin-top: -78rpx;
 				margin-left: 246rpx;
+			}
+			.icon10{
+				margin-left: 300rpx;
+				margin-top: -150rpx;
 			}
 		}
 		.step6{

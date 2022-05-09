@@ -10,7 +10,7 @@ const loginApis = {
 		return http('/jurisdiction-api/auth/login', 'POST', {noToken: true,data})
 	},
 	formula(){	// 获取图形验证码
-		return http('/jurisdiction-api/auth/formula', 'GET', {noToken: true,})
+		return http('/jurisdiction-api/auth/formula?d=' + Math.random(), 'GET', {noToken: true})
 	},
 	resetPwd(data) {
 		return http('/jurisdiction-api/auth/changePwd', 'POST', {data})

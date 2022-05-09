@@ -3,20 +3,15 @@ const capsuleApi = {
 	queryList(id){
 		return http('/starsCapsule-api/galaxy/queryList/' + id, 'GET')
 	},
-	
-	getMemberById(id) {
-		return http('/starsCapsule-api/starCouncil/queryStarCouncil/' + id, 'GET')
+	queryStarListByGalaxyId(id){
+		return http('/starsCapsule-api/star/queryStarListByGalaxyId/' + id, 'GET')
 	},
-	
-	getGroupList(id, page) {
-		return http('/starsCapsule-api/starCouncil/querySubGroupList', 'POST', { data: { starCouncilId: id, ...page }, fullRes: true })
+	queryUserInfo(userId){
+		return http('/starsCapsule-api/starCouncil/queryUserInfo/' + userId, 'GET')
 	},
-	
-	getUserInfoById(id) {
-		return http('/jurisdiction-api/user/queryUserAndDeptById', 'GET', { data: { userId: id }})
-		
+	add(data){
+		return http('/starsCapsule-api/bulletChat/add', 'POST', {data})
 	}
-	
 }
 
 export default capsuleApi

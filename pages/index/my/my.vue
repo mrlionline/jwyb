@@ -19,13 +19,15 @@
 				</view>
 			</view>
 			<view class="btn-wrap btn-wrap-reset-pwd" @click="goReset">
-				<u-icon size="20px" name="edit-pen"></u-icon>
+				<!-- <u-icon size="20px" name="edit-pen"></u-icon> -->
+				<image class="icon" src="/static/icon-edit.png"></image>
 				<text class="btn-text">修改密码</text>
 				<view class="arrow-right">
 					<u-icon name="arrow-right"></u-icon>
 				</view>
 			</view><view class="btn-wrap" @click="logoutConfirm = true">
-				<u-icon size="20px" name="arrow-right-double"></u-icon>
+				<!-- <u-icon size="20px" name="arrow-right-double"></u-icon> -->
+				<image class="icon" src="/static/icon-logout.png"></image>
 				<text class="btn-text">退出登录</text>
 				<view class="arrow-right">
 					<u-icon name="arrow-right"></u-icon>
@@ -176,6 +178,10 @@
 		margin: 0 auto;
 		border: 1px solid #D7D9DB;
 		border-radius: 8px;
+		.icon{
+			width: 40rpx;
+			height: 40rpx;
+		}
 		.arrow-right{
 			position: absolute;
 			top: 50%;
