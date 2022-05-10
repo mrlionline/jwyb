@@ -41,7 +41,6 @@
 <script>
 	import My from './my/my.vue'
 	import Home from './home/home.vue'
-	import indexApis from '@/http/apis-index.js'
 	export default {
 		components: {
 			My, Home
@@ -59,10 +58,6 @@
 					url: '/pages/login/login'
 				})
 			}
-			// TODO: 缺少用户Id
-			indexApis.getUserInfoById(13).then(res => {
-				uni.setStorageSync('position', res.userPositions)
-			})
 		},
 		methods: {
 			tabBarChange(e){

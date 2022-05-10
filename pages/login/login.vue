@@ -79,7 +79,7 @@
 				<view
 					class="login-btn"
 					:class="{'login-btn-disabled': loginBtnIsDisabled}"
-					:disabled="loginBtnIsDisabled" 
+					:disabled="loginBtnIsDisabled"
 					@click="login"
 				>登录</view>
 			</view>
@@ -89,6 +89,7 @@
 
 <script>
 	import loginApis from '../../http/apis-login.js'
+  import indexApis from '@/http/apis-index.js'
 	const SECOND = 60
 	export default {
 		data() {
@@ -155,6 +156,9 @@
 						})
 					}
 				});
+        indexApis.getUserInfoById(-1).then(res => {
+          uni.setStorageSync('position', res.userPositions)
+        })
 			},
 			getVerCode(){
 				if(this.gettingVerCode) return
@@ -186,7 +190,7 @@
 					phoneNumber: this.mobile,
 					templateId: 1,
 					formulaResult: this.imgVerCode
-					
+
 				}
 				loginApis.sendSmsCode(params).then(() => {
 					uni.showToast({
