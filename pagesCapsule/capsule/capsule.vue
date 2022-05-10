@@ -4,7 +4,7 @@
 			:titleStyle="{color: '#fff'}" @leftClick="back()"></u-navbar>
 		<view class="capsule-wrap">
 			<view class="bg">
-				<image src="/pagesCapsule/static/capsule/capsule-bg1.png"></image>
+				<image :src="baseUrl + 'capsule-bg1.png'"></image>
 			</view>
 			<swiper
 				style="height: 100%;"
@@ -17,7 +17,7 @@
 				<swiper-item>
 					<view class="capsule-step step0 flex por" v-if="current === 0 || current === 1">
 						<view class="bg1">
-							<image mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg2.png"></image>
+							<image mode="aspectFill" :src="baseUrl + 'capsule-bg2.png'"></image>
 						</view>
 						<view class="text-wrap" v-show="current === 0">
 							<view class="name">
@@ -35,7 +35,7 @@
 				<swiper-item>
 					<view class="capsule-step step1 por" v-if="current === 0 || current === 1 || current === 2">
 						<view class="bg1">
-							<image mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg2.png"></image>
+							<image mode="aspectFill" :src="baseUrl + 'capsule-bg2.png'"></image>
 						</view>
 						<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
@@ -97,7 +97,7 @@
 				<swiper-item>
 					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
 						<view class="content por">
-							<image style="width: 750rpx; height: 100vh;" mode="aspectFill" src="/pagesCapsule/static/capsule/capsule-bg3.png"></image>
+							<image style="width: 750rpx; height: 100vh;" mode="aspectFill" :src="baseUrl + 'capsule-bg3.png'"></image>
 							<view class="img-box">
 								<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您所获星级可查看同星级家人</view>
 								<image
@@ -192,8 +192,9 @@
 <script>
 	import capsuleApi from '../../http/apis-capsule.js'
 	import next from './capsuleNext.vue'
+  import baseUrl from '../../config/baseUrl.js'
 	const nebulaImgList = [
-		
+
 	]
 	export default {
 		components: {
@@ -206,6 +207,7 @@
 				musicOn: true,
 				music: null,
 				userInfo: null,
+        baseUrl: baseUrl + '/jw/assets/images/',
 				galaxyInfo: {
 					list: [],
 					selectedId: 0
@@ -361,7 +363,7 @@
 				uni.navigateBack()
 			},
 			currentChange(e) {
-				
+
 			},
 			animationfinish(e){
 				console.log(this.current)
@@ -381,7 +383,7 @@
 						this.current = 3
 					},0)
 				}
-				
+
 				if(this.current === 5){
 					this.initStep5()
 				}else {
@@ -422,7 +424,7 @@
 						clearInterval(this.step5Timer)
 					}
 				},delay)
-				
+
 			},
 			chooseGalaxy(id){
 				this.nebulaInfo = {list: [], selectedId: null}
@@ -1094,7 +1096,7 @@
 					opacity: 0;
 					transform: scale(0.2, 0.2) matrix(0.866, 0.5, 0, 0.866, 0, 0);
 				}
-				
+
 			}
 			.textarea-wrap{
 				width: 100%;
