@@ -11,7 +11,10 @@ const capsuleApi = {
 	},
 	add(data){
 		return http('/starsCapsule-api/bulletChat/add', 'POST', {data})
-	}
+	},
+	queryUserListByDeptIdAndStarLevel(data){
+		return http('/jurisdiction-api/user/queryUserListByDeptIdAndStarLevel', 'POST', {data})
+	},
 }
 
 export default capsuleApi

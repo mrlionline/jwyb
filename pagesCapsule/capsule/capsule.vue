@@ -107,26 +107,46 @@
 							<view class="content por">
 								<image style="width: 750rpx; height: 100vh;" mode="aspectFill" :src="baseUrl + 'capsule-bg3.png'"></image>
 								<scroll-view :scroll-y="true"  class="img-box" style="height: 100vh;">
-									<view style="padding-bottom: 228rpx;">
+									<view style="padding-bottom: 28rpx;">
 										<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您所获星级可查看同星级家人</view>
 										<image
 											class="icon"
 											:class="'icon' + (index+1)"
 											v-for="(level, index) of starLevelInfo.list"
-											:src="level.img"
+											:style="{'margin-left': level.positionLeft + 'rpx'}"
+											:src="level.icon"
 											@click="chooseStarLevel(level.id)"
 										></image>
 									</view>
 								</scroll-view>
-								<view class="btn-box">
-									<app-button text="查看我的星路历程"></app-button>
-								</view>
 							</view>
 						
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step5" v-if="current === 4 || current === 5 || current === 6">
+					<view class="capsule-step step7" v-if="current === 4 || current === 5 || current === 6">
+						<scroll-view :scroll-y="true" style="height: 100%;" @scrolltolower="getSameLevelFamily()">
+							<view style="padding-bottom: 228rpx;">
+								<view class="level">
+									<image class="level-icon" :src="activeStarLevel.icon"></image>
+									<text>{{activeStarLevel.name}}</text>
+								</view>
+								<view class="same-level-box">
+									<view class="same-level-item por" v-for="(item,index) in sameLevelFamilyList">
+										<text>{{item.name}}</text>
+										<text>{{item.shop}}</text>
+									</view>
+								</view>
+							</view>
+							<u-loadmore :line="true" :status="sameLevelFamilyStatus" />
+						</scroll-view>
+						<view class="btn-box">
+							<app-button text="查看我的星路历程" @click="current++"></app-button>
+						</view>
+					</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="capsule-step step5" v-if="current === 5 || current === 6 || current === 7">
 						<scroll-view :scroll-y="true" style="height: 100vh; padding-top: 220rpx; color: #fff;">
 							<view style="text-align: center; font-size: 24px;">
 								<view style="margin-bottom: 16rpx;">亲爱的{{userInfo.name}}！</view>
@@ -142,7 +162,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step6 por" v-if="current === 5 || current === 6 || current === 7">
+					<view class="capsule-step step6 por" v-if="current === 6 || current === 7">
 						<view class="textarea-wrap" :class="{'hide': step6SubmitWish}">
 							<view class="title">星语心愿</view>
 							<view class="textarea-bg">
@@ -170,30 +190,12 @@
 							</template>
 							<template v-if="step6SubmitWish">
 								<app-button width="304rpx" text="重新许愿" type="default" @click="resetWish"></app-button>
-								<app-button width="304rpx" text="再次回顾"></app-button>
+								<app-button width="304rpx" text="再次回顾" @click="reShow()"></app-button>
 							</template>
 						</view>
 					</view>
 				</swiper-item>
-				<swiper-item>
-					<view class="capsule-step step7" v-if="current === 6 || current === 7">
-						<scroll-view :scroll-y="true" style="height: 100%;">
-							<view class="level">
-								<image class="level-icon" src="/static/home/level-1-personnel.png"></image>
-								<text>三星店员</text>
-								<view class="star-box">
-									<image v-for="star in 3" src="/static/start3.png"></image>
-								</view>
-							</view>
-							<view class="same-level-box">
-								<view class="same-level-item por" v-for="(item,index) in step7List">
-									<text>{{item.name}}</text>
-									<text>{{item.shop}}</text>
-								</view>
-							</view>
-						</scroll-view>
-					</view>
-				</swiper-item>
+				
 			</swiper>
 			<view class="music" :class="{'music-on': musicOn}" @click="musicClick()">
 				<image src="/pagesCapsule/static/capsule/music.png"></image>
@@ -244,93 +246,54 @@
 				step6SubmitWish: false,
 				step6SubmitSuccess: false,
 				step6SubmitFail: false,
-				step7List: [
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					},
-					{
-						name: '王子红',
-						shop: '长沙市一店'
-					}
-				]
+				sameLevelFamilyList: [],
+				sameLevelFamilyPageNum: 0,
+				sameLevelFamilyStatus: 'loading'
 			}
 		},
 		methods: {
+			reShow(){
+				this.galaxyInfo.selectedId = 0
+				this.nebulaInfo = {
+					list: [],
+					selectedId: null
+				}
+				this.starInfo = {
+					list: [],
+					selectedId: null
+				}
+				this.starLevelInfo = {
+					list: [],
+					selectedId: null
+				}
+				this.current = 0
+			},
 			resetWish(){
 				this.step6SubmitWish = false
 				this.step6SubmitSuccess = false
 				this.step6SubmitFail = false
+				this.step6Text = ''
 			},
 			submitWish(){
+				if(this.step6Text.trim() === ''){
+					uni.showToast({
+						title:'请填写分享内容',
+						icon:'none'
+					})
+					return
+				}
 				this.step6SubmitWish = true
 				const params = {
 					context: this.step6Text
 				}
-				capsuleApi.add().then(res =>{
-					this.step6SubmitFail = true
+				capsuleApi.add(params).then(res =>{
+					setTimeout(() =>{
+						this.step6SubmitSuccess = true
+					}, 1000)
 				}).catch(() =>{
-					this.step6SubmitFail = false
+					setTimeout(() =>{
+						this.step6SubmitFail = false
+					}, 1000)
 				})
 			},
 			musicClick() {
@@ -346,7 +309,7 @@
 				this.music = uni.createInnerAudioContext();
 				this.music.autoplay = true;
 				this.music.src =
-					'https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3';
+					'https://jwr.juewei.cn/jw/assets/music/64381227793220144.mp3';
 				this.music.onPlay(() => {
 					console.log('开始播放');
 				});
@@ -358,7 +321,6 @@
 
 			},
 			animationfinish(e) {
-				console.log(this.current)
 				this.current = e.detail.current
 				if (this.current >= 2 && this.galaxyInfo.selectedId === 0) {
 					setTimeout(() => {
@@ -370,13 +332,13 @@
 						this.current = 2
 					}, 0)
 				}
-				if (this.current >= 4 && !this.starInfo.selectedId) {
-					setTimeout(() => {
-						this.current = 3
-					}, 0)
-				}
+				// if (this.current >= 4 && !this.starInfo.selectedId) {
+				// 	setTimeout(() => {
+				// 		this.current = 3
+				// 	}, 0)
+				// }
 
-				if (this.current === 5) {
+				if (this.current === 6) {
 					this.initStep5()
 				} else {
 					this.step5Day = 0
@@ -385,14 +347,14 @@
 			},
 			initStep5() {
 				capsuleApi.queryUserInfo(-1).then(res => {
-					res = {
-						starUserHis: [{
-							"activityName": "123",
-							"ctime": "2022-05-08T14:41:00.035Z",
-							"latestLogo": 0,
-							"starName": "456"
-						}]
-					}
+					// res = {
+					// 	starUserHis: [{
+					// 		"activityName": "123",
+					// 		"ctime": "2022-05-08T14:41:00.035Z",
+					// 		"latestLogo": 0,
+					// 		"starName": "456"
+					// 	}]
+					// }
 					this.step5TimeLineList = res.starUserHis.map(item => {
 						const date = new Date(item.ctime)
 						return {
@@ -454,43 +416,43 @@
 				}, 20)
 			},
 			chooseStarLevel(id) {
+				this.getSameLevelFamily(id)
 				setTimeout(() => {
 					this.starLevelInfo.selectedId = id
 					this.current++
 				}, 20)
 			},
+			getSameLevelFamily(id){
+				if(this.sameLevelFamilyStatus === 'nomore'){
+					return
+				}
+				this.sameLevelFamilyPageNum++
+				const params = {
+				  "pageNum": this.sameLevelFamilyPageNum,
+				  "pageSize": 10,
+				  "starId": id || this.starLevelInfo.selectedId
+				}
+				capsuleApi.queryUserListByDeptIdAndStarLevel(params).then(res =>{
+					this.sameLevelFamilyList = this.sameLevelFamilyList.concat(res)
+					if(res.pageTotal === res.pageNum){
+						this.moreDataStatus = 'nomore'
+					}
+				}).catch(err =>{
+				})
+			},
 			getUserInfo() {
 				this.userInfo = uni.getStorageSync('userInfo');
-				console.log('!!!!!!!!!!!!!!!!', this.userInfo)
 			},
 			queryStarListByGalaxyId(id) {
+				function random(min, max) {
+				  return Math.floor(Math.random() * (max - min)) + min;
+				}
 				capsuleApi.queryStarListByGalaxyId(id).then(res => {
-					const imgNum = 10
-					res = [{
-						id: 1
-					}, {
-						id: 2
-					}, {
-						id: 3
-					}, {
-						id: 4
-					}, {
-						id: 5
-					}, {
-						id: 6
-					}, {
-						id: 7
-					}, {
-						id: 8
-					}, {
-						id: 9
-					}, {
-						id: 10
-					}]
+					// const imgNum = 10
 					this.starLevelInfo.list = res.map((item, index) => {
 						return {
 							...item,
-							img: '/pagesCapsule/static/capsule/step4-member' + (index + 1) + '.png'
+							positionLeft:  random(0, 402)
 						}
 					})
 				})
@@ -505,7 +467,6 @@
 							imgIndex: index % imgNum + 1
 						}
 					})
-					console.log('this.starInfo.list', this.starInfo.list)
 				})
 			},
 			getNebulaList(id) {
@@ -518,7 +479,6 @@
 							imgIndex: index % imgNum + 1
 						}
 					})
-					console.log('this.nebulaInfo.list', this.nebulaInfo.list)
 				})
 			},
 			getGalaxyList() {
@@ -532,6 +492,14 @@
 						}
 					})
 				})
+			}
+		},
+		computed: {
+			activeStarLevel: function(){
+				return this.starLevelInfo.list.find(item => item.id === this.starLevelInfo.selectedId) || {
+					name: '',
+					icon: ''
+				}
 			}
 		},
 		created() {
@@ -1118,12 +1086,6 @@
 				bottom: 0;
 			}
 
-			.btn-box {
-				position: fixed;
-				bottom: 120rpx;
-				width: 100%;
-				text-align: center;
-			}
 
 			.icon1 {
 				margin-left: 120rpx;
@@ -1362,6 +1324,13 @@
 						background: #567DF4;
 					}
 				}
+			}
+			.btn-box {
+				position: fixed;
+				left: 0;
+				bottom: 120rpx;
+				width: 100%;
+				text-align: center;
 			}
 		}
 	}

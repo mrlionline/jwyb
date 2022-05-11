@@ -143,6 +143,8 @@
 				}
 				loginApis.loginForPhone(params).then(res =>{
 					this.loginSuccess(res)
+				}).catch(() =>{
+					this.formula()
 				})
 			},
 			loginSuccess(res){
@@ -201,6 +203,7 @@
 				}).catch(err =>{
 					clearInterval(this.timer)
 					this.gettingVerCode = false
+					this.formula()
 				})
 			},
 			formula(){
