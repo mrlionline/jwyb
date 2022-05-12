@@ -7,12 +7,12 @@
 				<view class="base-info-wrap">
 					<view class="bi-head">
 						<image v-if="baseInfo.avatar" :src="baseInfo.avatar"></image>
-						<image v-if="!baseInfo.avatar"  src="/static/header.jpg"></image>
+						<image v-if="!baseInfo.avatar"  src="/static/defaultAvatar.png"></image>
 					</view>
 					<view class="bi-content">
 						<view class="bi-name">
 							{{baseInfo.name}}
-							<text class="bi-level">四星店员</text>
+						
 						</view>
 						<text class="bi-base-text">电话：{{baseInfo.mobile}}</text>
 						<text class="bi-base-text">工作状态：<text>{{baseInfo.workStatus || '正常'}}</text></text>
@@ -22,20 +22,21 @@
 					</view>
 				</view>
 			</view>
-<!-- 			<view class="card">
+			<view class="card">
 				<view class="card-title">星委会职位</view>
-				<view class="position-way" v-for="position in positionWay">·{{position}}</view>
+				<view class="position-way" v-for="position in positionWay">· {{position.positionName}} / {{position.starCouncilName}}</view>
 			</view>
 			<view class="card">
 				<view class="card-title">星路历程</view>
 				<time-line :list="timeLineList"></time-line>
-			</view> -->
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	import committeeApi from '../../http/apis-committee.js'
+	import Caosule from '../../http/apis-capsule.js'
 	export default {
 		data() {
 			return {
@@ -52,12 +53,7 @@
 					groupName: '',
 					deptArr: []
 				},
-				positionWay: [
-					'总委会/互帮互助执委',
-					'天津星委会/主委',
-					'天津星委会/互帮互助执委',
-					'天津星委会/第一星小组组员'
-				],
+				positionWay: [],
 				timeLineList: [
 					{
 						date: '2/25',
@@ -84,12 +80,13 @@
 		},
 		methods: {
 			getUserInfo() {
-				committeeApi.getUserInfoById(this.id).then(res => {
+				Caosule.queryUserInfo(this.id).then(res => {
 					console.log(res)
-					this.baseInfo = res
-					this.baseInfo.deptArr = this.getDeptArr(res.deprecatedList)
+					this.baseInfo = res.baseInfo
+					this.positionWay = res.userPositions || []
 				})
 			},
+		
 			getDeptArr(deptTree) {
 				const res = []
 				let node = deptTree[0]

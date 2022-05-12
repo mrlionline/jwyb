@@ -14,9 +14,13 @@ const committeeApi = {
 	
 	getUserInfoById(id) {
 		return http('/jurisdiction-api/user/queryUserAndDeptById', 'GET', { data: { userId: id }})
-		
-	}
+	},
 	
+	getUsersByStarId(id) {
+		return http('/starsCapsule-api/star/getUserListByStartId/' + id, 'GET')
+	},
+	
+
 }
 
 export default committeeApi

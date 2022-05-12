@@ -5,6 +5,10 @@ const indexApis = {
 	},
 	getUserInfoById(id) {
 		return http('/starsCapsule-api/starCouncil/queryUserInfo/' + id, 'get')
+	},
+	getMyStar(id) {
+		return http('/starsCapsule-api/star/getUserStarByUserId', 'GET', { data: { userId: id }})
 	}
+	
 }
 export default indexApis
