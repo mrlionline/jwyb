@@ -78,6 +78,7 @@
 		font-size: 20px;
 		line-height: 20px;
 		color: #FFFFFF;
+		font-weight: bold;
 	}
 	.home-container{
 		position: fixed;

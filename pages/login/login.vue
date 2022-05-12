@@ -34,6 +34,20 @@
 							</template>
 						  </u-input>
 					</view>
+					<view class="input-wrap">
+						<image class="inp-icon" src="/static/icon-pwd.png"></image>
+						<view class="divider"></view>
+						<u-input
+							class="input-node"
+							placeholder="输入验证码"
+							border="none"
+							v-model="imgVerCode"
+						  >
+							<template slot="suffix">
+								<image @click="formula" style="width: 160rpx;height: 80rpx;" :src="imgVerCodeSrc"></image>
+							</template>
+						  </u-input>
+					</view>
 				</template>
 				<template v-if="loginType === 'verCode'">
 					<view class="input-wrap">
@@ -53,6 +67,20 @@
 							class="input-node"
 							placeholder="输入验证码"
 							border="none"
+							v-model="imgVerCode"
+						  >
+							<template slot="suffix">
+								<image @click="formula" style="width: 160rpx;height: 80rpx;" :src="imgVerCodeSrc"></image>
+							</template>
+						  </u-input>
+					</view>
+					<view class="input-wrap">
+						<image class="inp-icon" src="/static/icon-pwd.png"></image>
+						<view class="divider"></view>
+						<u-input
+							class="input-node"
+							placeholder="输入验证码"
+							border="none"
 							v-model="verCode"
 						  >
 							<template slot="suffix">
@@ -61,20 +89,6 @@
 						  </u-input>
 					</view>
 				</template>
-				<view class="input-wrap">
-					<image class="inp-icon" src="/static/icon-pwd.png"></image>
-					<view class="divider"></view>
-					<u-input
-						class="input-node"
-						placeholder="输入验证码"
-						border="none"
-						v-model="imgVerCode"
-					  >
-						<template slot="suffix">
-							<image @click="formula" style="width: 160rpx;height: 80rpx;" :src="imgVerCodeSrc"></image>
-						</template>
-					  </u-input>
-				</view>
 				<view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view>
 				<view
 					class="login-btn"

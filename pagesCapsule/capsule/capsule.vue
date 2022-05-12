@@ -4,8 +4,14 @@
 			:titleStyle="{color: '#fff'}" @leftClick="back()"></u-navbar>
 		<view class="capsule-wrap">
 			<view class="bg">
-				<image :src="baseUrl + 'capsule-bg1.png'"></image>
-				<!-- <image src="/pagesCapsule/static/capsule/bg.gif"></image> -->
+				<!-- <image :src="baseUrl + 'capsule-bg1.png'"></image> -->
+				<image src="/pagesCapsule/static/capsule/bg.gif"></image>
+			</view>
+			<view class="gif-wrap" :class="{'hide': !showStep1Gif}">
+				<image class="up-down index1" mode="widthFix" src="/pagesCapsule/static/capsule/index1.png"></image>
+				<image class="up-down index2" mode="widthFix" src="/pagesCapsule/static/capsule/index2.png"></image>
+				<image class="down-up index3" mode="widthFix" src="/pagesCapsule/static/capsule/index3.png"></image>
+				<image class="down-up index4" mode="widthFix" src="/pagesCapsule/static/capsule/index4.png"></image>
 			</view>
 			<swiper
 				style="height: 100%;"
@@ -17,15 +23,15 @@
 				@change="currentChange($event)">
 				<swiper-item>
 					<view class="capsule-step step0 flex por" v-if="current === 0 || current === 1">
-						<view class="bg1">
+						<!-- <view class="bg1">
 							<image mode="aspectFill" src="/pagesCapsule/static/capsule/bg.gif"></image>
-						</view>
+						</view> -->
 						<view class="text-wrap" v-show="current === 0">
 							<view class="name">
-								<view style="animation-delay:1s;" class="ld ld-fall-ttb-in">{{userInfo.name}}</view>
+								<view>{{userInfo.name}}</view>
 							</view>
-							<view style="animation-delay:1.5s;" class="welcome">
-								<image style="width: 750rpx; height: 246rpx;"
+							<view class="welcome">
+								<image style="width: 700rpx; height: 229rpx;"
 									src="/pagesCapsule/static/capsule/welcome1.gif"></image>
 							</view>
 							<view class="letsgo">请随我一起回顾您的星路之旅吧</view>
@@ -35,9 +41,15 @@
 				</swiper-item>
 				<swiper-item>
 					<view class="capsule-step step1 por" v-if="current === 0 || current === 1 || current === 2">
-						<view class="bg1">
+						<!-- <view class="bg1">
 							<image mode="aspectFill" src="/pagesCapsule/static/capsule/bg.gif"></image>
-						</view>
+						</view> -->
+						<!-- <view class="gif-wrap" :class="{'show': showStep2Gif}">
+							<image class="up-down index1" mode="widthFix" src="/pagesCapsule/static/capsule/index1.png"></image>
+							<image class="up-down index2" mode="widthFix" src="/pagesCapsule/static/capsule/index2.png"></image>
+							<image class="down-up index3" mode="widthFix" src="/pagesCapsule/static/capsule/index3.png"></image>
+							<image class="down-up index4" mode="widthFix" src="/pagesCapsule/static/capsule/index4.png"></image>
+						</view> -->
 						<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
 							<view class="btn por"
@@ -105,18 +117,20 @@
 				<swiper-item>
 					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
 							<view class="content por">
-								<image style="width: 750rpx; height: 100vh;" mode="aspectFill" :src="baseUrl + 'capsule-bg3.png'"></image>
+								<!-- <image style="width: 750rpx; height: 100vh;" mode="aspectFill" :src="baseUrl + 'capsule-bg3.png'"></image> -->
 								<scroll-view :scroll-y="true"  class="img-box" style="height: 100vh;">
 									<view style="padding-bottom: 28rpx;">
 										<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您所获星级可查看同星级家人</view>
-										<image
-											class="icon"
-											:class="'icon' + (index+1)"
+										<view
+											class="icon por"
 											v-for="(level, index) of starLevelInfo.list"
 											:style="{'margin-left': level.positionLeft + 'rpx'}"
-								
 											@click="chooseStarLevel(level.id)"
-										></image>
+										>
+											<image class="bg" :src="level.grade > 3 ? '/pagesCapsule/static/capsule/star-level-leader.png' : '/pagesCapsule/static/capsule/star-level-member.png'"></image>
+											<image class="head" :src="level.icon"></image>
+											<view style="text-align: center;">{{level.name}}</view>
+										</view>
 										<view>{{level.name}}</view>
 									</view>
 								</scroll-view>
@@ -445,12 +459,24 @@
 				}
 				capsuleApi.queryStarListByGalaxyId(id).then(res => {
 					// const imgNum = 10
+					// res = [
+					// 	{ name: '五星店长', grade: 10 , icon: '/pagesCapsule/static/capsule/ab.png' },
+					// 	{ name: '四星店长', grade: 9 , icon: '/pagesCapsule/static/capsule/ab.png' },
+					// 	{ name: '三星店长', grade: 8 , icon: '/pagesCapsule/static/capsule/ab.png' },
+					// 	{ name: '二星店长', grade: 7 , icon: '/pagesCapsule/static/capsule/ab.png' },
+					// 	{ name: '一星店长', grade: 6 , icon: '/pagesCapsule/static/capsule/ab.png' },
+					// 	{ name: '五星店员', grade: 5 , icon: '/pagesCapsule/static/capsule/aa.png' },
+					// 	{ name: '四星店员', grade: 4 , icon: '/pagesCapsule/static/capsule/aa.png' },
+					// 	{ name: '三星店员', grade: 3 , icon: '/pagesCapsule/static/capsule/aa.png' },
+					// 	{ name: '二星店员', grade: 2 , icon: '/pagesCapsule/static/capsule/aa.png' },
+					// 	{ name: '一星店员', grade: 1 , icon: '/pagesCapsule/static/capsule/aa.png' }
+					// ]
 					this.starLevelInfo.list = res.map((item, index) => {
 						return {
 							...item,
 							positionLeft:  random(0, 402)
 						}
-					})
+					}).sort((a, b) => a.grade = b.grade)
 				})
 			},
 			getStarList(id) {
@@ -496,6 +522,9 @@
 					name: '',
 					icon: ''
 				}
+			},
+			showStep1Gif: function() {
+				return this.current <= 1
 			}
 		},
 		created() {
@@ -639,7 +668,92 @@
 			animation: colorful 3s linear infinite;
 			animation-delay: calc(0.1s * var(--i));
 		}
-
+		.gif-wrap{
+			position: fixed;
+			bottom: 587rpx;
+			left: 0;
+			right: 0;
+			transition: .3s;
+			&.hide{
+				opacity: 0;
+			}
+			@keyframes upDown {
+				0%{
+					transform: translateY(0);
+				}
+				15%{
+					transform: translateY(-15rpx);
+				}
+				33%{
+					transform: translateY(0);
+				}
+				44%{
+					transform: translateY(0);
+				}
+				63%{
+					transform: translateY(15rpx);
+				}
+				79%{
+					transform: translateY(0);
+				}
+				100%{
+					transform: translateY(0);
+				}
+			}
+			@keyframes downUp {
+				0%{
+					transform: translateY(0);
+				}
+				15%{
+					transform: translateY(15rpx);
+				}
+				33%{
+					transform: translateY(0);
+				}
+				44%{
+					transform: translateY(0);
+				}
+				63%{
+					transform: translateY(-15rpx);
+				}
+				79%{
+					transform: translateY(0);
+				}
+				100%{
+					transform: translateY(0);
+				}
+			}
+			.up-down{
+				animation: upDown 2.1s  linear infinite;
+			}
+			.down-up{
+				animation: downUp 2.1s  linear infinite;
+			}
+			.index1{
+				position: absolute;
+				bottom: 150rpx;
+				left: -200rpx;
+				width: 1030rpx;
+			}
+			.index2{
+				position: absolute;
+				right: -300rpx;
+				bottom: 80rpx;
+				width: 600rpx;
+			}
+			.index3{
+				position: absolute;
+				bottom: 0;
+				left: -100rpx;
+				width: 300rpx;
+			}
+			.index4{
+				position: absolute;
+				bottom: 340rpx;
+				right: 0;
+				width: 150rpx;
+			}
+		}
 		.step0 {
 			height: 100vh;
 
@@ -648,6 +762,14 @@
 				bottom: 240rpx;
 				width: 100%;
 
+				@keyframes opacityShow {
+					0%{
+						opacity: 0;
+					}
+					100%{
+						opacity: 1;
+					}
+				}
 				.name {
 					position: relative;
 					width: 408rpx;
@@ -655,10 +777,11 @@
 					line-height: 72rpx;
 					text-align: center;
 					background: linear-gradient(to right, transparent, #8E8CDF, transparent);
-					margin: 0 auto 30rpx;
+					margin: 0 auto;
 					font-size: 48rpx;
 					color: #FFFFFF;
-
+					opacity: 0;
+					animation: opacityShow .6s .3s linear forwards;
 					&::before {
 						content: '';
 						position: absolute;
@@ -683,10 +806,9 @@
 
 				.welcome {
 					text-align: center;
-					font-size: 80rpx;
-					color: #FFFFFF;
+					font-size: 0;
 					text-align: center;
-					line-height: 88rpx;
+					margin: 35rpx 0;
 				}
 
 				.letsgo {
@@ -696,9 +818,11 @@
 					text-align: center;
 					background-color: rgba(132, 163, 255, 0.2);
 					border-radius: 14px;
-					margin: 50rpx auto 0;
+					margin: 0 auto;
 					font-size: 30rpx;
 					color: #88A5FF;
+					opacity: 0;
+					animation: opacityShow .3s 2.3s linear forwards;
 				}
 			}
 		}
@@ -713,7 +837,7 @@
 				.btn {
 					width: 622rpx;
 					height: 200rpx;
-					padding-left: 260rpx;
+					padding-left: 200rpx;
 					transition: .1s;
 
 					&:last-child {
@@ -722,13 +846,14 @@
 
 					image {
 						position: absolute;
-						left: 20rpx;
+						left: 0;
 						top: 0;
 						width: 200rpx;
 						height: 200rpx;
 					}
 
 					.galaxy-name {
+						width: 100%;
 						transform: matrix(1, 0, -0.5, 1, 0, 0);
 
 						.text {
@@ -738,6 +863,9 @@
 							line-height: 200rpx;
 							// filter: blur(0.7px);
 							text-shadow: 0 0 25px #eff500;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
 							&:active{
 								text-shadow: 0 0 35px #eff500;
 							}
@@ -1064,9 +1192,29 @@
 
 		.step4 {
 			.icon {
-				display: block;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
 				width: 348rpx;
 				height: 348rpx;
+				margin-top: -50rpx;
+				.bg{
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					left: 0;
+					top: 0;
+				}
+				.head{
+					width: 120rpx;
+					height: 120rpx;
+					margin-top: -130rpx;
+				}
+				view{
+					font-size: 12px;
+					color: #FFFFFF;
+				}
 			}
 
 			.content {
@@ -1083,49 +1231,49 @@
 			}
 
 
-			.icon1 {
-				margin-left: 120rpx;
-				margin-top: 154rpx;
-			}
+			// .icon1 {
+			// 	margin-left: 120rpx;
+			// 	margin-top: 154rpx;
+			// }
 
-			.icon2 {
-				margin-top: -42rpx;
-				margin-left: 24rpx;
-			}
+			// .icon2 {
+			// 	margin-top: -42rpx;
+			// 	margin-left: 24rpx;
+			// }
 
-			.icon3 {
-				margin-top: -210rpx;
-				margin-left: 352rpx;
-			}
+			// .icon3 {
+			// 	margin-top: -210rpx;
+			// 	margin-left: 352rpx;
+			// }
 
-			.icon4 {
-				margin-top: -64rpx;
-				margin-left: 54rpx;
-			}
+			// .icon4 {
+			// 	margin-top: -64rpx;
+			// 	margin-left: 54rpx;
+			// }
 
-			.icon5 {
-				margin-top: -108rpx;
-				margin-left: 352rpx;
-			}
+			// .icon5 {
+			// 	margin-top: -108rpx;
+			// 	margin-left: 352rpx;
+			// }
 
-			.icon6 {
-				margin-left: 274rpx;
-			}
+			// .icon6 {
+			// 	margin-left: 274rpx;
+			// }
 
-			.icon7 {
-				margin-top: -98rpx;
-				margin-left: 54rpx;
-			}
+			// .icon7 {
+			// 	margin-top: -98rpx;
+			// 	margin-left: 54rpx;
+			// }
 
-			.icon8 {
-				margin-top: -78rpx;
-				margin-left: 246rpx;
-			}
+			// .icon8 {
+			// 	margin-top: -78rpx;
+			// 	margin-left: 246rpx;
+			// }
 
-			.icon10 {
-				margin-left: 300rpx;
-				margin-top: -150rpx;
-			}
+			// .icon10 {
+			// 	margin-left: 300rpx;
+			// 	margin-top: -150rpx;
+			// }
 		}
 
 		.step6 {

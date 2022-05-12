@@ -8,6 +8,7 @@
 			:fixed="true"
 			:placeholder="true"
 			:safeAreaInsetBottom="true"
+			activeColor="#000000"
 			@change=tabBarChange($event)
 		>
 			<u-tabbar-item text="首页" name="home">

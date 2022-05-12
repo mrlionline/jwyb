@@ -16,9 +16,9 @@
 					<view class="position-item" v-for="positionItem in positionList">
 						<view class="pi-title">{{positionItem.name}}</view>
 						<view v-if="positionItem.userInfos && positionItem.userInfos.length" class="member-box">
-							<view class="member-item" v-for="(member,index) in positionItem.userInfos">
+							<view class="member-item" v-for="(member,index) in positionItem.userInfos" @click="goDetail(member)">
 								<image v-if="member.avatar" class="memeber-head" :src="member.avatar"></image>
-								<image v-if="!member.avatar" class="memeber-head" src="/static/header.jpg"></image>
+								<image v-if="!member.avatar" class="memeber-head" src="/static/defaultAvatar.png"></image>
 								<view class="member-info">
 									<text style="font-size: 15px;">{{member.name}}</text>
 									<text style="font-size: 13px;">{{member.mobile}}</text>
@@ -258,7 +258,7 @@
 			.member-info{
 				display: flex;
 				flex-direction: column;
-				justify-content: space-between;
+				justify-content: space-around;
 				height: 128rpx;
 				color: #444251;
 			}

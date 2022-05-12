@@ -11,12 +11,12 @@
 					</view>
 					<view class="bi-content">
 						<view class="bi-name">
-							{{baseInfo.name}}
+							{{baseInfo.name || ''}}
 						
 						</view>
-						<text class="bi-base-text">电话：{{baseInfo.mobile}}</text>
+						<text class="bi-base-text">电话：{{baseInfo.mobile || '-'}}</text>
 						<text class="bi-base-text">工作状态：<text>{{baseInfo.workStatus || '正常'}}</text></text>
-						<text class="bi-base-text">性别：{{baseInfo.sex || '保密'}}</text>
+						<text class="bi-base-text">性别：{{sexMap[baseInfo.sex] || '保密'}}</text>
 						<text class="bi-base-text">职位：{{baseInfo.title || '-'}}</text>
 						<text class="bi-base-text">所属团队：{{baseInfo.deptArr[baseInfo.deptArr.length - 1] || '-'}}</text>
 					</view>
@@ -43,17 +43,13 @@
 				containerHeight: `calc(100vh - ${getApp().globalData.statusBarHeight}px - 48px)`,
 				id: '',
 				title: '',
-				baseInfo: {
-					name: '',
-					starLevel: '',
-					mobile: '',
-					position: '',
-					gender: '',
-					jobStatus: '',
-					groupName: '',
-					deptArr: []
-				},
+				baseInfo: {},
 				positionWay: [],
+				sexMap: {
+					0: '保密',
+					1: '男',
+					2: '女'
+				},
 				timeLineList: [
 					{
 						date: '2/25',
@@ -84,9 +80,18 @@
 					console.log(res)
 					this.baseInfo = res.baseInfo
 					this.positionWay = res.userPositions || []
+					this.timeLineList = res.starUserHis.map(item => {
+						const date = new Date(item.ctime)
+						return {
+							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							year: date.getFullYear(),
+							title: item.starName,
+							desc: item.activityName,
+							image: '/static/home/level-1-personnel.png'
+						}
+					})
 				})
 			},
-		
 			getDeptArr(deptTree) {
 				const res = []
 				let node = deptTree[0]
