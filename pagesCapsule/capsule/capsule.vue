@@ -26,7 +26,7 @@
 							</view>
 							<view style="animation-delay:1.5s;" class="welcome">
 								<image style="width: 750rpx; height: 246rpx;"
-									src="/pagesCapsule/static/capsule/welcome.gif"></image>
+									src="/pagesCapsule/static/capsule/welcome1.gif"></image>
 							</view>
 							<view class="letsgo">请随我一起回顾您的星路之旅吧</view>
 						</view>
@@ -114,9 +114,10 @@
 											:class="'icon' + (index+1)"
 											v-for="(level, index) of starLevelInfo.list"
 											:style="{'margin-left': level.positionLeft + 'rpx'}"
-											:src="level.icon"
+								
 											@click="chooseStarLevel(level.id)"
 										></image>
+										<view>{{level.name}}</view>
 									</view>
 								</scroll-view>
 							</view>
@@ -427,12 +428,7 @@
 					return
 				}
 				this.sameLevelFamilyPageNum++
-				const params = {
-				  "pageNum": this.sameLevelFamilyPageNum,
-				  "pageSize": 10,
-				  "starId": id || this.starLevelInfo.selectedId
-				}
-				capsuleApi.queryUserListByDeptIdAndStarLevel(params).then(res =>{
+				capsuleApi.getUsersByStarId(id).then(res =>{
 					this.sameLevelFamilyList = this.sameLevelFamilyList.concat(res)
 					if(res.pageTotal === res.pageNum){
 						this.moreDataStatus = 'nomore'

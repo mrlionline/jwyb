@@ -89,7 +89,6 @@
 
 <script>
 	import loginApis from '../../http/apis-login.js'
-  import indexApis from '@/http/apis-index.js'
 	const SECOND = 60
 	export default {
 		data() {
@@ -158,9 +157,6 @@
 						})
 					}
 				});
-        indexApis.getUserInfoById(-1).then(res => {
-          uni.setStorageSync('position', res.userPositions)
-        })
 			},
 			getVerCode(){
 				if(this.gettingVerCode) return

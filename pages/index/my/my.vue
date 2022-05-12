@@ -3,12 +3,13 @@
 		<view class="space"></view>
 		<view class="my-container">
 			<view class="user-info">
-				<view class="user-star-tag">
-					<image src="/static/star-1-leader.png"></image>
+				<view class="user-star-tag star-name" v-if="myStar.name">
+					<image class="img" :src="myStar.icon"></image>
+					<view class="name">{{myStar.name}}</view>
 				</view>
 				<view class="user-header">
 					<image v-if="userInfo.avatar" :src="userInfo.avatar"></image>
-					<image v-if="!userInfo.avatar" src="/static/header.jpg"></image>
+					<image mode="aspectFit" v-if="!userInfo.avatar" src="/static/defaultAvatar.png"></image>
 				</view>
 				<view class="user-name">{{userInfo.name}}</view>
 			</view>
@@ -56,7 +57,11 @@
 					name: ''
 				},
 				logoutConfirm: false,
-				position: []
+				position: [],
+				myStar: {
+					name: '',
+					icon: ''
+				}
 			}
 		},
 		methods: {
@@ -76,7 +81,13 @@
 		},
 		created() {
 			this.userInfo = uni.getStorageSync('userInfo')
-			this.position = uni.getStorageSync('position')
+			indexApis.getUserInfoById(-1).then(res => {
+				this.position = res.userPositions
+			})
+			indexApis.getMyStar(-1).then(res => {
+				this.myStar = res.dataSet
+			})
+			
 		}
 	}
 </script>
@@ -109,10 +120,7 @@
 			position: absolute;
 			top: calc(120rpx + 25rpx);
 			left: 240rpx;
-			image{
-				width: 240rpx;
-				height: 80rpx;
-			}
+
 		}
 		.user-header{
 			width: 240rpx;
@@ -194,5 +202,25 @@
 	}
 	.btn-wrap-reset-pwd{
 		margin-bottom: 16px;
+	}
+	.star-name {
+		padding: 4px 13px 4px 29px;
+		background: #FFDA20;
+		
+border-radius: 0px 100px 100px 0px;
+		
+		white-space: nowrap;
+		
+	}
+	.star-name .name {
+		font-size: 13px;
+		color: #8A4F0A;
+	}
+	.star-name .img {
+		width: 40px;
+		height: 28px;
+		position: absolute;
+		left: -11px;
+		top: -3px;
 	}
 </style>

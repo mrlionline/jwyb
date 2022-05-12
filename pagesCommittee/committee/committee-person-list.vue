@@ -22,11 +22,11 @@
 								<view class="member-info">
 									<text style="font-size: 15px;">{{member.name}}</text>
 									<text style="font-size: 13px;">{{member.mobile}}</text>
-									<view>
-										<image style="width: 14px; height: 14px;" v-for="star in 5" src="../../static/my/star@3x.png"></image>
+									<view v-if="member.starInfo">
+										<text class="member-start-level">{{member.starInfo.name}}</text>
 									</view>
 								</view>
-								<text class="member-start-level">{{member.starLevel || '五星主管'}}</text>
+								
 							</view>
 						</view>
 					</view>
@@ -43,7 +43,7 @@
 							</view>
 							<view class="group-info-content">
 								<view class="gi-name">{{groupItem.name}}</view>
-								<view class="gi-leader">组长：{{groupItem.leader.name}}</view>
+								<view class="gi-leader">组长：{{groupItem.leader.name || ''}}</view>
 								<view class="gi-member">组员：{{groupItem.members.slice(0, 3).map(item => item.name).join('、')}}
 								{{(groupItem.members && groupItem.members.length > 3) ? ('等' + groupItem.members.length + '人') : ''}}
 								</view>
@@ -55,7 +55,7 @@
 						<view class="member-list" :class="{'member-list-show': groupItem.open}">
 							<view class="member-item" @click="goDetail(groupItem.leader)">
 								<text class="member-position">组长</text>
-								<text style="color: #444251;">{{groupItem.leader.name}}</text>
+								<text style="color: #444251;">{{groupItem.leader.name || ''}}</text>
 								<view class="member-item-arrow">
 									<u-icon name="arrow-right"></u-icon>
 								</view>
@@ -152,11 +152,14 @@
 					this.page.pageNum += 1
 				}
 				committeeApi.getGroupList(this.id, this.page).then(res => {
-					this.groupList = this.groupList.concat(res.dataSet.map(item => ({ ...item, open: false })));
+					this.groupList = this.groupList.concat(res.dataSet.map(item => ({ ...item, open: false, members: item.members || [] })));
 					this.page = {
 						pageSize: res.pageSize,
 						pageNum: res.pageNum,
 						totalNumber: res.totalNumber,
+					}
+					if (!res.dataSet || res.dataSet.length === 0) {
+						this.moreDataStatus = 'nomore'
 					}
 					if(res.pageTotal === res.pageNum){
 						this.moreDataStatus = 'nomore'
@@ -260,9 +263,6 @@
 				color: #444251;
 			}
 			.member-start-level{
-				position: absolute;
-				top: 16px;
-				right: 0;
 				height: 40rpx;
 				line-height: 40rpx;
 				padding: 0 20rpx;
