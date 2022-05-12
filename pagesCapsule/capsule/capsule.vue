@@ -11,7 +11,7 @@
 				<image class="up-down index1" mode="widthFix" src="/pagesCapsule/static/capsule/index1.png"></image>
 				<image class="up-down index2" mode="widthFix" src="/pagesCapsule/static/capsule/index2.png"></image>
 				<image class="down-up index3" mode="widthFix" src="/pagesCapsule/static/capsule/index3.png"></image>
-				<image class="down-up index4" mode="widthFix" src="/pagesCapsule/static/capsule/index4.png"></image>
+				<image class="down-up2 index4" mode="widthFix" src="/pagesCapsule/static/capsule/index4.png"></image>
 			</view>
 			<swiper
 				style="height: 100%;"
@@ -681,19 +681,19 @@
 				0%{
 					transform: translateY(0);
 				}
-				15%{
-					transform: translateY(-15rpx);
+				17%{
+					transform: translateY(-8rpx);
 				}
-				33%{
+				37%{
 					transform: translateY(0);
 				}
-				44%{
+				40%{
 					transform: translateY(0);
 				}
-				63%{
-					transform: translateY(15rpx);
+				60%{
+					transform: translateY(8rpx);
 				}
-				79%{
+				85%{
 					transform: translateY(0);
 				}
 				100%{
@@ -704,19 +704,42 @@
 				0%{
 					transform: translateY(0);
 				}
-				15%{
-					transform: translateY(15rpx);
+				17%{
+					transform: translateY(8rpx);
 				}
-				33%{
+				37%{
 					transform: translateY(0);
 				}
-				44%{
+				40%{
 					transform: translateY(0);
 				}
-				63%{
-					transform: translateY(-15rpx);
+				60%{
+					transform: translateY(-8rpx);
 				}
-				79%{
+				85%{
+					transform: translateY(0);
+				}
+				100%{
+					transform: translateY(0);
+				}
+			}
+			@keyframes downUp2 {
+				0%{
+					transform: translateY(0);
+				}
+				17%{
+					transform: translateY(8rpx);
+				}
+				37%{
+					transform: translateY(0);
+				}
+				40%{
+					transform: translateY(0);
+				}
+				60%{
+					transform: translateY(6rpx);
+				}
+				85%{
 					transform: translateY(0);
 				}
 				100%{
@@ -728,6 +751,9 @@
 			}
 			.down-up{
 				animation: downUp 2.1s  linear infinite;
+			}
+			.down-up2{
+				animation: downUp2 2.1s  linear infinite;
 			}
 			.index1{
 				position: absolute;
