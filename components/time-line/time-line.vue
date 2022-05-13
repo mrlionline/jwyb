@@ -2,14 +2,14 @@
 	<view class="time-line" :class="{'theme-dark': theme === 'dark'}">
 		<view class="time-line-item" v-for="(item,index) in list">
 			<view class="time">
-				<view class="time-date">{{item.date}}</view>
-				<view class="time-year">{{item.year}}</view>
+				<view class="time-date" style="font-weight: bold;">{{item.date}}</view>
+				<view class="time-year" style="font-weight: bold;">{{item.year}}</view>
 			</view>
 			<view class="dot">
 				<image src="/static/time-line-dot.png"></image>
 			</view>
 			<view class="content-wrap">
-				<view class="title">{{item.title}}</view>
+				<view class="title" style="font-weight: bold;">{{item.title || ''}}</view>
 				<view
 					class="content"
 					:class="{
@@ -17,7 +17,7 @@
 						'no-border-left' : index === list.length - 1
 					}"
 				>
-					<view class="desc">{{item.desc}}</view>
+					<view class="desc">{{item.desc || ''}}</view>
 					<template v-if="item.scoreInfo && item.scoreInfo.length">
 						<view class="desc" v-for="score in item.scoreInfo">{{score.name}}: {{score.value}}</view>
 					</template>
@@ -81,6 +81,7 @@
 				line-height: 48rpx;
 				font-size: 15px;
 				color: #444251;
+				height: 48rpx;
 			}
 			.content{
 				max-width: calc(100% + 12px);

@@ -66,8 +66,15 @@
 			}
 		},
 		created() {
+			uni.showLoading({
+				title: '加载中',
+				mask: true
+			});
 			committeeApi.getCommittee().then(res => {
 				this.committeeTree = res;
+			
+			}).finally(() => {
+				uni.hideLoading()
 			})
 		}
 	}

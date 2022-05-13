@@ -59,6 +59,9 @@
 					url: '/pages/login/login'
 				})
 			}
+			// uni.onAppShow(() => {
+			// 	console.log('sdfsdf')
+			// })
 		},
 		methods: {
 			tabBarChange(e){

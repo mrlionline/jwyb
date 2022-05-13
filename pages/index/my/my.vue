@@ -11,7 +11,7 @@
 					<image v-if="userInfo.avatar" :src="userInfo.avatar"></image>
 					<image mode="aspectFit" v-if="!userInfo.avatar" src="/static/defaultAvatar.png"></image>
 				</view>
-				<view class="user-name">{{userInfo.name}}</view>
+				<view class="user-name" style="font-weight: bold;">{{userInfo.name}}</view>
 			</view>
 			<view class="user-position">
 				<text class="up-title">我的职位</text>
@@ -85,7 +85,7 @@
 				this.position = res.userPositions
 			})
 			indexApis.getMyStar(-1).then(res => {
-				this.myStar = res.dataSet
+				this.myStar = res
 			})
 			
 		}
@@ -218,9 +218,9 @@ border-radius: 0px 100px 100px 0px;
 	}
 	.star-name .img {
 		width: 40px;
-		height: 28px;
-		position: absolute;
-		left: -11px;
-		top: -3px;
+		    height: 40px;
+		    position: absolute;
+		    left: -10px;
+		    top: -8px;
 	}
 </style>

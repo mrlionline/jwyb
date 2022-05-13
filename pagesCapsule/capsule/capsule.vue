@@ -72,7 +72,7 @@
 								<view
 									v-for="(nebula, index) of nebulaInfo.list"
 									class="section"
-									:class="['nebula' + (index+1), {'step3-active': nebulaInfo.selectedId === nebula.id}]"
+									:class="['nebula' + (index+1), ]"
 									@click="chooseNebula(nebula.id)">
 									<image mode="widthFix" class="default"
 										:src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
@@ -117,7 +117,7 @@
 				<swiper-item>
 					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
 							<view class="content por">
-								<!-- <image style="width: 750rpx; height: 100vh;" mode="aspectFill" :src="baseUrl + 'capsule-bg3.png'"></image> -->
+								<image style="width: 100%; height: 100vh;" mode="aspectFill" :src="'/pagesCapsule/static/capsule/starbg.png'"></image>
 								<scroll-view :scroll-y="true"  class="img-box" style="height: 100vh;">
 									<view style="padding-bottom: 28rpx;">
 										<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您所获星级可查看同星级家人</view>
@@ -125,9 +125,10 @@
 											class="icon por"
 											v-for="(level, index) of starLevelInfo.list"
 											:style="{'margin-left': level.positionLeft + 'rpx'}"
+											:class="{'star-twinkle': selfStarId == level.id}"
 											@click="chooseStarLevel(level.id)"
 										>
-											<image class="bg" :src="level.grade > 3 ? '/pagesCapsule/static/capsule/star-level-leader.png' : '/pagesCapsule/static/capsule/star-level-member.png'"></image>
+											<image class="bg"  :src="level.grade > 5 ? '/pagesCapsule/static/capsule/star-level-leader.png' : '/pagesCapsule/static/capsule/star-level-member.png'"></image>
 											<image class="head" :src="level.icon"></image>
 											<view style="text-align: center;">{{level.name}}</view>
 										</view>
@@ -148,8 +149,8 @@
 								</view>
 								<view class="same-level-box">
 									<view class="same-level-item por" v-for="(item,index) in sameLevelFamilyList">
-										<text>{{item.name}}</text>
-										<text>{{item.shop}}</text>
+										<text>{{item.userName}}</text>
+										<text>{{item.deptName}}</text>
 									</view>
 								</view>
 							</view>
@@ -200,7 +201,7 @@
 						</view>
 						<view class="btn-wrap">
 							<template v-if="!step6SubmitWish">
-								<app-button width="304rpx" text="取消" type="default"></app-button>
+								<app-button width="304rpx" text="取消" type="default" @click="clear()"></app-button>
 								<app-button width="304rpx" text="发布" @click="submitWish()"></app-button>
 							</template>
 							<template v-if="step6SubmitWish">
@@ -223,6 +224,7 @@
 	import capsuleApi from '../../http/apis-capsule.js'
 	import next from './capsuleNext.vue'
 	import baseUrl from '../../config/baseUrl.js'
+	import IndexApi from '../../http/apis-index.js'
 	const nebulaImgList = [
 
 	]
@@ -237,6 +239,7 @@
 				musicOn: true,
 				music: null,
 				userInfo: null,
+				selfStarId: '',
 				baseUrl: baseUrl + '/jw/assets/images/',
 				galaxyInfo: {
 					list: [],
@@ -287,6 +290,9 @@
 				this.step6SubmitWish = false
 				this.step6SubmitSuccess = false
 				this.step6SubmitFail = false
+				this.step6Text = ''
+			},
+			clear() {
 				this.step6Text = ''
 			},
 			submitWish(){
@@ -543,7 +549,7 @@
 							...item,
 							positionLeft:  random(0, 402)
 						}
-					}).sort((a, b) => a.grade = b.grade)
+					}).sort((a, b) => b.grade - a.grade)
 				})
 			},
 			getStarList(id) {
@@ -598,6 +604,9 @@
 			this.playMusic()
 			this.getUserInfo()
 			this.getGalaxyList()
+			IndexApi.getMyStar(-1).then(res => {
+				this.selfStarId = res? res.id : ''
+			})
 		},
 		beforeDestroy() {
 			this.music.stop()
@@ -704,7 +713,7 @@
 		@keyframes colorful {
 			0% {
 				color: #fff;
-				filter: blur(0.5px) hue-rotate(0deg);
+				filter: blur(0.3px) hue-rotate(0deg);
 				text-shadow: 0 0 5px #00b3ff,
 					0 0 10px #00b3ff,
 					0 0 15px #00b3ff,
@@ -716,7 +725,7 @@
 			30%,
 			70% {
 				color: #fff;
-				filter: blur(0.5px) hue-rotate(360deg);
+				filter: blur(0.3px) hue-rotate(360deg);
 				text-shadow: 0 0 5px #00b3ff,
 					0 0 10px #00b3ff,
 					0 0 15px #00b3ff,
@@ -726,10 +735,38 @@
 			100% {
 				color: transparent;
 				box-shadow: none;
-				filter: blur(0.5px) hue-rotate(0deg);
+				filter: blur(0.3px) hue-rotate(0deg);
 			}
 		}
+		@keyframes twinkle {
+			0% {
+					opacity: 0;
+				}
 
+				50% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+		}
+		@keyframes twinkle2 {
+			0% {
+					opacity: 0.4;
+				}
+		
+				50% {
+					opacity: 1;
+				}
+		
+				100% {
+					opacity: 0.4;
+				}
+		}
+		.star-twinkle {
+			animation: twinkle2 2s linear infinite;
+		}
 		.colorful {
 			font-size: 14px;
 			animation: colorful 3s linear infinite;
@@ -939,19 +976,7 @@
 				flex-direction: column;
 				padding-bottom: 100rpx;
 
-				@keyframes twinkle {
-					0% {
-						opacity: 0;
-					}
-
-					50% {
-						opacity: 1;
-					}
-
-					100% {
-						opacity: 0;
-					}
-				}
+				
 
 				.twinkle {
 					position: absolute;
@@ -1175,7 +1200,7 @@
 				}
 
 				.section1 {
-					top: 6.8%;
+					top: 6.8vh;
 					left: 26%;
 
 					image {
@@ -1185,7 +1210,7 @@
 				}
 
 				.section2 {
-					top: 10%;
+					top: 10vh;
 					left: 58%;
 
 					image {
@@ -1199,7 +1224,7 @@
 				}
 
 				.section3 {
-					top: 21.9%;
+					top: 21.9vh;
 					left: 7.2%;
 
 					image {
@@ -1209,7 +1234,7 @@
 				}
 
 				.section4 {
-					top: 25%;
+					top: 25vh;
 					left: 34.9%;
 
 					image {
@@ -1219,7 +1244,7 @@
 				}
 
 				.section5 {
-					top: 31.2%;
+					top: 31.2vh;
 					left: 57.3%;
 
 					image {
@@ -1229,8 +1254,8 @@
 				}
 
 				.section6 {
-					top: 36.8%;
-					left: 50%;
+					top: 35.8vh;
+					left: 23%;
 					transform: translateX(-50%);
 
 					image {
@@ -1243,7 +1268,24 @@
 						color: #fff;
 					}
 				}
+				
+				.section7 {
+					top: 43.8vh;					left: 67%;
+					transform: translateX(-50%);
+				
+					image {
+						width: 400rpx;
+						height: 400rpx;
+					}
+				
+					.text {
+						font-size: 20px;
+						color: #fff;
+					}
+				}
 			}
+			
+			
 		}
 
 		.step4 {
