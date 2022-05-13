@@ -11,8 +11,8 @@
 					<image v-if="userInfo.avatar" :src="userInfo.avatar"></image>
 					<image mode="aspectFit" v-if="!userInfo.avatar" src="/static/defaultAvatar.png"></image>
 				</view>
-				<view class="user-name" style="font-weight: bold;">{{userInfo.name}}</view>
 			</view>
+			<view class="user-name" style="font-weight: bold;">{{userInfo.name}}</view>
 			<view class="user-position">
 				<text class="up-title">我的职位</text>
 				<view class="position-item" v-for="item in position">
@@ -134,15 +134,15 @@
 				border-radius: 100%;
 			}
 		}
-		.user-name{
-			margin-top: 32rpx;
-			height: 28px;
-			line-height: 28px;
-			font-size: 20px;
-			color: #444251;
-			letter-spacing: 0;
-			text-align: center;
-		}
+	}
+	.user-name{
+		margin-top: 32rpx;
+		height: 28px;
+		line-height: 28px;
+		font-size: 20px;
+		color: #444251;
+		letter-spacing: 0;
+		text-align: center;
 	}
 	.user-position{
 		position: relative;

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-navbar leftIconSize="20px" title="星空胶囊" leftIconColor="#fff" :bgColor="'transparent'"
+		<u-navbar leftIconSize="20px" :title="current" leftIconColor="#fff" :bgColor="'transparent'"
 			:titleStyle="{color: '#fff'}" @leftClick="back()"></u-navbar>
 		<view class="capsule-wrap">
 			<view class="bg">
@@ -27,8 +27,10 @@
 							<image mode="aspectFill" src="/pagesCapsule/static/capsule/bg.gif"></image>
 						</view> -->
 						<view class="text-wrap" v-show="current === 0">
-							<view class="name">
-								<view>{{userInfo.name}}</view>
+							<view style="text-align: center;">
+								<view class="name">
+									<view>{{userInfo.name}}</view>
+								</view>
 							</view>
 							<view class="welcome">
 								<image style="width: 700rpx; height: 229rpx;"
@@ -39,17 +41,8 @@
 						<next class="next"></next>
 					</view>
 				</swiper-item>
-				<swiper-item>
+				<!-- <swiper-item>
 					<view class="capsule-step step1 por" v-if="current === 0 || current === 1 || current === 2">
-						<!-- <view class="bg1">
-							<image mode="aspectFill" src="/pagesCapsule/static/capsule/bg.gif"></image>
-						</view> -->
-						<!-- <view class="gif-wrap" :class="{'show': showStep2Gif}">
-							<image class="up-down index1" mode="widthFix" src="/pagesCapsule/static/capsule/index1.png"></image>
-							<image class="up-down index2" mode="widthFix" src="/pagesCapsule/static/capsule/index2.png"></image>
-							<image class="down-up index3" mode="widthFix" src="/pagesCapsule/static/capsule/index3.png"></image>
-							<image class="down-up index4" mode="widthFix" src="/pagesCapsule/static/capsule/index4.png"></image>
-						</view> -->
 						<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
 							<view class="btn por"
@@ -63,22 +56,19 @@
 							</view>
 						</view>
 					</view>
-				</swiper-item>
+				</swiper-item> -->
 				<swiper-item>
-					<view class="capsule-step step2 por" v-if="current === 1 || current === 2 || current === 3">
+					<view class="capsule-step step2 por" v-if="current === 0 || current === 1 || current === 2">
 						<scroll-view :scroll-y="true" style="height: 100vh;">
 							<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属片区</view>
 							<view class="content">
 								<view
 									v-for="(nebula, index) of nebulaInfo.list"
 									class="section"
-									:class="['nebula' + (index+1), ]"
+									:class="['nebula' + (index+1)]"
 									@click="chooseNebula(nebula.id)">
 									<image mode="widthFix" class="default"
 										:src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
-									<image mode="widthFix" class="active"
-										:src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'-active.png'">
-									</image>
 									<image mode="widthFix" class="twinkle"
 										:src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
 									<view class="text colorful">
@@ -91,21 +81,21 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step3 por" v-if="current === 2 || current === 3 || current === 4">
+					<view class="capsule-step step3 por" v-if="current === 1 || current === 2 || current === 3">
 						<scroll-view :scroll-y="true" style="height: 100vh;">
 							<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星球</view>
-							<view class="content por">
+							<view class="content por" :style="{'min-height': `calc(100vh - 22px - ${navBarHeightNum}px)`}">
 								<!-- <view class="section section0">
 									<image mode="widthFix" src="/pagesCapsule/static/capsule/1.png"></image>
 								</view> -->
 								<view
 									v-for="(star,index) of starInfo.list"
 									class="section"
-									:class="['section' + (index + 1), {'step3-active': star.id === starInfo.selectedId}]"
+									:class="['section' + (index + 1), 'start-move'+star.moveClassIndex]"
 									@click="chooseStar(star.id)">
 									<image mode="widthFix"
 										:src="'/pagesCapsule/static/capsule/' + star.imgIndex + '.png'"></image>
-									<view class="text colorful">
+									<view class="text">
 										<text v-for="(text, index) of star.name" class="colorful"
 											:style="'--i:' + index">{{text}}</text>
 									</view>
@@ -115,7 +105,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
+					<view class="capsule-step step4" v-if="current === 2 || current === 3 || current === 4">
 							<view class="content por">
 								<image style="width: 100%; height: 100vh;" mode="aspectFill" :src="'/pagesCapsule/static/capsule/starbg.png'"></image>
 								<scroll-view :scroll-y="true"  class="img-box" style="height: 100vh;">
@@ -125,7 +115,7 @@
 											class="icon por"
 											v-for="(level, index) of starLevelInfo.list"
 											:style="{'margin-left': level.positionLeft + 'rpx'}"
-											:class="{'star-twinkle': selfStarId == level.id}"
+											:class="['start-move'+level.moveClassIndex,{'star-twinkle': selfStarId == level.id}]"
 											@click="chooseStarLevel(level.id)"
 										>
 											<image class="bg"  :src="level.grade > 5 ? '/pagesCapsule/static/capsule/star-level-leader.png' : '/pagesCapsule/static/capsule/star-level-member.png'"></image>
@@ -140,7 +130,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step7" v-if="current === 4 || current === 5 || current === 6">
+					<view class="capsule-step step7" v-if="current === 3 || current === 4 || current === 5">
 						<scroll-view :scroll-y="true" style="height: 100%;" @scrolltolower="getSameLevelFamily()">
 							<view style="padding-bottom: 228rpx;">
 								<view class="level">
@@ -162,13 +152,13 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step5" v-if="current === 5 || current === 6 || current === 7">
+					<view class="capsule-step step5" v-if="current === 4 || current === 5 || current === 6">
 						<scroll-view :scroll-y="true" style="height: 100vh; padding-top: 220rpx; color: #fff;">
 							<view style="text-align: center; font-size: 24px;">
 								<view style="margin-bottom: 16rpx;">亲爱的{{userInfo.name}}！</view>
 								<view>您已和绝味一起走过<text style="color: #FFD940">{{step5Day}}</text>天</view>
 							</view>
-							<view style="padding: 96rpx 48rpx 428rpx;">
+							<view style="padding: 96rpx 48rpx 428rpx;" class="time-line" :class="{'time-line-show': current === 5}">
 								<time-line theme="dark" :list="step5TimeLineList"></time-line>
 							</view>
 							<view style="position: fixed; bottom: 120rpx; text-align: center; width: 100%;">
@@ -178,13 +168,13 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step6 por" v-if="current === 6 || current === 7">
+					<view class="capsule-step step6 por" v-if="current === 5 || current === 6">
 						<view class="textarea-wrap" :class="{'hide': step6SubmitWish}">
 							<view class="title">星语心愿</view>
 							<view class="textarea-bg">
-								<textarea v-model="step6Text" maxlength="-1"
+								<textarea v-model="step6Text" maxlength="200"
 									placeholder-style="font-size:15px;line-height: 180rpx;"
-									placeholder="快与大家分享自己的星语心愿吧" />
+									placeholder="快与大家分享自己的星语心愿吧,字数200以内" />
 							</view>
 						</view>
 						<view class="aircraft" :class="{'fly': step6SubmitWish}">
@@ -235,6 +225,7 @@
 		data() {
 			return {
 				navBarHeight: `calc(${getApp().globalData.statusBarHeight}px + 48px)`,
+				navBarHeightNum: getApp().globalData.statusBarHeight + 48,
 				current: 0,
 				musicOn: true,
 				music: null,
@@ -272,10 +263,10 @@
 		methods: {
 			reShow(){
 				this.galaxyInfo.selectedId = 0
-				this.nebulaInfo = {
-					list: [],
-					selectedId: null
-				}
+				// this.nebulaInfo = {
+				// 	list: [],
+				// 	selectedId: null
+				// }
 				this.starInfo = {
 					list: [],
 					selectedId: null
@@ -343,23 +334,23 @@
 			},
 			animationfinish(e) {
 				this.current = e.detail.current
-				if (this.current >= 2 && this.galaxyInfo.selectedId === 0) {
+				// if (this.current >= 2 && this.galaxyInfo.selectedId === 0) {
+				// 	setTimeout(() => {
+				// 		this.current = 1
+				// 	}, 0)
+				// }
+				if (this.current >= 2 && !this.nebulaInfo.selectedId) {
 					setTimeout(() => {
 						this.current = 1
 					}, 0)
 				}
-				if (this.current >= 3 && !this.nebulaInfo.selectedId) {
+				if (this.current >= 4 && !this.starLevelInfo.selectedId) {
 					setTimeout(() => {
-						this.current = 2
+						this.current = 3
 					}, 0)
 				}
-				// if (this.current >= 4 && !this.starInfo.selectedId) {
-				// 	setTimeout(() => {
-				// 		this.current = 3
-				// 	}, 0)
-				// }
 
-				if (this.current === 6) {
+				if (this.current === 5) {
 					this.initStep5()
 				} else {
 					this.step5Day = 0
@@ -478,10 +469,11 @@
 				}
 				this.getNebulaList(id)
 				this.queryStarListByGalaxyId(id)
-				setTimeout(() => {
-					this.galaxyInfo.selectedId = id
-					this.current++
-				}, 20)
+				this.galaxyInfo.selectedId = id
+				// setTimeout(() => {
+				// 	this.galaxyInfo.selectedId = id
+				// 	this.current++
+				// }, 20)
 			},
 			chooseNebula(id) {
 				this.starInfo = {
@@ -501,18 +493,22 @@
 				}, 20)
 			},
 			chooseStarLevel(id) {
-				this.getSameLevelFamily(id)
+				this.starLevelInfo.selectedId = id
+				this.getSameLevelFamily()
 				setTimeout(() => {
-					this.starLevelInfo.selectedId = id
 					this.current++
 				}, 20)
 			},
-			getSameLevelFamily(id){
+			getSameLevelFamily(){
 				if(this.sameLevelFamilyStatus === 'nomore'){
 					return
 				}
+				const params = {
+					galaxyId: this.galaxyInfo.selectedId,
+					starId: this.starLevelInfo.selectedId
+				}
 				this.sameLevelFamilyPageNum++
-				capsuleApi.getUsersByStarId(id).then(res =>{
+				capsuleApi.getUserListByStartIdAndGalaxyId(params).then(res =>{
 					this.sameLevelFamilyList = this.sameLevelFamilyList.concat(res)
 					if (!res || !res.length) {
 						this.sameLevelFamilyStatus = 'nomore'
@@ -547,6 +543,7 @@
 					this.starLevelInfo.list = res.map((item, index) => {
 						return {
 							...item,
+							moveClassIndex: index % 3 + 1,
 							positionLeft:  random(0, 402)
 						}
 					}).sort((a, b) => b.grade - a.grade)
@@ -558,6 +555,7 @@
 					this.starInfo.list = res.map((item, index) => {
 						return {
 							...item,
+							moveClassIndex: index % 3 + 1,
 							// name: item.name.substr(0, 8),
 							imgIndex: index % imgNum + 1
 						}
@@ -586,6 +584,8 @@
 							imgIndex: index % imgNum + 1
 						}
 					})
+					// this.galaxyInfo.selectedId = this.galaxyInfo.list[0].id
+					this.chooseGalaxy(this.galaxyInfo.list[0].id)
 				})
 			}
 		},
@@ -597,7 +597,7 @@
 				}
 			},
 			showStep1Gif: function() {
-				return this.current <= 1
+				return this.current === 0
 			}
 		},
 		created() {
@@ -865,12 +865,12 @@
 				}
 				.name {
 					position: relative;
-					width: 408rpx;
-					height: 72rpx;
+					display: inline-block;
 					line-height: 72rpx;
 					text-align: center;
 					background: linear-gradient(to right, transparent, #8E8CDF, transparent);
 					margin: 0 auto;
+					padding: 0 100rpx;
 					font-size: 48rpx;
 					color: #FFFFFF;
 					opacity: 0;
@@ -901,7 +901,7 @@
 					text-align: center;
 					font-size: 0;
 					text-align: center;
-					margin: 35rpx 0;
+					margin: 0 0 35rpx;
 				}
 
 				.letsgo {
@@ -1175,32 +1175,14 @@
 					font-size: 0;
 
 					.text {
-						position: absolute;
-						top: 100%;
-						left: 0;
-						right: 0;
 						font-size: 14px;
 						color: #57A1FF;
 						text-align: center;
 					}
-
-					.active {
-						display: none;
-					}
-
-					&.step3-active {
-						.default {
-							display: none;
-						}
-
-						.active {
-							display: block;
-						}
-					}
 				}
 
 				.section1 {
-					top: 6.8vh;
+					top: 6.8%;
 					left: 26%;
 
 					image {
@@ -1210,7 +1192,7 @@
 				}
 
 				.section2 {
-					top: 10vh;
+					top: 10%;
 					left: 58%;
 
 					image {
@@ -1224,7 +1206,7 @@
 				}
 
 				.section3 {
-					top: 21.9vh;
+					top: 21.9%;
 					left: 7.2%;
 
 					image {
@@ -1234,7 +1216,7 @@
 				}
 
 				.section4 {
-					top: 25vh;
+					top: 25%;
 					left: 34.9%;
 
 					image {
@@ -1244,7 +1226,7 @@
 				}
 
 				.section5 {
-					top: 31.2vh;
+					top: 33.2%;
 					left: 57.3%;
 
 					image {
@@ -1254,13 +1236,13 @@
 				}
 
 				.section6 {
-					top: 35.8vh;
-					left: 23%;
+					top: 46%;
+					left: 50%;
 					transform: translateX(-50%);
 
 					image {
-						width: 400rpx;
-						height: 400rpx;
+						width: 350rpx;
+						height: 350rpx;
 					}
 
 					.text {
@@ -1270,14 +1252,46 @@
 				}
 				
 				.section7 {
-					top: 43.8vh;					left: 67%;
-					transform: translateX(-50%);
+					top: 60%;					left: 0;
+					image {
+						width: 200rpx;
+					}
+					.text {
+						font-size: 20px;
+						color: #fff;
+					}
+				}
+				.section8 {
+					top: 55%;
+					right: 0;
 				
 					image {
-						width: 400rpx;
-						height: 400rpx;
+						width: 200rpx;
 					}
+					.text {
+						font-size: 20px;
+						color: #fff;
+					}
+				}
+				.section9 {
+					top: 77%;
+					left: 23%;
 				
+					image {
+						width: 200rpx;
+					}
+					.text {
+						font-size: 20px;
+						color: #fff;
+					}
+				}
+				.section10 {
+					top: 77%;
+					left: 53%;
+				
+					image {
+						width: 200rpx;
+					}
 					.text {
 						font-size: 20px;
 						color: #fff;
@@ -1287,7 +1301,50 @@
 			
 			
 		}
-
+		
+		@keyframes start-move1 {
+			0%{
+				transform: translateX(0);
+			}
+			50%{
+				transform: translateX(15px);
+			}
+			100%{
+				transform: translateX(0);
+			}
+		}
+		@keyframes start-move2 {
+			0%{
+				transform: translateY(0);
+			}
+			50%{
+				transform: translateY(15px);
+			}
+			100%{
+				transform: translateY(0);
+			}
+		}
+		@keyframes start-move3 {
+			0%{
+				transform: translateX(0);
+			}
+			50%{
+				transform: translateX(8px);
+			}
+			100%{
+				transform: translateX(0);
+			}
+		}
+		.start-move1{
+			animation: start-move1 6s linear infinite;
+		}
+		.start-move2{
+			animation: start-move2 5s linear infinite;
+		}
+		.start-move3{
+			animation: start-move3 4s linear infinite;
+		}
+		
 		.step4 {
 			.icon {
 				display: flex;
@@ -1314,6 +1371,7 @@
 					color: #FFFFFF;
 				}
 			}
+			
 
 			.content {
 				height: 100vh;
@@ -1374,6 +1432,15 @@
 			// }
 		}
 
+		.step5{
+			.time-line{
+				transform: translateY(1000px);
+				transition: 1s;
+			}
+			.time-line-show{
+				transform: translateY(0);
+			}
+		}
 		.step6 {
 			height: 100vh;
 			padding: 256rpx 48rpx 280rpx;

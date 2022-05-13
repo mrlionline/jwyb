@@ -120,6 +120,7 @@
 				font-size: 15px;
 				color: #444251;
 				font-size: 15px;
+				font-weight: bold;
 			}
 			.item-arrow-sm{
 				position: absolute;
@@ -170,6 +171,7 @@
 		.item-name{
 			font-size: 15px;
 			color: #444251;
+			font-weight: bold;
 		}
 		.item-arrow{
 			position: absolute;

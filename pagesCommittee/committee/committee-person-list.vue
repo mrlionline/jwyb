@@ -7,70 +7,72 @@
 				class="scroll-view"
 				@scrolltolower="arriveBottom()"
 			>
-				<view class="tabs" v-if="!isGlobal">
-					<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 0}" @click="tabChange(0)">成员星系</text>
-					<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 1}" @click="tabChange(1)">星小组信息</text>
-				</view>
-				
-				<view class="position-list" v-show="activeTabIndex === 0">
-					<view class="position-item" v-for="positionItem in positionList">
-						<view class="pi-title">{{positionItem.name}}</view>
-						<view v-if="positionItem.userInfos && positionItem.userInfos.length" class="member-box">
-							<view class="member-item" v-for="(member,index) in positionItem.userInfos" @click="goDetail(member)">
-								<image v-if="member.avatar" class="memeber-head" :src="member.avatar"></image>
-								<image v-if="!member.avatar" class="memeber-head" src="/static/defaultAvatar.png"></image>
-								<view class="member-info">
-									<text style="font-size: 15px;">{{member.name}}</text>
-									<text style="font-size: 13px;">{{member.mobile}}</text>
-									<view v-if="member.starInfo">
-										<text class="member-start-level">{{member.starInfo.name}}</text>
+				<view :style="{'padding-bottom': safeBottom + 'px'}">
+					<view class="tabs" v-if="!isGlobal">
+						<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 0}" @click="tabChange(0)">成员星系</text>
+						<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 1}" @click="tabChange(1)">星小组信息</text>
+					</view>
+					
+					<view class="position-list" v-show="activeTabIndex === 0">
+						<view class="position-item" v-for="positionItem in positionList">
+							<view class="pi-title">{{positionItem.name}}</view>
+							<view v-if="positionItem.userInfos && positionItem.userInfos.length" class="member-box">
+								<view class="member-item" v-for="(member,index) in positionItem.userInfos" @click="goDetail(member)">
+									<image v-if="member.avatar" class="memeber-head" :src="member.avatar"></image>
+									<image v-if="!member.avatar" class="memeber-head" src="/static/defaultAvatar.png"></image>
+									<view class="member-info">
+										<text style="font-size: 15px; font-weight: bold;">{{member.name}}</text>
+										<text style="font-size: 13px;">{{member.mobile}}</text>
+										<view v-if="member.starInfo">
+											<text class="member-start-level">{{member.starInfo.name}}</text>
+										</view>
+									</view>
+									
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="star-group" v-show="activeTabIndex === 1">
+						<view
+							class="group-item"
+							v-for="(groupItem,index) in groupList"
+							:class="{'group-item-open': groupItem.open}"
+						>
+							<view class="group-info" @click="groupItemClick(groupItem)">
+								<view class="group-logo">
+									<image src="/pagesCommittee/static/group.png"></image>
+								</view>
+								<view class="group-info-content">
+									<view class="gi-name">{{groupItem.name}}</view>
+									<view class="gi-leader">组长：{{groupItem.leader.name || ''}}</view>
+									<view class="gi-member">组员：{{groupItem.members.slice(0, 3).map(item => item.name).join('、')}}
+									{{(groupItem.members && groupItem.members.length > 3) ? ('等' + groupItem.members.length + '人') : ''}}
 									</view>
 								</view>
-								
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="star-group" v-show="activeTabIndex === 1">
-					<view
-						class="group-item"
-						v-for="(groupItem,index) in groupList"
-						:class="{'group-item-open': groupItem.open}"
-					>
-						<view class="group-info" @click="groupItemClick(groupItem)">
-							<view class="group-logo">
-								<image src="/pagesCommittee/static/group.png"></image>
-							</view>
-							<view class="group-info-content">
-								<view class="gi-name">{{groupItem.name}}</view>
-								<view class="gi-leader">组长：{{groupItem.leader.name || ''}}</view>
-								<view class="gi-member">组员：{{groupItem.members.slice(0, 3).map(item => item.name).join('、')}}
-								{{(groupItem.members && groupItem.members.length > 3) ? ('等' + groupItem.members.length + '人') : ''}}
+								<view class="gi-arrow">
+									<u-icon name="arrow-down"></u-icon>
 								</view>
 							</view>
-							<view class="gi-arrow">
-								<u-icon name="arrow-down"></u-icon>
-							</view>
-						</view>
-						<view class="member-list" :class="{'member-list-show': groupItem.open}">
-							<view class="member-item" @click="goDetail(groupItem.leader)">
-								<text class="member-position">组长</text>
-								<text style="color: #444251;">{{groupItem.leader.name || ''}}</text>
-								<view class="member-item-arrow">
-									<u-icon name="arrow-right"></u-icon>
+							<view class="member-list" :class="{'member-list-show': groupItem.open}">
+								<view class="member-item" @click="goDetail(groupItem.leader)">
+									<text class="member-position">组长</text>
+									<text style="color: #444251;">{{groupItem.leader.name || ''}}</text>
+									<view class="member-item-arrow">
+										<u-icon name="arrow-right"></u-icon>
+									</view>
 								</view>
-							</view>
-							<view class="member-item" v-for="memberItem in groupItem.members" @click="goDetail(memberItem)">
-								<text class="member-position">组员</text>
-								<text style="color: #444251;">{{memberItem.name}}</text>
-								<view class="member-item-arrow">
-									<u-icon name="arrow-right"></u-icon>
+								<view class="member-item" v-for="memberItem in groupItem.members" @click="goDetail(memberItem)">
+									<text class="member-position">组员</text>
+									<text style="color: #444251;">{{memberItem.name}}</text>
+									<view class="member-item-arrow">
+										<u-icon name="arrow-right"></u-icon>
+									</view>
 								</view>
 							</view>
 						</view>
 					</view>
+					<u-loadmore v-if="activeTabIndex === 1" :line="true" :status="moreDataStatus" />
 				</view>
-				<u-loadmore v-if="activeTabIndex === 1" :line="true" :status="moreDataStatus" />
 			</scroll-view>
 		</view>
 	</view>
@@ -82,6 +84,7 @@
 		data() {
 			return {
 				containerHeight: `calc(100vh - ${getApp().globalData.statusBarHeight}px - 48px)`,
+				safeBottom: '',
 				id: '',
 				title: '',
 				activeTabIndex: 0,
@@ -184,6 +187,9 @@
 			this.title = query.name
 			this.getMemberStar()
 		},
+		onReady() {
+			this.safeBottom = uni.getSystemInfoSync().safeAreaInsets.bottom
+		},
 		computed: {
 			isGlobal: function(){
 				return !this.id || this.id === '1'
@@ -240,6 +246,7 @@
 			color: #444251;
 			font-size: 13px;
 			border-left: 2px solid #567DF4;
+			font-weight: bold;
 		}
 		.member-box{
 			padding: 0 16px;
@@ -308,6 +315,7 @@
 						line-height: 21px;
 						font-size: 15px;
 						color: #444251;
+						font-weight: bold;
 					}
 					.gi-leader{
 						line-height: 18px;

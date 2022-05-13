@@ -23,11 +23,11 @@
 				</view>
 			</view>
 			<view class="card">
-				<view class="card-title" style="font-weight: bold;">星委会职位</view>
+				<view class="card-title">星委会职位</view>
 				<view class="position-way" v-for="position in positionWay">· {{position.positionName}} / {{position.starCouncilName}}</view>
 			</view>
 			<view class="card">
-				<view class="card-title" style="font-weight: bold;">星路历程</view>
+				<view class="card-title">星路历程</view>
 				<time-line :list="timeLineList"></time-line>
 			</view>
 		</view>
@@ -140,6 +140,7 @@
 			padding-left: 8px;
 			border-left: 2px solid #567DF4;
 			margin-bottom: 17px;
+			font-weight: bold;
 		}
 	}
 	.base-info-wrap{
@@ -163,6 +164,7 @@
 			line-height: 25px;
 			font-size: 18px;
 			margin-bottom: 16px;
+			font-weight: bold;
 			.bi-level{
 				display: inline-block;
 				height: 40rpx;

@@ -31,7 +31,6 @@
 		justify-content: center;
 		align-items: center;
 		width: 310rpx;
-		height: 258rpx;
 		border-radius: 8px;
 		box-shadow: 0 2px 20px 0 rgba(68,66,81,0.10);
 		background: #FFFFFF;
@@ -45,6 +44,8 @@
 		color: #444251;
 		letter-spacing: 0;
 		text-align: center;
-		margin-top: 8px;
+		line-height: 1;
+		padding-bottom: 56rpx;
+		font-weight: bold;
 	}
 </style>

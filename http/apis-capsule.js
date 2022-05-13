@@ -15,8 +15,8 @@ const capsuleApi = {
 	queryUserListByDeptIdAndStarLevel(data){
 		return http('/jurisdiction-api/user/queryUserListByDeptIdAndStarLevel', 'POST', {data})
 	},
-	getUsersByStarId(id) {
-		return http('/starsCapsule-api/star/getUserListByStartId/' + id, 'GET')
+	getUserListByStartIdAndGalaxyId(data) {
+		return http('/starsCapsule-api/star/getUserListByStartIdAndGalaxyId', 'GET', {data})
 	}
 }
 
