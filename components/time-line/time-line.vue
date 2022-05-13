@@ -18,6 +18,9 @@
 					}"
 				>
 					<view class="desc">{{item.desc}}</view>
+					<template v-if="item.scoreInfo && item.scoreInfo.length">
+						<view class="desc" v-for="score in item.scoreInfo">{{score.name}}: {{score.value}}</view>
+					</template>
 					<view class="image" v-if="item.image">
 						<image :src="item.image"></image>
 					</view>
