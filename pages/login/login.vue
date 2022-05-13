@@ -209,11 +209,11 @@
 						title: '验证码已发送',
 						icon: 'none'
 					})
-					this.formula()
+		
 				}).catch(err =>{
 					clearInterval(this.timer)
 					this.gettingVerCode = false
-					this.formula()
+
 				})
 			},
 			formula(){
@@ -247,7 +247,7 @@
 			},
 			verCodeText: function(){
 				if(this.gettingVerCode){
-					return this.countDown + '‘S'
+					return this.countDown + 'S'
 				}else {
 					return '获取验证码'
 				}
@@ -286,6 +286,7 @@
 		left: 32px;
 		height: 62px;
 		.page-title-first{
+			font-weight: bold;
 			font-size: 24px;
 			color: #FFFFFF;
 			line-height: 33px;

@@ -23,11 +23,11 @@
 				</view>
 			</view>
 			<view class="card">
-				<view class="card-title">星委会职位</view>
+				<view class="card-title" style="font-weight: bold;">星委会职位</view>
 				<view class="position-way" v-for="position in positionWay">· {{position.positionName}} / {{position.starCouncilName}}</view>
 			</view>
 			<view class="card">
-				<view class="card-title">星路历程</view>
+				<view class="card-title" style="font-weight: bold;">星路历程</view>
 				<time-line :list="timeLineList"></time-line>
 			</view>
 		</view>
@@ -51,26 +51,7 @@
 					2: '女'
 				},
 				timeLineList: [
-					{
-						date: '2/25',
-						year: '2021',
-						title: '入职绝味',
-						desc: '加入绝味大家庭'
-					},
-					{
-						date: '2/25',
-						year: '2021',
-						title: '三星店员',
-						desc: '您参加了星空训练营第三期活动，并获得升星勋章',
-						image: '/static/home/level-1-personnel.png'
-					},
-					{
-						date: '2/25',
-						year: '2021',
-						title: '四星店员',
-						desc: '您参加了星空训练营第三期活动，并获得升星勋章',
-						image: '/static/home/level-2-leader.png'
-					}
+					
 				]
 			}
 		},
@@ -80,16 +61,32 @@
 					console.log(res)
 					this.baseInfo = res.baseInfo
 					this.positionWay = res.userPositions || []
-					this.timeLineList = res.starUserHis.map(item => {
+					let list = []
+					if (this.baseInfo.hiredDate) {
+						const date = new Date(this.baseInfo.hiredDate)
+						const day = Math.ceil((new Date().getTime() - date.getTime()) / 1000 / 60 / 60 / 24)
+						list.push({
+							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							year: date.getFullYear(),
+							title: '入职绝味',
+							desc: '加入绝味大家庭',
+							time: date.getTime()
+						})
+					}
+					
+					list = list.concat(res.starUserHis.map(item => {
 						const date = new Date(item.ctime)
 						return {
+							time: date.getTime(),
 							date: `${date.getMonth()+1}/${date.getDate()+1}`,
 							year: date.getFullYear(),
 							title: item.starName,
 							desc: item.activityName,
 							image: '/static/home/level-1-personnel.png'
 						}
-					})
+					}))
+					this.timeLineList = list.sort((a, b) => a.time - b.time)
+					
 				})
 			},
 			getDeptArr(deptTree) {

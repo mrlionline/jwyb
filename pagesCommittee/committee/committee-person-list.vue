@@ -111,6 +111,10 @@
 				groupItem.open = !groupItem.open
 			},
 			getMemberStar(){
+				uni.showLoading({
+					title: '加载中',
+					mask: true
+				});
 				committeeApi.getMemberById(this.id).then(res => {
 					this.positionList = res.starCouncilPositions;
 					// this.positionList = [
@@ -126,6 +130,8 @@
 					// 		]
 					// 	},
 					// ]
+				}).finally(() => {
+					uni.hideLoading()
 				})
 				
 			},
@@ -148,6 +154,7 @@
 						pageNum: 1,
 						totalNumber: 0,
 					}
+					this.getGroupList = []
 				} else {
 					this.page.pageNum += 1
 				}
@@ -179,7 +186,7 @@
 		},
 		computed: {
 			isGlobal: function(){
-				return this.id === '' || this.id === '1'
+				return !this.id || this.id === '1'
 			}
 		}
 	}
