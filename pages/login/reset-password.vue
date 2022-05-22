@@ -24,9 +24,9 @@
 						v-model="newPassword"
 						:password="!showNewPassword"
 					  >
-						<!-- <template slot="suffix">
+						<template slot="suffix">
 							<u-icon size="20px" :name="showNewPassword ? 'eye' : 'eye-off'" @click="showNewPassword = !showNewPassword"></u-icon>
-						</template> -->
+						</template>
 					  </u-input>
 				</view>
 				<view class="input-wrap">
@@ -39,10 +39,13 @@
 						v-model="confirmNewPassword"
 						:password="!showConfirmNewPassword"
 					  >
-						<!-- <template slot="suffix">
+						<template slot="suffix">
 							<u-icon size="20px" :name="showConfirmNewPassword ? 'eye' : 'eye-off'" @click="showConfirmNewPassword = !showConfirmNewPassword"></u-icon>
-						</template> -->
+						</template>
 					  </u-input>
+				</view>
+				<view class="password-tips">
+					密码为8-15位，数字、字母、特殊字符至少包含两种
 				</view>
 				<view
 					class="reset-btn"
@@ -78,19 +81,19 @@
 			},
 			reset(){
 				if(this.resetBtnIsDisabled) return
-				if(this.newPassword === this.confirmNewPassword){
-					loginApi.resetPwd({
-						oldPassword: this.oldPassword,
-						password: this.newPassword
-					}).then(res => {
-						this.showToast('修改成功，将返回登录')
-						setTimeout(() => {
-							this.loginout()
-						}, 2000)
-					})
-				}else {
+				if(this.newPassword !== this.confirmNewPassword){
 					this.showToast('两次密码输入不一致')
+					return
 				}
+				loginApi.resetPwd({
+					oldPassword: this.oldPassword,
+					password: this.newPassword
+				}).then(res => {
+					this.showToast('修改成功，将返回登录')
+					setTimeout(() => {
+						this.loginout()
+					}, 2000)
+				})
 			},
 			loginout() {
 				uni.clearStorage();
@@ -157,6 +160,11 @@
 		}
 		.reset-btn-disabled{
 			background-color: #D7D9DB;
+		}
+		.password-tips{
+			font-size: 12px;
+			color: #ccc;
+			margin-bottom: 16px;
 		}
 	}
 </style>
