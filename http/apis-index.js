@@ -8,6 +8,10 @@ const indexApis = {
 	},
 	getMyStar(id) {
 		return http('/starsCapsule-api/star/getUserStarByUserId', 'GET', { data: { userId: id }})
+	},
+	
+	getGalxyByUserId(id = 0) {
+		return http('/starsCapsule-api/galaxy/getGalxyByUserId/' + id)
 	}
 	
 }

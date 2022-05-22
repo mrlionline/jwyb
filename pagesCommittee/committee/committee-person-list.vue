@@ -105,7 +105,6 @@
 				}
 			},
 			goDetail(item){
-				console.log('###', item)
 				uni.navigateTo({
 					url: `/pagesCommittee/committee/committee-person-detail?id=${item.id}&name=${item.name}`
 				})
@@ -114,25 +113,19 @@
 				groupItem.open = !groupItem.open
 			},
 			getMemberStar(){
+				const adminNames = ['主委', '政委', '顾问', '指导员']
 				uni.showLoading({
 					title: '加载中',
 					mask: true
 				});
 				committeeApi.getMemberById(this.id).then(res => {
-					this.positionList = res.starCouncilPositions;
-					// this.positionList = [
-					// 	{
-					// 		position: '主委',
-					// 		memberList: [
-					// 			{
-					// 				name: '李霞红',
-					// 				mobile: '13112341234',
-					// 				starNum: 5,
-					// 				starLevel: '五星主管'
-					// 			}
-					// 		]
-					// 	},
-					// ]
+					const adminList = res.starCouncilPositions.filter(item => {
+						return adminNames.indexOf(item.name) > -1
+					})
+					const memberList = res.starCouncilPositions.filter(item => {
+						return adminNames.indexOf(item.name) === -1
+					})
+					this.positionList = [...adminList, ...memberList];
 				}).finally(() => {
 					uni.hideLoading()
 				})
