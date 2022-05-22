@@ -84,7 +84,7 @@
 			indexApis.getUserInfoById(-1).then(res => {
 				this.position = res.userPositions
 			})
-			indexApis.getMyStar(-1).then(res => {
+			indexApis.getMyStar(0).then(res => {
 				this.myStar = res
 			})
 			

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-navbar leftIconSize="20px" :title="current" leftIconColor="#fff" :bgColor="'transparent'"
+		<u-navbar leftIconSize="20px" title="星空胶囊" leftIconColor="#fff" :bgColor="'transparent'"
 			:titleStyle="{color: '#fff'}" @leftClick="back()"></u-navbar>
 		<view class="capsule-wrap">
 			<view class="bg">
@@ -71,8 +71,8 @@
 										:src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
 									<image mode="widthFix" class="twinkle"
 										:src="'/pagesCapsule/static/capsule/nebula'+nebula.imgIndex+'.png'"></image>
-									<view class="text colorful">
-										<text v-for="(text, index) of nebula.name" class="colorful"
+									<view class="text linear-text">
+										<text v-for="(text, index) of nebula.name" :class="{'colorful': nebula.id === myGalxy.l2Id}"
 											:style="'--i:' + index">{{text}}</text>
 									</view>
 								</view>
@@ -95,8 +95,8 @@
 									@click="chooseStar(star.id)">
 									<image mode="widthFix"
 										:src="'/pagesCapsule/static/capsule/' + star.imgIndex + '.png'"></image>
-									<view class="text">
-										<text v-for="(text, index) of star.name" class="colorful"
+									<view class="text linear-text">
+										<text v-for="(text, index) of star.name" :class="{colorful: star.id === myGalxy.l3Id}"
 											:style="'--i:' + index">{{text}}</text>
 									</view>
 								</view>
@@ -120,9 +120,13 @@
 										>
 											<image class="bg"  :src="level.grade > 5 ? '/pagesCapsule/static/capsule/star-level-leader.png' : '/pagesCapsule/static/capsule/star-level-member.png'"></image>
 											<image class="head" :src="level.icon"></image>
-											<view style="text-align: center;">{{level.name}}</view>
+											
+											<view style="text-align: center;">
+						
+											<text v-for="(text, index) of level.name" :class="{colorful: level.id === selfStarId}"
+												:style="'--i:' + index">{{text}}</text>
+											</view>
 										</view>
-										<view>{{level.name}}</view>
 									</view>
 								</scroll-view>
 							</view>
@@ -248,6 +252,7 @@
 					list: [],
 					selectedId: null
 				},
+				myGalxy: {},
 				step5Day: 0,
 				step5Timer: '',
 				step5TimeLineList: [],
@@ -377,11 +382,15 @@
 					const { baseInfo, starUserHis} = res
 					let timeList = []
 					if (baseInfo.hiredDate) {
-						hiredDate = new Date(baseInfo.hiredDate)
+						let hDate = baseInfo.hiredDate
+						if (typeof hDate === 'string') {
+							hDate = hDate.replace(/\-/g, '/')
+						}
+						hiredDate = new Date(hDate)
 						const date = hiredDate
 						timeList.push({
 							time: date.getTime(),
-							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							date: `${date.getMonth()+1}/${date.getDate()}`,
 							year: date.getFullYear(),
 							title: '入职绝味',
 							desc: '加入绝味大家庭',
@@ -391,7 +400,7 @@
 						const date = new Date(baseInfo.workCardTime)
 						timeList.push({
 							time: date.getTime(),
-							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							date: `${date.getMonth()+1}/${date.getDate()}`,
 							year: date.getFullYear(),
 							title: '获得上岗证',
 							desc: '获得上岗证',
@@ -401,14 +410,18 @@
 						const date = new Date(baseInfo.tttTime)
 						timeList.push({
 							time: date.getTime(),
-							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							date: `${date.getMonth()+1}/${date.getDate()}`,
 							year: date.getFullYear(),
 							title: '获得内训师证',
 							desc: '获得内训师证',
 						})
 					}
 					timeList = timeList.concat(starUserHis.map(item => {
-						const date = new Date(item.ctime)
+						let cTime = item.ctime
+						if (typeof cTime === 'string') {
+							cTime = cTime.replace(/\-/g, '/')
+						}
+						const date = new Date(cTime)
 						const scoreInfo = [];
 						if (typeof item.guixin === 'string') {
 							scoreInfo.push({
@@ -432,21 +445,22 @@
 						}
 						return {
 							time: date.getTime(),
-							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							date: `${date.getMonth()+1}/${date.getDate()}`,
 							year: date.getFullYear(),
-							title: item.starName,
-							desc: item.activityName,
+							title: item.activityName,
+							desc: '升级成' + item.starName,
 							image: item.starIcon,
 							scoreInfo
 						}
 					}))
 					this.step5TimeLineList = timeList.sort((a, b) => a.time - b.time )
-					const day = Math.ceil((new Date().getTime() - hiredDate.getTime()) / 1000 / 60 / 60 / 24)
+					const day = baseInfo.hiredDateCount
 					const time = 1000
-					const delay = time / day
+					const delay = Math.max(time / day, 1) 
 					if (this.step5Day >= day) return
 					this.step5Timer = setInterval(() => {
-						this.step5Day++
+						this.step5Day += Math.ceil(day / 1000)
+						this.step5Day = Math.min(day, this.step5Day)
 						if (this.step5Day === day) {
 							clearInterval(this.step5Timer)
 						}
@@ -494,29 +508,29 @@
 			},
 			chooseStarLevel(id) {
 				this.starLevelInfo.selectedId = id
-				this.getSameLevelFamily()
+				this.getSameLevelFamily(true)
 				setTimeout(() => {
 					this.current++
 				}, 20)
 			},
-			getSameLevelFamily(){
+			getSameLevelFamily(reset = false){
+				if (reset) {
+					this.sameLevelFamilyStatus = 'loading'
+					this.sameLevelFamilyList = []
+				}
 				if(this.sameLevelFamilyStatus === 'nomore'){
 					return
 				}
 				const params = {
-					galaxyId: this.galaxyInfo.selectedId,
+					galaxyId: this.starInfo.selectedId,
 					starId: this.starLevelInfo.selectedId
 				}
 				this.sameLevelFamilyPageNum++
 				capsuleApi.getUserListByStartIdAndGalaxyId(params).then(res =>{
-					this.sameLevelFamilyList = this.sameLevelFamilyList.concat(res)
-					if (!res || !res.length) {
-						this.sameLevelFamilyStatus = 'nomore'
-					}
-					if(res.pageTotal === res.pageNum){
-						this.sameLevelFamilyStatus = 'nomore'
-					}
-				}).catch(err =>{
+					this.sameLevelFamilyList = this.sameLevelFamilyList.concat(res || [])
+				
+				}).finally(() => {
+					this.sameLevelFamilyStatus = 'nomore'
 				})
 			},
 			getUserInfo() {
@@ -604,8 +618,11 @@
 			this.playMusic()
 			this.getUserInfo()
 			this.getGalaxyList()
-			IndexApi.getMyStar(-1).then(res => {
+			IndexApi.getMyStar(0).then(res => {
 				this.selfStarId = res? res.id : ''
+			})
+			IndexApi.getGalxyByUserId().then(res => {
+				this.myGalxy = res || {}
 			})
 		},
 		beforeDestroy() {
@@ -992,7 +1009,7 @@
 
 					.text {
 						font-size: 14px;
-						color: #57A1FF;
+						color: #ffffff;
 						text-align: center;
 					}
 
@@ -1642,5 +1659,11 @@
 				text-align: center;
 			}
 		}
+	}
+	.linear-text {
+		background-image: linear-gradient(#FFD83B, #BEDCAD);
+		background-clip: text;
+		color: transparent !important;
+		font-weight: bold;
 	}
 </style>

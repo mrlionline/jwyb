@@ -19,7 +19,33 @@
 				>
 					<view class="desc">{{item.desc || ''}}</view>
 					<template v-if="item.scoreInfo && item.scoreInfo.length">
-						<view class="desc" v-for="score in item.scoreInfo">{{score.name}}: {{score.value}}</view>
+						<view>
+							<view class='desc desc-row' style="width: 200rpx;">
+								<text class='label'>{{item.scoreInfo[0].name}}: </text>
+								<text class='value'>{{item.scoreInfo[0].value}}</text>
+							</view>
+							<view class='desc desc-row'>
+								<text class='label'>{{item.scoreInfo[1].name}}: </text>
+								<text class='value'>{{item.scoreInfo[1].value}}</text>
+							</view>
+						</view>
+						<view>
+							<view class='desc desc-row' style="width: 200rpx;">
+								<text class='label'>{{item.scoreInfo[2].name}}: </text>
+								<text class='value'>{{item.scoreInfo[2].value}}</text>
+							</view>
+							<view class='desc desc-row'>
+								<text class='label'>{{item.scoreInfo[3].name}}: </text>
+								<text class='value'>{{item.scoreInfo[3].value}}</text>
+							</view>
+						</view>
+						<view>
+							<view class='desc desc-row' style="display: inline-block;">
+								<text class='label'>总分: </text>
+								<text class='value'>{{getTotal(item.scoreInfo)}}</text>
+							</view>
+						</view>
+						<!-- <view class="desc" v-for="score in item.scoreInfo">{{score.name}}: {{score.value}}</view> -->
 					</template>
 					<view class="image" v-if="item.image">
 						<image :src="item.image"></image>
@@ -48,6 +74,14 @@
 			return {
 				
 			};
+		},
+		methods: {
+			getTotal(scoreInfo) {
+				const res = scoreInfo.reduce((pre, cur) => {
+					return pre + parseFloat(cur.value)
+				},0);
+				return res.toFixed(2)
+			}
 		}
 	}
 </script>
@@ -139,6 +173,16 @@
 			box-shadow: 0 2px 10px 0 rgba(17,5,116,0.40);
 			border-radius: 8px;
 			border: 1px solid #BEE9FF;
+		}
+	}
+	.desc-row {
+		display: inline-block;
+		.label {
+
+		}
+		.value {
+			margin-left: 10rpx;
+
 		}
 	}
 </style>

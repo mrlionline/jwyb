@@ -18,7 +18,6 @@
 						<text class="bi-base-text">工作状态：<text>{{baseInfo.workStatus || '正常'}}</text></text>
 						<text class="bi-base-text">性别：{{sexMap[baseInfo.sex] || '保密'}}</text>
 						<text class="bi-base-text">职位：{{baseInfo.title || '-'}}</text>
-						<text class="bi-base-text">所属团队：{{baseInfo.deptArr[baseInfo.deptArr.length - 1] || '-'}}</text>
 					</view>
 				</view>
 			</view>
@@ -58,15 +57,18 @@
 		methods: {
 			getUserInfo() {
 				Caosule.queryUserInfo(this.id).then(res => {
-					console.log(res)
 					this.baseInfo = res.baseInfo
 					this.positionWay = res.userPositions || []
 					let list = []
 					if (this.baseInfo.hiredDate) {
-						const date = new Date(this.baseInfo.hiredDate)
-						const day = Math.ceil((new Date().getTime() - date.getTime()) / 1000 / 60 / 60 / 24)
+						let hDate = this.baseInfo.hiredDate
+						if (typeof hDate === 'string') {
+							hDate = hDate.replace(/\-/g, '/')
+						}
+						
+						const date = new Date(hDate)
 						list.push({
-							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							date: `${date.getMonth()+1}/${date.getDate()}`,
 							year: date.getFullYear(),
 							title: '入职绝味',
 							desc: '加入绝味大家庭',
@@ -75,14 +77,18 @@
 					}
 					
 					list = list.concat(res.starUserHis.map(item => {
-						const date = new Date(item.ctime)
+						let cTime = item.ctime
+						if (typeof cTime === 'string') {
+							cTime = cTime.replace(/\-/g, '/')
+						}
+						const date = new Date(cTime)
 						return {
 							time: date.getTime(),
-							date: `${date.getMonth()+1}/${date.getDate()+1}`,
+							date: `${date.getMonth()+1}/${date.getDate()}`,
 							year: date.getFullYear(),
-							title: item.starName,
-							desc: item.activityName,
-							image: '/static/home/level-1-personnel.png'
+							title: item.activityName,
+							desc: '升级成' + item.starName,
+							image: item.starIcon
 						}
 					}))
 					this.timeLineList = list.sort((a, b) => a.time - b.time)
