@@ -186,7 +186,9 @@
 							<!-- <view class="text">您的星语心愿发布成功</view> -->
 						</view>
 						<view class="aircraft-success" v-if="step6SubmitSuccess">
-							<image src="/pagesCapsule/static/capsule/submit-success.png"></image>
+							<view class="aircraft-icon">
+								<image mode="widthFix" src="/pagesCapsule/static/capsule/submit-success.gif"></image>
+							</view>
 							<view class="text">您的星语心愿发布成功</view>
 						</view>
 						<view class="aircraft-success" v-if="step6SubmitFail">
@@ -1559,7 +1561,7 @@
 
 				image {
 					width: 320rpx;
-					height: 320rpx;
+					// height: 320rpx;
 				}
 
 				.text {
@@ -1568,6 +1570,11 @@
 					font-size: 18px;
 					margin-top: 40rpx;
 				}
+			}
+			.aircraft-icon{
+				width: 320rpx;
+				height: 320rpx;
+				margin: 0 auto;
 			}
 
 			.btn-wrap {
