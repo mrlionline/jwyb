@@ -1,7 +1,10 @@
 <template>
-	<view class="home-item" @click="goto()">
-		<image :src="item.imgSrc"></image>
-		<text>{{item.name}}</text>
+	<view style="width: 310rpx;;">
+		<view class="home-item" @click="goto()">
+			<image :src="item.icon"></image>
+			<text>{{item.label}}</text>
+		</view>
+		<!-- <web-view v-if="linkType !== 'wx'" :src="link"></web-view> -->
 	</view>
 </template>
 
@@ -11,14 +14,20 @@
 		props:[ 'item' ],
 		data() {
 			return {
-				
+				type: '',
+				link: ''
 			};
 		},
 		methods: {
 			goto(){
-				uni.navigateTo({
-					url: this.item.url
-				})
+				if(item.linkType === 'wx'){
+					uni.navigateTo({
+						url: this.item.link
+					})
+				}else {
+					this.link = item.link
+				}
+				this.type = item.linkType
 			}
 		}
 	}

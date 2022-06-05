@@ -2,7 +2,13 @@
 	<view class="content">
 		<view class="home-title">绝味人 在一起</view>
 		<view class="home-container">
-			<home-item v-for="item in list" :item="item"></home-item>
+			<!-- <home-item v-for="item in list" :item="item"></home-item> -->
+			<view :style="{order: componentsOrder.bannerOrder}">
+				<home-banner :config="componentsConfig.bannerConfig"></home-banner>
+			</view>
+			<view :style="{order: componentsOrder.navOrder}">
+				<home-nav :config="componentsConfig.navConfig"></home-nav>
+			</view>
 		</view>
 		<!-- <image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image> -->
 		<u-modal 
@@ -24,7 +30,13 @@
 </template>
 
 <script>
+	import HomeNav from './home-nav.vue'
+	import HomeBanner from './home-banner.vue'
 	export default {
+		components: {
+			HomeNav,
+			HomeBanner
+		},
 		data() {
 			return {
 				promoteShow: false,
@@ -32,26 +44,81 @@
 					level: 3,
 					identity: 'leader'
 				},
-				list: [
-					{
-						name: '星空胶囊',
-						url: '/pagesCapsule/capsule/capsule',
-						imgSrc: '/static/home/home-capsule.png'
-					},
-					{
-						name: '星委会',
-						url: '/pagesCommittee/committee/committee-list',
-						imgSrc: '/static/home/home-committee.png'
-					}
-				]
+				componentsOrder: {
+					bannerOrder: 0,
+					navOrder: 1
+				},
+				componentsConfig: {
+					bannerConfig: undefined,
+					navConfig: undefined
+				},
+				configList: []
 			}
 		},
 		created() {
 			// setTimeout(() =>{
 			// 	this.promoteShow = true
 			// }, 1000)
+			this.getConfig()
 		},
 		methods: {
+			getConfig(){
+				const res = [
+					{
+						name: 'banner',
+						label: 'Banner',
+						id: '',
+						config: {
+							showWeather: true,
+							imgs: [{
+									url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+									link: 'https://www.baidu.com',
+									linkTypea: 'wx'
+								},
+								{
+									url: 'https://img.yzcdn.cn/vant/cat.jpeg',
+									link: 'https://www.baidu.com',
+									linkTypea: 'outside'
+								}
+							]
+						}
+					},
+					{
+						name: 'navigation',
+						label: '魔方导航',
+						id: '',
+						config: {
+							navs: [
+								{
+									icon: '/static/home/home-capsule.png',
+									link: '/pagesCapsule/capsule/capsule',
+									linkTypea: 'wx',
+									label: '星空胶囊'
+								},
+								{
+									icon: '/static/home/home-committee.png',
+									link: '/pagesCommittee/committee/committee-list',
+									linkTypea: 'wx',
+									label: '星委会'
+								}
+							]
+						}
+					}
+				]
+				this.configList = res.forEach((item, index) =>{
+					switch(item.name){
+						case 'banner':
+							this.componentsOrder.bannerOrder = index
+							this.componentsConfig.bannerConfig = item.config
+							break;
+						case 'navigation':
+							this.componentsOrder.navOrder = index
+							this.componentsConfig.navConfig = item.config.navs
+							break;
+					}
+				})
+				console.log('this.configList', this.configList)
+			},
 			goto(url){
 				uni.navigateTo({
 					url: url
@@ -84,9 +151,10 @@
 		position: fixed;
 		bottom: 0;
 		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		padding: 34px 24px;
+		flex-direction: column;
+		// justify-content: space-between;
+		// flex-wrap: wrap;
+		// padding: 34px 24px;
 		width: 100%;
 		height: 79%;
 		background: #FFFFFF;
