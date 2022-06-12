@@ -5,14 +5,17 @@
 			keyName="url"
 			@change="e => currentNum = e.current"
 			circular
-			indicatorStyle="right: 20px"
+			indicator
+			height="480rpx"
+			radius="0"
+			indicatorStyle="bottom: 48rpx"
 		>
-			<view
+			<!-- <view
 				slot="indicator"
 				class="indicator-num"
 			>
 				<text class="indicator-num__text">{{ currentNum + 1 }}/{{ list.length }}</text>
-			</view>
+			</view> -->
 		</u-swiper>
 		<view class="weather" v-if="config && config.showWeather"></view>
 	</view>

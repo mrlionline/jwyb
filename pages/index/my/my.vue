@@ -1,5 +1,6 @@
 <template>
 	<view style="height: 100%;">
+		<page-header :title="activeTabBar" :showBack="false"></page-header>
 		<view class="space"></view>
 		<view class="my-container">
 			<view class="user-info">

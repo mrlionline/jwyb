@@ -1,14 +1,10 @@
 <template>
 	<view class="content">
-		<view class="home-title">绝味人 在一起</view>
-		<view class="home-container">
-			<!-- <home-item v-for="item in list" :item="item"></home-item> -->
-			<view :style="{order: componentsOrder.bannerOrder}">
-				<home-banner :config="componentsConfig.bannerConfig"></home-banner>
-			</view>
-			<view :style="{order: componentsOrder.navOrder}">
-				<home-nav :config="componentsConfig.navConfig"></home-nav>
-			</view>
+		<view v-for="item in configList" :class="[item.name, {'radius-content': item.name !== 'banner'}]">
+			<home-banner v-if="item.name === 'banner'" :config="item.config"></home-banner>
+			<home-nav v-if="item.name === 'navigation'" :config="item.config.navs"></home-nav>
+			<home-card v-if="item.name === 'card'" :config="item.config"></home-card>
+			<home-news v-if="item.name === 'news'" :config="item.config"></home-news>
 		</view>
 		<!-- <image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image> -->
 		<u-modal 
@@ -32,10 +28,17 @@
 <script>
 	import HomeNav from './home-nav.vue'
 	import HomeBanner from './home-banner.vue'
+	import HomeCard from './home-card.vue'
+	import HomeNews from './home-news.vue'
 	export default {
+		props: [
+			'configList'
+		],
 		components: {
 			HomeNav,
-			HomeBanner
+			HomeBanner,
+			HomeCard,
+			HomeNews
 		},
 		data() {
 			return {
@@ -43,82 +46,16 @@
 				upInfo: {
 					level: 3,
 					identity: 'leader'
-				},
-				componentsOrder: {
-					bannerOrder: 0,
-					navOrder: 1
-				},
-				componentsConfig: {
-					bannerConfig: undefined,
-					navConfig: undefined
-				},
-				configList: []
+				}
 			}
 		},
 		created() {
 			// setTimeout(() =>{
 			// 	this.promoteShow = true
 			// }, 1000)
-			this.getConfig()
+			// this.getConfig()
 		},
 		methods: {
-			getConfig(){
-				const res = [
-					{
-						name: 'banner',
-						label: 'Banner',
-						id: '',
-						config: {
-							showWeather: true,
-							imgs: [{
-									url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-									link: 'https://www.baidu.com',
-									linkTypea: 'wx'
-								},
-								{
-									url: 'https://img.yzcdn.cn/vant/cat.jpeg',
-									link: 'https://www.baidu.com',
-									linkTypea: 'outside'
-								}
-							]
-						}
-					},
-					{
-						name: 'navigation',
-						label: '魔方导航',
-						id: '',
-						config: {
-							navs: [
-								{
-									icon: '/static/home/home-capsule.png',
-									link: '/pagesCapsule/capsule/capsule',
-									linkTypea: 'wx',
-									label: '星空胶囊'
-								},
-								{
-									icon: '/static/home/home-committee.png',
-									link: '/pagesCommittee/committee/committee-list',
-									linkTypea: 'wx',
-									label: '星委会'
-								}
-							]
-						}
-					}
-				]
-				this.configList = res.forEach((item, index) =>{
-					switch(item.name){
-						case 'banner':
-							this.componentsOrder.bannerOrder = index
-							this.componentsConfig.bannerConfig = item.config
-							break;
-						case 'navigation':
-							this.componentsOrder.navOrder = index
-							this.componentsConfig.navConfig = item.config.navs
-							break;
-					}
-				})
-				console.log('this.configList', this.configList)
-			},
 			goto(url){
 				uni.navigateTo({
 					url: url
@@ -133,36 +70,11 @@
 			upModalImg: function(){
 				return `/static/home/level-${this.upInfo.level}-${this.upInfo.identity}.png`
 			}
-		}
+		},
 	}
 </script>
 
-<style lang="scss">
-	.home-title{
-		position: fixed;
-		left: 48rpx;
-		bottom: calc(79% + 48rpx);
-		font-size: 20px;
-		line-height: 20px;
-		color: #FFFFFF;
-		font-weight: bold;
-	}
-	.home-container{
-		position: fixed;
-		bottom: 0;
-		display: flex;
-		flex-direction: column;
-		// justify-content: space-between;
-		// flex-wrap: wrap;
-		// padding: 34px 24px;
-		width: 100%;
-		height: 79%;
-		background: #FFFFFF;
-		z-index: 1;
-		overflow-y: auto;
-		border-top-left-radius: 24px;
-		border-top-right-radius: 24px;
-	}
+<style lang="scss" scoped>
 	.promote-box{
 		display: flex;
 		justify-content: center;
@@ -202,5 +114,15 @@
 		width: 116rpx;
 		height: 116rpx;
 		z-index: 1;
+	}
+	.banner + view{
+		position: relative;
+		margin-top: -32rpx;
+		z-index: 100;
+	}
+	.radius-content{
+		margin: 0 32rpx 24rpx;
+		border-radius: 8px;
+		overflow: hidden;
 	}
 </style>
