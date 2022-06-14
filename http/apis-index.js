@@ -12,6 +12,9 @@ const indexApis = {
 	
 	getGalxyByUserId(id = 0) {
 		return http('/starsCapsule-api/galaxy/getGalxyByUserId/' + id)
+	},
+	queryUsedLayout() {
+		return http('/jurisdiction-api/layoutManagement/queryUsedLayout', 'GET', { data: {} })
 	}
 	
 }

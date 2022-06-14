@@ -16,18 +16,17 @@
 				v-for="tabbar in tabbarList"
 				:text="tabbar.label"
 				:name="tabbar.name"
-				:icon="tabbar.icon"
 			>
-				<!-- <image
+				<image
 					class="tab-bar-icon"
 					slot="active-icon"
-					src="/static/tabBarHomeActive.png"
+					:src="tabbar.icon"
 				></image>
 				<image
 					class="tab-bar-icon"
 					slot="inactive-icon"
-					src="/static/tabBarHome.png"
-				></image> -->
+					:src="tabbar.activeIcon"
+				></image>
 			</u-tabbar-item>
 		</u-tabbar>
 	</view>
@@ -37,6 +36,7 @@
 	import My from './my/my.vue'
 	import Home from './home/home.vue'
 	import Information from './information/information.vue'
+	import indexApis from '../../http/apis-index.js'
 	export default {
 		components: {
 			My, Home, Information
@@ -65,6 +65,14 @@
 				this.activeTabBar = e
 			},
 			getConfig(){
+				indexApis.queryUsedLayout().then(res =>{
+					console.log('res', res)
+					const json = JSON.parse(res.context)
+					this.configList = json.widgets
+					console.log('this.configList', this.configList)
+					this.tabbarList = json.bottomNav.config.navs
+					this.activeTabBar = this.tabbarList[0].name
+				})
 				const res = [
 					{
 						name: 'banner',
@@ -211,10 +219,6 @@
 					  }
 					}
 				]
-				const tabObj = res.splice(res.findIndex(item => item.name === 'bottomNav'), 1)[0]
-				this.tabbarList = tabObj.config.navs
-				this.activeTabBar = this.tabbarList[0].name
-				this.configList = res
 			}
 		},
 		created() {
