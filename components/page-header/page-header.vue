@@ -2,7 +2,7 @@
 	<view class="page-header">
 		<!-- <view class="ph-status-space"></view>
 		<view class="ph-navbar-space"></view> -->
-		<view class="ph-content">
+		<view class="ph-content" v-if="!isDefault">
 			<view class="ph-wrap">
 				<image class="ph-bg-img" src="/static/bg.png"></image>
 				<u-navbar
@@ -10,10 +10,20 @@
 					:title="title"
 					leftIconColor="#fff"
 					:bgColor="'transparent'"
-					:titleStyle="{color: '#fff'}"
+					:titleStyle="{color: titleColor}"
 					@leftClick="back()"
 				></u-navbar>
 			</view>
+		</view>
+		<view v-if="isDefault">
+			<u-navbar
+				:leftIconSize="backArrowSize"
+				:title="title"
+				leftIconColor="#fff"
+				:bgColor="'transparent'"
+				:titleStyle="{color: titleColor}"
+				@leftClick="back()"
+			></u-navbar>
 		</view>
 	</view>
 </template>
@@ -28,6 +38,14 @@
 			showBack: {
 				type: Boolean,
 				default: true
+			},
+			isDefault: {
+				type: Boolean,
+				default: false
+			},
+			titleColor: {
+				type: String,
+				default: '#fff'
 			}
 		},
 		data() {

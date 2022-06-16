@@ -40,6 +40,13 @@ function logout(){
 }
 
 const http = (url, method, {data, noToken, noToast, fullRes} = {}) =>{
+	if(method.toLowerCase() === 'get'){
+		if(data instanceof Object){
+			data._time = Math.random()
+		}else {
+			data = {_time: Math.random()}
+		}
+	}
 	return new Promise((resolve, reject) =>{
 		const header = noToken ? null : {
 			"Authorization" : uni.getStorageSync('token')

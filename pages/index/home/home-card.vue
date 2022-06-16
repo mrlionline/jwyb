@@ -35,11 +35,15 @@
 		padding: 32rpx 32rpx 0;
 		font-size: 0;
 		background-color: #ffffff;
+		.hc-single{
+			overflow: hidden;
+		}
 		.card-title{
 			line-height: 42rpx;
 			font-weight: 500;
 			font-size: 30rpx;
 			color: #444251;
+			margin-top: 16rpx;
 		}
 		.card-desc{
 			line-height: 34rpx;

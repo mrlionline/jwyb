@@ -1,6 +1,8 @@
 <template>
 	<view class="home-nav-item" @click="goto()">
-		<image :src="item.icon"></image>
+		<view>
+			<image :src="item.icon"></image>
+		</view>
 		<text>{{item.label}}</text>
 	</view>
 </template>
@@ -37,9 +39,14 @@
 		align-items: center;
 		width: 172rpx;
 		padding-bottom: 16rpx;
-		image{
+		view{
 			width: 96rpx;
 			height: 96rpx;
+			padding: 16rpx;
+			image{
+				width: 100%;
+				height: 100%;
+			}
 		}
 		text{
 			font-weight: 400;
