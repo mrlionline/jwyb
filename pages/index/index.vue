@@ -71,7 +71,7 @@
 					this.configList = json.widgets
 					console.log('this.configList', this.configList)
 					this.tabbarList = json.bottomNav.config.navs
-					// this.activeTabBar = this.tabbarList[0].name
+					this.activeTabBar = this.tabbarList[0].name
 				})
 				const res = [
 					{
