@@ -39,7 +39,7 @@ function logout(){
 	})
 }
 
-const http = (url, method, {data, noToken, noToast, fullRes} = {}) =>{
+const http = (url, method, {data, noToken, noToast, fullRes} = {}, timeout) =>{
 	if(method.toLowerCase() === 'get'){
 		if(data instanceof Object){
 			data._time = Math.random()
@@ -56,6 +56,7 @@ const http = (url, method, {data, noToken, noToast, fullRes} = {}) =>{
 			method,
 		    data,
 		    header,
+			timeout: timeout || 60000,
 		    success: (res) => {
 				console.log('res', res)
 		        if(res.statusCode === 200){	// http状态200

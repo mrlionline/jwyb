@@ -35,7 +35,7 @@
 <script>
 	import My from './my/my.vue'
 	import Home from './home/home.vue'
-	import Information from './information/information.vue'
+	import Information from '../information/list.vue'
 	import indexApis from '../../http/apis-index.js'
 	export default {
 		components: {
@@ -71,7 +71,7 @@
 					this.configList = json.widgets
 					console.log('this.configList', this.configList)
 					this.tabbarList = json.bottomNav.config.navs
-					this.activeTabBar = this.tabbarList[0].name
+					// this.activeTabBar = this.tabbarList[0].name
 				})
 				const res = [
 					{

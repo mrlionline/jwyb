@@ -7,7 +7,7 @@
 			<home-news v-if="item.name === 'news'" :config="item.config"></home-news>
 		</view>
 		<!-- <image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image> -->
-		<u-modal 
+		<u-modal
 			:show="promoteShow"
 			width="654rpx"
 			:showConfirmButton="false"
