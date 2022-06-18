@@ -14,7 +14,7 @@
 					</view>
 				</view>
 				<view class="right">
-
+					<image @click="goto('/pagesSignIn/sign-in')" src="../../../static/my/sign-in-btn.png"></image>
 				</view>
 			</view>
 			<view class="integral section">
@@ -54,9 +54,6 @@
 					</view>
 				</view>
 			</view>
-      <view class="btn-wrap" @click="logoutConfirm = true">
-        <text class="btn-text">退出登录</text>
-      </view>
 		</view>
 		<u-modal
 			:show="logoutConfirm"
@@ -89,6 +86,11 @@
 			}
 		},
 		methods: {
+			goto(url){
+				uni.navigateTo({
+					url: url
+				});
+			},
 			logout(){
 				indexApis.logout().then(() =>{
 					uni.clearStorage();
@@ -127,12 +129,9 @@
 		flex-direction: column;
 		flex-wrap: wrap;
 		width: 100%;
-		height: 100vh;
-		background: #F4F6F8;
 		z-index: 1;
 		border-top-left-radius: 24px;
 		border-top-right-radius: 24px;
-		padding-bottom: 176rpx;
 	}
 	.section{
 		width: calc(100% - 64rpx);
@@ -166,6 +165,10 @@
 				width: 100%;
 				height: 100%;
 			}
+		}
+		.right image{
+			width: 64rpx;
+			height: 108rpx;
 		}
 	}
 	.integral{

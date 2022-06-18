@@ -71,7 +71,7 @@
 					this.configList = json.widgets
 					console.log('this.configList', this.configList)
 					this.tabbarList = json.bottomNav.config.navs
-					// this.activeTabBar = this.tabbarList[0].name
+					this.activeTabBar = this.tabbarList[0].name
 				})
 				const res = [
 					{
@@ -229,7 +229,7 @@
 
 <style scoped>
 	.content{
-		background-color: #F3F5F7;
+		background-color: #F4F6F8;
 		min-height: 100vh;
 	}
 	.tab-bar-icon{
