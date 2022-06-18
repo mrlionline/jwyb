@@ -16,6 +16,10 @@ const commentsApis = {
 	apiDelCommunit(id) {
 		return http('/learning-interaction-api/community/delCommunit/' + id, 'GET')
 	},
+	// 删除评论 
+	apiDelCommuityReply(id) {
+		return http('/learning-interaction-api/communityReply/delCommuityReply/'+id, 'GET')
+	},
 	// 新增评论
 	apiAddCommuityReply(data){
 		return http('/learning-interaction-api/communityReply/addCommuityReply', 'POST', {data})

@@ -45,7 +45,7 @@
 		<view class="fix-community-comments">
 			<view class="textarea-label">
 				<!--  focus="true" -->
-				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" @blur="commentPost" :formatter="fixCommentsFormatter" border="none" height="36" autoHeight></u-textarea>
+				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" @blur="commentPost" :formatter="fixCommentsFormatter" border="none" height="36" cursorSpacing="30" autoHeight></u-textarea>
 			</view>
 			<view class="operate-chat" @click="operateChat()">
 				<u-icon name="chat" color="#959BA4" size="24"></u-icon>
