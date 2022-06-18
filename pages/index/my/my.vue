@@ -10,11 +10,11 @@
 					</view>
 					<view>
 						<text>李红</text>
-						
+
 					</view>
 				</view>
 				<view class="right">
-					
+
 				</view>
 			</view>
 			<view class="integral section">
@@ -54,6 +54,9 @@
 					</view>
 				</view>
 			</view>
+      <view class="btn-wrap" @click="logoutConfirm = true">
+        <text class="btn-text">退出登录</text>
+      </view>
 		</view>
 		<u-modal
 			:show="logoutConfirm"
@@ -108,7 +111,7 @@
 			indexApis.getMyStar(0).then(res => {
 				this.myStar = res
 			})
-			
+
 		}
 	}
 </script>

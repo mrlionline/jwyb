@@ -212,6 +212,7 @@
 		flex-direction: column;
 		align-items: center;
 		position: relative;
+		min-height: 100%;
 		.label-background-img{
 			position: absolute;
 			top: 0;
