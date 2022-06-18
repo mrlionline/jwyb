@@ -54,6 +54,9 @@
 					</view>
 				</view>
 			</view>
+			<view class="btn-wrap" @click="logoutConfirm = true">
+        <text class="btn-text">退出登录</text>
+      </view>
 		</view>
 		<u-modal
 			:show="logoutConfirm"
