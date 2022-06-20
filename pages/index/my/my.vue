@@ -22,7 +22,7 @@
 					<image src="../../../static/time-line-dot.png" style="width: 20px; height: 20px;"></image>
 					<text style="font-weight: 400;font-size: 15px;color: #FFE3A5; margin-left: 20rpx;">我的积分</text>
 				</view>
-				<view class="right">
+				<view class="right" @click="goto('/pagesMyScore/my-score')">
 					<text style="color: #FFE3A5; font-size: 48rpx; font-weight: bold; margin-right: 30rpx;">5000</text>
 					<u-icon color="#FFE3A5" size="48rpx" name="arrow-right"></u-icon>
 				</view>
