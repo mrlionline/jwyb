@@ -9,7 +9,7 @@
 						<image mode="aspectFit" v-if="!userInfo.avatar" src="/static/defaultAvatar.png"></image>
 					</view>
 					<view>
-						<text>李红</text>
+						<text>{{userInfo.name}}</text>
 
 					</view>
 				</view>
@@ -32,7 +32,7 @@
 					<image src="../../../static/my/my-updates.png"></image>
 					<text>我的动态</text>
 				</view>
-				<view class="fun-item">
+				<view class="fun-item" @click="goto('pages/index/my/my-set')">
 					<image src="../../../static/my/set.png"></image>
 					<text>设置</text>
 				</view>
@@ -41,15 +41,15 @@
 				<view class="header">资讯</view>
 				<view class="content">
 					<view class="information-item">
-						<view class="number">123</view>
+						<view class="number">{{information.collectionTotalNum}}</view>
 						<view class="name">收藏</view>
 					</view>
 					<view class="information-item">
-						<view class="number">123</view>
+						<view class="number">{{information.pointTotalNum}}</view>
 						<view class="name">点赞</view>
 					</view>
 					<view class="information-item">
-						<view class="number">1209</view>
+						<view class="number">{{information.replyTotalNum}}</view>
 						<view class="name">评论</view>
 					</view>
 				</view>
@@ -72,6 +72,7 @@
 
 <script>
 	import indexApis from '../../../http/apis-index.js'
+	import myApis from '../../../http/apis-my.js'
 	export default {
 		data() {
 			return {
@@ -85,6 +86,11 @@
 				myStar: {
 					name: '',
 					icon: ''
+				},
+				information: {
+					collectionTotalNum: 0,	// 收藏
+					pointTotalNum: 0,
+					replyTotalNum: 0
 				}
 			}
 		},
@@ -106,6 +112,11 @@
 				uni.navigateTo({
 					url: '/pages/login/reset-password'
 				});
+			},
+			statisticsMyInformationCount(){
+				myApis.statisticsMyInformationCount({}).then(res =>{
+					this.information = res
+				})
 			}
 		},
 		created() {
@@ -116,6 +127,7 @@
 			indexApis.getMyStar(0).then(res => {
 				this.myStar = res
 			})
+			this.statisticsMyInformationCount()
 
 		}
 	}

@@ -38,6 +38,15 @@
 		        "enablePullDownRefresh": true
 		    }
 		    
+		},
+		{
+		    "path" : "pages/index/my/my-set",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": true
+		    }
+		    
 		}
     ],
 	"subPackages": [

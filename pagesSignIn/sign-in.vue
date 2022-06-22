@@ -16,6 +16,7 @@
 	</view>
 </template>
 <script>
+	import myApi from '../http/apis-my.js'
 	export default{
 		data(){
 			return {
@@ -25,8 +26,18 @@
 		},
 		methods: {
 			doSignIn(){
-				this.showPop = true
+				myApi.loginIn().then(res =>{
+					this.showPop = true
+				})
+			},
+			loginRecord(){
+				myApi.loginRecord().then(res =>{
+					console.log(res)
+				})
 			}
+		},
+		created() {
+			this.loginRecord()
 		}
 	}
 </script>

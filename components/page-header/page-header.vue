@@ -8,7 +8,7 @@
 				<u-navbar
 					:leftIconSize="backArrowSize"
 					:title="title"
-					leftIconColor="#fff"
+					:leftIconColor="titleColor"
 					:bgColor="'transparent'"
 					:titleStyle="{color: titleColor}"
 					@leftClick="back()"
@@ -19,7 +19,7 @@
 			<u-navbar
 				:leftIconSize="backArrowSize"
 				:title="title"
-				leftIconColor="#fff"
+				:leftIconColor="titleColor"
 				:bgColor="'transparent'"
 				:titleStyle="{color: titleColor}"
 				@leftClick="back()"
