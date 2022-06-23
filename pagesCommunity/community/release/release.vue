@@ -32,7 +32,7 @@
 			</view>
 			<view class="location-address" v-if="formData.locationName || formData.storeName">
 				<view class="location-address-label">
-					<image class="address-img" src="/pagesCommunity/static/community/location-address.png" mode="aspectFit"></image>
+					<image class="address-img" src="/pagesCommunity/static/community/location-address-img.png" mode="aspectFit"></image>
 					<view class="address-text">{{ formData.locationName || formData.storeName }}</view>
 				</view>
 			</view>
@@ -177,6 +177,13 @@
 				console.info("event-->",event)
 				let lists = [].concat(event.file)
 				let fileListLen = this[`fileList${event.name}`].length
+				if(lists.length > 9){
+					uni.showToast({
+						title: "最多上传9张图片！",
+						icon: 'none'
+					})
+					return
+				}
 				lists.map((item) => {
 					this[`fileList${event.name}`].push({
 						...item,
@@ -396,8 +403,8 @@
 					width: 36rpx;
 					height: 36rpx;
 					margin: 0 0 0 8rpx;
-					border-radius: 50%;
-					background-color: #567DF4;
+					// border-radius: 50%;
+					// background-color: #567DF4;
 				}
 				.address-text {
 					width: auto;

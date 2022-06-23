@@ -1,12 +1,10 @@
 <template>
 	<view class="label-container">
-		<image class="label-background-img" src="/static/community/bg.png"></image>
-		<PageNavbar title="资讯" :bgColor="'transparent'" :leftIconColor="'#FFFFFF'" :titleStyle="titleStyle"></PageNavbar>
+		<PageNavbar title="我的资讯"></PageNavbar>
 		<view class="community-main">
-			<view class="search-label">
-				<u-search placeholder="搜索资讯标题" @search="searchCommunity" v-model="formData.title" :show-action="false" :bgColor="'#FFFFFF'"></u-search>
-			</view>
-			<u-tabs class="tabs-list" :list="tabsList" :current="tabsCurrent" @change="tabsChange" :activeStyle="activeStyle" :inactiveStyle="inactiveStyle"></u-tabs>
+			<u-sticky bgColor="#fff">
+				<u-tabs :list="infoTabList" :current="tabsCurrent" @change="tabsChange" :activeStyle="activeStyle" :inactiveStyle="inactiveStyle" :itemStyle="itemStyle" scrollable="false"></u-tabs>
+			</u-sticky>
 			<!-- 资讯 -1- -->
 			<view class="tabs-information" v-if="infoList.length > 0">
 				<view class="tabs-info-list" v-for="(item, index) in infoList" :key="index">
@@ -33,7 +31,7 @@
 
 <script>
 	import infoListApis from '../../http/information/list.js'
-	import PageNavbar from './components/pageNavbar.vue'
+	import PageNavbar from '@/components/pageNavbar/pageNavbar.vue'
 	import uParseMax from '@/components/u-parse/u-parse.vue'
 	import {marked} from "marked" 
 	export default {
@@ -44,12 +42,27 @@
 		data() {
 			return {
 				formData: {
-					title: "",//咨询标题
 					pageNum: 1,//页数-不分页查询时，该字段传null
 					pageSize: 10,//每页数量-不分页查询时，该字段传null
-					informationTypeId: 0 //咨询类别id
+					heartType: 2 //资讯 type
 				},
-				tabsList: [],
+				//资讯类型列表
+				infoTypeList: [],
+				//我的资讯Tab列表
+				infoTabList: [
+					{
+						name: "收藏",
+						type: 2 // 1:资讯点赞，2:收藏， 3:阅读’ 4:评论
+					},
+					{
+						name: "点赞",
+						type: 1
+					},
+					{
+						name: "评论",
+						type: 4
+					},
+				],
 				infoList: [],
 				tabsCurrent: 0,
 				hasNext: 0,
@@ -65,6 +78,10 @@
 					color: '#444251',
 					fontWeight: 400,
 					fontSize: '30rpx'
+				},
+				itemStyle: {
+					width: "33.33%",
+					height: "88rpx"
 				}
 			}
 		},
@@ -86,20 +103,14 @@
 			queryAppletList(){
 				const thisObj = this
 				let thisData = uni.$u.deepClone(thisObj.formData)
-				if(!thisData.informationTypeId){
-					delete thisData.informationTypeId
-				}
-				if(!thisData.title){
-					delete thisData.title
-				}
 				infoListApis.apiAppletList(thisData).then(res => {
 						// console.info("res res res-->",res)
 					if(res.length > 0){
-						let tabsList = uni.$u.deepClone(thisObj.tabsList)
+						let infoTypeList = uni.$u.deepClone(thisObj.infoTypeList)
 						res.forEach(function(ele,index){
-							for (let i = 0; i < tabsList.length; i++) {
-								if(ele.informationTypeId == tabsList[i].id){
-									ele.informationType = tabsList[i].name
+							for (let i = 0; i < infoTypeList.length; i++) {
+								if(ele.informationTypeId == infoTypeList[i].id){
+									ele.informationType = infoTypeList[i].name
 									return
 								}
 							}
@@ -151,34 +162,19 @@
 							}
 						]
 						newTab.push(...res)
-						thisObj.tabsList = newTab
+						thisObj.infoTypeList = newTab
 					} else {
 						console.info("获取社区列表接口失败！001")
 					}
 				})
-			},
-			searchCommunity(){
-				const thisObj = this
-				console.info("搜索!!!!")
-				// uni.$u.deepClone()
-				let thisData = thisObj.formData
-				if(thisData.title){
-					thisData.pageNum = 1
-					thisObj.queryAppletList()
-				} else {
-					uni.showToast({
-						title: "请输入搜索内容！",
-						icon: 'none'
-					})
-				}
-				
 			},
 			tabsChange(item){
 				console.info("切换!!!!",item)
 				const thisObj = this
 				// uni.$u.deepClone()
 				let thisData = thisObj.formData
-				thisData.informationTypeId = item.id
+				thisData.heartType = item.type
+				thisObj.infoList = []
 				thisData.pageNum = 1
 				thisObj.queryAppletList()
 			},
@@ -192,7 +188,7 @@
 			//跳转资讯详情
 			infoToDetail(id){
 				uni.navigateTo({
-					url: `pages/information/detail?id=${id}`
+					url: `/pages/information/detail?id=${id}`
 				})
 			},
 		},
@@ -219,7 +215,7 @@
 			left: 0;
 			right:0;
 			width: 750rpx;
-			height: 440rpx;
+			height: 312rpx;
 			z-index: 1;
 		}
 		.community-main {
@@ -230,20 +226,6 @@
 			padding:0;
 			z-index: 2;
 			// background-color: #F5F6F7;
-			.search-label {
-				width: 684rpx;
-				height: 136rpx;
-				overflow: hidden;
-				margin: 0 auto;
-				padding: 0;
-				display: flex;
-				align-items: center;
-			}
-			/deep/ .u-tabs {
-				position: relative;
-				z-index: 2;
-				background-color: #FFF;
-			}
 			.tabs-information,
 			.information-empty {
 				width: 100%;
@@ -276,13 +258,13 @@
 				.info-content {
 					width: 100%;
 					height: auto;
-					max-height: 132rpx;
+					// max-height: 126rpx;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
 					padding: 0;
 					font-weight: 400;
 					font-size: 30rpx;
-					line-height: 44rpx;
+					line-height: 42rpx;
 					color: #959BA4;
 					text-overflow: ellipsis;
 					display: -webkit-box;

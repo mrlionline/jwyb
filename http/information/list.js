@@ -8,6 +8,10 @@ const infoListApis = {
 	apiInfoTypeList(data){
 		return http('/learning-interaction-api/informationType/myList', 'POST', {data})
 	},
+	// 根据id获取资讯
+	apiCode2Session(code) {
+		return http('/learning-interaction-api/wx/getCode2Session?jsCode=' + code, 'GET')
+	},
 	
 }
 export default infoListApis

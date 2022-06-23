@@ -1,12 +1,12 @@
 <template>
 	<view class="label-container">
-		<PageNavbar title="互动社区"></PageNavbar>
+		<PageNavbar title="我的动态"></PageNavbar>
 		<!-- 社区列表  -->
 		<view class="community-main">
 			<view class="community-list" v-for="(item, index) in communityList" :key="index">
 				<!-- 动态内容 -->
 				<view class="community-info">
-					<image class="user-photo" :src="item.authorAvatar || '/pagesCommunity/static/community/tabBarMyActive.png'" mode="aspectFit"></image>
+					<image class="user-photo" :src="item.authorAvatar || '../../static/defaultAvatar.png'" mode="aspectFit"></image>
 					<view class="user-info">
 						<view class="user-name">{{ item.authorName || '佚名' }}</view>
 						<view class="timer">{{ item.releaseTime || item.mtime }}</view>
@@ -30,14 +30,14 @@
 					<view class="community-media" v-else>
 						<u-grid :col="3">
 							<u-grid-item v-for="(itm, idx) in item.fileList" :key="idx">
-								<image class="grid-img" :src="itm.fileUrl" mode="aspectFit" @click="previewCommunityImage(itm.fileUrl)"></image>
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFit"></image>
 							</u-grid-item>
 						</u-grid>
 					</view>
 					<!-- 地理位置展示  -->
 					<view class="location-address" v-if="item.locationName || item.storeName">
 						<view class="location-address-label">
-							<image class="address-img" src="/pagesCommunity/static/community/location-address-img.png" mode="aspectFit"></image>
+							<image class="address-img" src="../../static/community/location-address-img.png" mode="aspectFit"></image>
 							<view class="address-text">{{ item.locationName || item.storeName }}</view>
 						</view>
 					</view>
@@ -47,7 +47,7 @@
 				<view class="community-operate">
 					 <view class="operate-chat" @click="operateChat(item.id)">
 					 	<image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit"></image>
-					 	<text>{{ item.commentNum }}</text>
+						<text>{{ item.commentNum }}</text>
 					 </view>
 					 <view class="operate-thumb" @click="operateThumb(item)">
 						<u-icon v-if="item.isHb" name="thumb-up-fill" color="#567DF4" size="28"></u-icon>
@@ -59,7 +59,7 @@
 		</view>
 		<!-- 发布动态 -->
 		<view class="fix-release-button" @click="goReleaseHandle">
-			<image class="fix-release-img" src="/pagesCommunity/static/community/community-release.png" mode="aspectFit"></image>
+			<image class="fix-release-img" src="../../static/community/community-release.png" mode="aspectFit"></image>
 		</view>
 		<!--  删除动态相关  -->
 		<u-popup :show="showCommunityDel" @close="closeCommunityDel" @open="openCommunityDel" :round="16">
@@ -79,33 +79,23 @@
 </template>
 
 <script>
-	import informationApis from '@/http/community/list.js'
-	import commentsApis from '@/http/community/comments.js'
-	import PageNavbar from '../components/pageNavbar.vue'
+	import informationApis from '../../http/community/list.js'
+	import commentsApis from '../../http/community/comments.js'
+	import PageNavbar from '../../components/pageNavbar/pageNavbar.vue'
 	export default {
 		components: {
 			PageNavbar
 		},
 		data() {
 			return {
-				pageType: "default",
 				formData: {
-					interactiveCommunityId: "",
 					pageNum: 1,
 					pageSize: 10,
 				},
 				//社区动态列表  isMe 是否是自己发表的评论 0 不是 1 是
 				communityList: [],
 				background: {
-					backgroundColor: '#001f3f',
-					
-					// 导航栏背景图
-					// background: 'url(https://cdn.uviewui.com/uview/swiper/1.jpg) no-repeat',
-					// 还可以设置背景图size属性
-					// backgroundSize: 'cover',
-					
-					// 渐变色
-					// backgroundImage: 'linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))'
+					backgroundColor: '#001f3f'
 				},
 				hasNext: 0,
 				//删除评论
@@ -127,50 +117,19 @@
 				},
 			}
 		},
-		onLoad(option) {
-			const thisObj = this
-			if (option.type) {
-				thisObj.pageType = option.type
-			} else {
-				thisObj.pageType = "default"
-			}
-			this.listPageOfCommunit()
-		},
 		onShow() {
 			console.info("onShow")
+			this.queryCommunitByUserId()
 		},
 		//上拉加载
 		onReachBottom() {
 			console.info("上拉加载哟！！")
 			if(this.hasNext === 1){
 				this.formData.pageNum++;
-				this.listPageOfCommunit();
+				this.queryCommunitByUserId();
 			}
 		},
 		methods: {
-			listPageOfCommunit(){
-				const thisObj = this
-				let thisType = thisObj.pageType
-				if(thisType === 'mine'){
-					thisObj.queryCommunitByUserId()
-				} else {
-					thisObj.queryCommunitByAll()
-				}
-			},
-			queryCommunitByAll(){
-				const thisObj = this
-				informationApis.listPageOfCommunit(thisObj.formData).then(res => {
-					if(res.length > 0){
-						thisObj.communityList.push(...res)
-						// this.$forceUpdate()
-						thisObj.hasNext = 1
-						console.info("res.data-->",thisObj.communityList)
-					} else {
-						thisObj.hasNext = 0
-						console.info("获取社区列表接口失败！001")
-					}
-				})
-			},
 			queryCommunitByUserId(){
 				const thisObj = this
 				informationApis.apiCommunitByUserId(thisObj.formData).then(res => {
@@ -237,7 +196,7 @@
 				const thisObj = this
 				thisObj.formData.pageNum = 1
 				thisObj.communityList = []
-				thisObj.listPageOfCommunit()
+				thisObj.queryCommunitByUserId()
 			},
 			goReleaseHandle(){
 				uni.navigateTo({
@@ -307,16 +266,6 @@
 					thisObj.$refs.uReadMore[i].init()
 				}
 			},
-			//预览图片
-			previewCommunityImage(url){
-				let thisUrls = []
-				thisUrls.push(url)
-				console.info(thisUrls,"预览图片-->",url)
-				uni.previewImage({
-					urls: thisUrls,
-					indicator: "none"
-				})
-			}
 		},
 		computed: {
 			
@@ -411,8 +360,7 @@
 					height: auto;
 					// max-height: 144rpx;
 					overflow: hidden;
-					// margin: 0 0 32rpx 0;
-					margin: 0 0 0 0;
+					margin: 0 0 28rpx 0;
 					padding: 0;
 					font-weight: 400;
 					line-height: 48rpx;
@@ -495,7 +443,6 @@
 					}
 					text {
 						float: left;
-						padding: 0 0 0 8rpx;
 					}
 					.chat-photo {
 						width: 32rpx;

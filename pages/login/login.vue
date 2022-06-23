@@ -103,6 +103,7 @@
 
 <script>
 	import loginApis from '../../http/apis-login.js'
+	import infoListApis from '../../http/information/list.js'
 	const SECOND = 60
 	export default {
 		data() {
@@ -162,6 +163,7 @@
 			},
 			loginSuccess(res){
 				uni.setStorageSync('userInfo', res.userInfo)
+				this.userWechatLogin()
 				uni.setStorage({
 					key: 'token',
 					data: res.authorization,
@@ -171,6 +173,23 @@
 						})
 					}
 				});
+			},
+			/* 静默登录 */
+			userWechatLogin(){
+				uni.login({
+				  provider: 'weixin',
+				  success: function (loginRes) {
+				    console.info("loginRes-->",loginRes)
+					//
+					infoListApis.apiCode2Session(loginRes.code).then(res => {
+						console.info("微信登录接口！res-->",res.openid)
+						if(res.openid){
+							uni.setStorageSync('userOpenId', res.openid)
+						}
+					})
+					
+				  }
+				})
 			},
 			getVerCode(){
 				if(this.gettingVerCode) return
