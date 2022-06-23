@@ -39,7 +39,7 @@ function logout(){
 	})
 }
 
-const http = (url, method, {data, noToken, noToast, fullRes} = {}, timeout) =>{
+const http = (url, method, {data, noToken, noToast, fullRes, timeout} = {}) =>{
 	if(method.toLowerCase() === 'get'){
 		if(data instanceof Object){
 			data._time = Math.random()

@@ -42,9 +42,9 @@
 			 	<image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit" @click="replyToComment(item)"></image>
 			 </view>
 		</view>
-		<!--  全部回复  -->
-		<u-popup :show="showCommentReply" @close="closeCommentReply" @open="openCommentReply" :round="16">
-			<view class="comment-reply-header">{{ queryReplyList.length + '条回复' }}</view>
+		<!--  查看全部回复 -开始-  -->
+		<u-popup class="reply-to-reply-popup" :show="showCommentReply" @close="closeCommentReply" @open="openCommentReply" :round="16" @click="clickCommentReplyPopup">
+			<view class="comment-reply-header">{{ queryReplyTotal + '条回复' }}</view>
 			<scroll-view class="scroll-Y" :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lowerReplyToReply" @scroll="scroll">
 				<!--  回复列表  inFloorReplies -->
 				<!--  回复评论的头部  -->
@@ -92,16 +92,18 @@
 					 </view>
 				</view>
 			</scroll-view>
+			<!--  楼中楼回复  -开始-  -->
+			<!--  回复评论  -->
+			<u-popup :show="showReplyToReply" @close="closeReplyToComment" @open="openReplyToComment" :round="16" overlay="false">
+				<view class="reply-to-comment-header">写回复</view>
+				<view class="textarea-label">
+					<!--  focus="true" -->
+					<u-textarea class="fix-comments-textarea" focus="true" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToCommentPost" border="none" ref="fixCommentsTextarea" cursorSpacing="30"></u-textarea>
+				</view>
+			</u-popup>
+			<!--  楼中楼回复   -结束-   -->
 		</u-popup>
-		<!--  回复评论  -->
-		<!-- <view class="fix-community-comments" v-if="showReplyToComment"> -->
-		<u-popup :show="showReplyToComment" @close="closeReplyToComment" @open="openReplyToComment" :round="16">
-			<view class="reply-to-comment-header">写回复</view>
-			<view class="textarea-label">
-				<!--  focus="true" -->
-				<u-textarea class="fix-comments-textarea" focus="true" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToCommentPost" border="none" ref="fixCommentsTextarea" cursorSpacing="30"></u-textarea>
-			</view>
-		</u-popup>
+		<!--  查看全部回复 -结束-  -->
 		<!--  删除回复相关  -->
 		<u-popup :show="showCommentsDel" @close="closeCommentsDel" @open="openCommentsDel" :round="16">
 			<!--  删除选项  -->
@@ -118,6 +120,14 @@
 			</view>
 		</u-popup>
 		<!--  删除回复相关  -->
+		<!--  回复评论  -->
+		<u-popup :show="showReplyToComment" @close="closeReplyToComment" @open="openReplyToComment" :round="16" overlay="false">
+			<view class="reply-to-comment-header">写回复</view>
+			<view class="textarea-label">
+				<!--  focus="true" -->
+				<u-textarea class="fix-comments-textarea" focus="true" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToCommentPost" border="none" ref="fixCommentsTextarea" cursorSpacing="30"></u-textarea>
+			</view>
+		</u-popup>
 	</view>
 	
 </template>
@@ -156,7 +166,9 @@
 				old: {
 					scrollTop: 0
 				},
+				/* 楼中楼弹窗数据列表 */
 				queryReplyList: [],
+				queryReplyTotal: 0,
 				showCommentReply: false,
 				replyToCommentContent: {
 					content: null,	//回复内容
@@ -167,6 +179,7 @@
 				//  楼中楼评论头部信息
 				inFloorReplies: {},
 				showReplyToComment: false,
+				showReplyToReply: false,
 				timerMore: undefined,
 				timerMoreToReply: undefined,
 				timerMoreReplyToReply: undefined,
@@ -264,6 +277,12 @@
 			  this.showCommentReply = false
 			  console.log('close');
 			},
+			clickCommentReplyPopup(){
+				const thisObj = this
+				console.info("点击了楼中楼！！")
+				// thisObj.showReplyToComment = false
+				thisObj.showReplyToReply = false
+			},
 			setCommentReply() {
 			  this.showCommentReply = true
 			  console.log('弹窗呀^^');
@@ -274,6 +293,7 @@
 				thisObj.inFloorReplies = item
 				let formData = thisObj.formData
 				formData.id = item.id
+				formData.pageNum = 1
 				console.info("item-->",item)
 				thisObj.queryReplyListByReplyId(formData)
 			},
@@ -282,8 +302,9 @@
 				const thisObj = this
 				commentsApis.apiReplyListByReplyId(this.formData).then(res => {
 					console.info("全部回复接口  res--->",res)
-					if(res.length > 0){
-						thisObj.queryReplyList.push(...res)
+					thisObj.queryReplyTotal = res.totalNumber || 0
+					if(res.dataSet.length > 0){
+						thisObj.queryReplyList.push(...res.dataSet)
 						thisObj.showCommentReply = true
 						thisObj.hasNext = 1
 					} else {
@@ -311,26 +332,31 @@
 				} else {
 					console.info("冒泡")
 				}
-				
-				
 			},
 			replyToCommentToReply(item,idx) {
 				const thisObj = this
-				console.info('item--->',item)
+				//赋值ID
+				let fixComments = thisObj.replyToCommentContent
+				fixComments.subjectId = item.id
 				let itmData = item.replyList[idx]
 				if(!itmData.readMoreReplyState){
-					let fixComments = thisObj.replyToCommentContent
-					fixComments.content = ""
-					fixComments.subjectId = itmData.id
-					thisObj.showReplyToComment = true
+					if(itmData.isMe){
+						// 是本人需选择操作内容
+						thisObj.showCommentsDel = true
+						thisObj.commentsDelIco = true
+					} else {
+						//非本人只需回复
+						thisObj.commentsReplyHandle()
+					}
 				} else {
 					console.info("冒泡")
 				}
-				
 			},
 			closeReplyToComment() {
-			  this.showReplyToComment = false
-			  console.log('close');
+				const thisObj = this
+				thisObj.showReplyToComment = false
+				thisObj.showReplyToReply = false
+				console.log('close');
 			},
 			openReplyToComment() {
 			  console.log('open');
@@ -362,6 +388,7 @@
 						icon: 'none'
 					})
 					thisObj.showReplyToComment = false
+					thisObj.showReplyToReply = false
 					//刷新页面
 					thisObj.$parent.pageRefresh()
 				})
@@ -375,12 +402,20 @@
 			},
 			/* 楼中楼评论回复 回复动作以及显示全部动作 */
 			replyToReplyComment(item) {
+				console.info("楼中楼点击回复！！！")
 				const thisObj = this
+				//
+				let fixComments = thisObj.replyToCommentContent
+				fixComments.subjectId = item.id
 				if(!item.readMoreReplyState){
-					let fixComments = thisObj.replyToCommentContent
-					fixComments.content = ""
-					fixComments.subjectId = item.id
-					thisObj.showReplyToComment = true
+					if(item.isMe){
+						// 是本人需选择操作内容
+						thisObj.showCommentsDel = true
+						thisObj.commentsDelIco = true
+					} else {
+						//非本人只需回复
+						thisObj.commentsReplyHandle("replyToReply")
+					}
 				} else {
 					console.info("冒泡")
 				}
@@ -443,27 +478,36 @@
 				const thisObj = this
 				commentsApis.apiDelCommuityReply(thisObj.replyToCommentContent.subjectId).then(res => {
 					console.info("删除评论的请求接口  res-->",res)
-					if(Object.keys(res).length > 1){
-						uni.showToast({
-							title: "删除评论成功！",
-							icon: 'none'
-						})
-					} else {
-						uni.showToast({
-							title: "删除评论失败！",
-							icon: 'none'
-						})
-						console.info("删除评论的请求接口！001")
-					}
+					uni.showToast({
+						title: "删除评论成功！",
+						icon: 'none'
+					})
+					//刷新页面
+					thisObj.$parent.pageRefresh()
+				})
+				.catch(function(error){
+					uni.showToast({
+						title: "删除评论失败！",
+						icon: 'none'
+					})
+					console.info("删除评论的请求接口！001")
 				})
 			},
 			// 选择回复评论
-			commentsReplyHandle(){
+			commentsReplyHandle(type){
 				const thisObj = this
 				thisObj.commentsDelCancel()
 				let fixComments = thisObj.replyToCommentContent
 				fixComments.content = ""
-				thisObj.showReplyToComment = true
+				if(type === 'replyToReply'){
+					//楼中楼回复
+					thisObj.showReplyToReply = true
+				} else {
+					thisObj.showReplyToComment = true
+				}
+				
+				
+				//
 			},
 			
 			
@@ -774,5 +818,10 @@
 		button.comments-del-cancel::after {
 			border-color: #F5F6F7;
 		}
+	}
+	.reply-to-reply-popup {
+		width: 100%;
+		height: auto;
+		overflow: hidden;
 	}
 </style>
