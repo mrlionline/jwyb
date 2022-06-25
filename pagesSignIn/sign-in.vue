@@ -2,7 +2,16 @@
 	<view class="sign-in">
 		<page-header title="每日签到" :showBack="true" :isDefault="true"></page-header>
 		<image class="bg" src="/pagesSignIn/static/bg@2x.png" mode="aspectFill"></image>
-		<view class="calendar" :style="{top: navBarHeight + 'px'}"></view>
+		<view class="calendar" :style="{top: navBarHeight + 'px'}">
+			<view class="item" v-for="item in signInList">
+				<image mode="widthFix" v-if="item.isHistory && item.isLogin === 0" src="/pagesSignIn/static/sign-in-history-no.png"></image>
+				<image mode="widthFix" v-if="item.isHistory && item.isLogin === 1" src="/pagesSignIn/static/sign-in-history-yes.png"></image>
+				<image mode="widthFix" v-if="item.isNowDay && item.isLogin === 0" src="/pagesSignIn/static/sign-in-today-no.png"></image>
+				<image mode="widthFix" v-if="item.isNowDay && item.isLogin === 1" src="/pagesSignIn/static/sign-in-today-yes.png"></image>
+				<image mode="widthFix" v-if="item.isFuture" src="/pagesSignIn/static/sign-in-future.png"></image>
+				<text>{{item.weekDay}}</text>
+			</view>
+		</view>
 		<image class="circle" src="/pagesSignIn/static/circle.png"></image>
 		<image class="btn" @click="doSignIn()" src="/pagesSignIn/static/sign-in-btn.png"></image>
 		
@@ -21,7 +30,8 @@
 		data(){
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
-				showPop: false
+				showPop: false,
+				signInList: []
 			}
 		},
 		methods: {
@@ -32,7 +42,14 @@
 			},
 			loginRecord(){
 				myApi.loginRecord().then(res =>{
-					console.log(res)
+					const todayIndex = res.findIndex(item => item.isNowDay === 1)
+					this.signInList = res.map((item, i) =>{
+						return {
+							...item,
+							isFuture: i > todayIndex,
+							isHistory: i< todayIndex
+						}
+					})
 				})
 			}
 		},
@@ -56,7 +73,26 @@
 			left: 0;
 			right: 0;
 			height: 100rpx;
-			background-color: yellow;
+			padding: 0 30rpx 0 32rpx;
+			.item{
+				display: inline-block;
+				width: 88rpx;
+				text-align: center;
+				margin-right: 12rpx;
+				&:last-child{
+					margin-right: 0;
+				}
+				image{
+					width: 100%;
+				}
+				text{
+					line-height: 36rpx;
+					font-weight: 400;
+					font-size: 26rpx;
+					color: #FFFFFF;
+					margin-top: 8rpx;
+				}
+			}
 		}
 		.circle{
 			position: absolute;

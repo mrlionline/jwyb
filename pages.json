@@ -47,6 +47,16 @@
 		        "enablePullDownRefresh": true
 		    }
 		    
+		},
+		{
+		    "path" : "pages/myWebView/my-web-view",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": true,
+				"navigationBarTextStyle": "black"
+		    }
+		    
 		}
     ],
 	"subPackages": [

@@ -24,7 +24,9 @@
 						url: this.item.link
 					})
 				}else {
-					this.$emit('webView', this.item.link)
+					uni.navigateTo({
+						url: `/pages/myWebView/my-web-view?url=${this.item.link}`
+					})
 				}
 			}
 		}

@@ -1,15 +1,19 @@
 <template>
-	<view class="my-scroe">
+	<scroll-view
+		:scroll-y="true"
+		class="my-scroe"
+		@scrolltolower="arriveBottom()"
+	>
 		<page-header title="我的积分" :showBack="true" :isDefault="true"></page-header>
 		<view class="head">
 			<image class="bg" src="/pagesMyScore/static/bg.png"></image>
 			<view class="my-score">
-				<text class="score">5000</text>
+				<text class="score">{{score}}</text>
 				<text class="desc">当前积分</text>
 			</view>
 			<image class="to-detail" @click="goto('/pagesMyScore/my-score-detail')" src="/pagesMyScore/static/score-detail.png"></image>
 			<view class="rank">
-				<text>你的当前排名是第 300 位</text>
+				<text>你的当前排名是第 {{rank}} 位</text>
 			</view>
 		</view>
 		<view class="list-wrap">
@@ -18,47 +22,28 @@
 				<view class="list-item" v-for="(item, index) in list" :class="'list-item' + (index+1)">
 					<image class="level-icon level" v-if="index < 3" :src="'/pagesMyScore/static/top' + (index+1) + '.png'"></image>
 					<text class="level level-text" v-if="index >=3">{{index+1}}</text>
-					<image class="header" :src="item.head || '/static/defaultAvatar.png'"></image>
-					<text class="name">{{item.name}}</text>
-					<view class="score">{{item.score}}积分</view>
+					<image class="header" :src="item.avatar || '/static/defaultAvatar.png'"></image>
+					<text class="name">{{item.userName}}</text>
+					<view class="score">{{item.totalIntegral}}积分</view>
 				</view>
+				<u-loadmore :line="true" :status="moreDataStatus" />
 			</view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
+	import myApis from '../http/apis-my.js'
 	export default{
 		data(){
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
-				list: [
-						{
-							name: '张云云',
-							score: 10000,
-							head: ''
-						},
-						{
-							name: '张云云',
-							score: 9800,
-							head: ''
-						},
-						{
-							name: '张云云',
-							score: 8000,
-							head: ''
-						},
-						{
-							name: '张云云',
-							score: 7899,
-							head: ''
-						},
-						{
-							name: '张云云',
-							score: 7598,
-							head: ''
-						}
-				]
+				score: '', 
+				rank: '',
+				pageNum: 1,
+				pageSize: 10,
+				list: [],
+				moreDataStatus: 'loadmore'
 			}
 		},
 		methods: {
@@ -67,12 +52,45 @@
 					url: url
 				});
 			},
+			myIntegralTop(){
+				myApis.myIntegralTop().then(res =>{
+					this.score = res.totalIntegral
+					this.rank = res.rank
+				})
+			},
+			arriveBottom(){
+				this.pageNum++
+				this.integralTop()
+			},
+			integralTop(){
+				if(this.moreDataStatus === 'nomore'){
+					return;
+				}
+				const params = {
+					pageNum: this.pageNum,
+					pageSize: this.pageSize
+				}
+				this.moreDataStatus = 'loading'
+				myApis.integralTop(params).then(res =>{
+					this.list = [...this.list, ...res.dataSet]
+					if (!res.dataSet || res.dataSet.length === 0 || res.pageTotal === res.pageNum) {
+						this.moreDataStatus = 'nomore'
+					}else {
+						this.moreDataStatus = 'loadmore'
+					}
+				})
+			}
+		},
+		created() {
+			this.myIntegralTop()
+			this.integralTop()
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.my-scroe{
+		height: 100vh;
 		.head{
 			position: relative;
 			width: 100%;

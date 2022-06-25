@@ -23,12 +23,12 @@
 					<text style="font-weight: 400;font-size: 15px;color: #FFE3A5; margin-left: 20rpx;">我的积分</text>
 				</view>
 				<view class="right" @click="goto('/pagesMyScore/my-score')">
-					<text style="color: #FFE3A5; font-size: 48rpx; font-weight: bold; margin-right: 30rpx;">5000</text>
+					<text style="color: #FFE3A5; font-size: 48rpx; font-weight: bold; margin-right: 30rpx;">{{score}}</text>
 					<u-icon color="#FFE3A5" size="48rpx" name="arrow-right"></u-icon>
 				</view>
 			</view>
 			<view class="function white-section">
-				<view class="fun-item">
+				<view class="fun-item" @click="goto('/pagesCommunity/community/list/list?type=mine')">
 					<image src="../../../static/my/my-updates.png"></image>
 					<text>我的动态</text>
 				</view>
@@ -40,7 +40,7 @@
 			<view class="information white-section">
 				<view class="header">资讯</view>
 				<view class="content">
-					<view class="information-item">
+					<view class="information-item" @click="goto('/pages/information/list')">
 						<view class="number">{{information.collectionTotalNum}}</view>
 						<view class="name">收藏</view>
 					</view>
@@ -91,7 +91,8 @@
 					collectionTotalNum: 0,	// 收藏
 					pointTotalNum: 0,
 					replyTotalNum: 0
-				}
+				},
+				score: ''
 			}
 		},
 		methods: {
@@ -117,6 +118,11 @@
 				myApis.statisticsMyInformationCount({}).then(res =>{
 					this.information = res
 				})
+			},
+			myIntegralTop(){
+				myApis.myIntegralTop().then(res =>{
+					this.score = res.totalIntegral
+				})
 			}
 		},
 		created() {
@@ -128,7 +134,7 @@
 				this.myStar = res
 			})
 			this.statisticsMyInformationCount()
-
+			this.myIntegralTop()
 		}
 	}
 </script>

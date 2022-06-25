@@ -14,18 +14,21 @@
 					<u-icon name="arrow-down" color="#ffffff" size="12px"></u-icon>
 				</view>
 			</view>
-			<scroll-view :scroll-y="true" :style="'height: calc(100vh - ' + navBarHeight + 'px - 82rpx);'">
+			<scroll-view
+				:scroll-y="true"
+				:style="'height: calc(100vh - ' + navBarHeight + 'px - 82rpx);'"
+			>
 				<view class="history-item" v-for="item in historyList">
 					<view class="head-box">
-						<image src="/static/defaultAvatar.png"></image>
+						<image :src="item.icon"></image>
 					</view>
 					<view class="info">
-						<view class="title">{{item.title}}</view>
-						<view class="time">{{item.time}}</view>
+						<view class="title">{{item.typeName}}</view>
+						<view class="time">{{item.ctime}}</view>
 					</view>
 					<view class="score">
-						<text class="positive" v-if="item.score >= 0">+{{item.score}}</text>
-						<text class="negative" v-if="item.score < 0">{{item.score}}</text>
+						<text class="positive" v-if="item.integralScore >= 0">+{{item.integralScore}}</text>
+						<text class="negative" v-if="item.integralScore < 0">{{item.integralScore}}</text>
 					</view>
 				</view>
 			</scroll-view>
@@ -48,76 +51,89 @@
 </template>
 
 <script>
+	import myApis from '../http/apis-my.js'
 	export default {
 		data(){
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
-				typeId: 1,
+				typeId: '',
 				showTypeList: false,
-				typeList: [
-					[
-						{
-							label: '全部类型',
-							id: 1
-						},
-						{
-							label: '类型一',
-							id: 2
-						},{
-							label: '类型二',
-							id: 3
-						}
-					]
-				],
-				timeId: 1,
+				typeList: [],
+				timeId: '',
 				showTimeList: false,
-				timeList: [
-					[
-						{
-							label: '最近一周',
-							id: 1
-						},{
-							label: '最近一月',
-							id: 2
-						},{
-							label: '最近一年',
-							id: 3
-						}
-					]
-				],
-				historyList: [
-					{
-						title: '每日签到',
-						time: '2022/01/01 12:00',
-						score: 20
-					},
-					{
-						title: '商品兑换',
-						time: '2022/01/01 12:00',
-						score: -2000
-					}
-				]
+				timeList: [],
+				historyList: []
 			}
 		},
 		methods: {
 			typeChange(e){
-				console.log(e)
 				this.typeId = e.value[0].id
 				this.showTypeList = false
+				this.queryList()
 			},
 			timeChange(e){
-				console.log(e)
 				this.timeId = e.value[0].id
 				this.showTimeList = false
+				this.queryList()
+			},
+			queryList(){
+				this.historyList = []
+				const params = {
+					type: this.typeId,
+					integralTimeType: this.timeId
+				}
+				myApis.queryList(params).then(res =>{
+					this.historyList = res.map(item =>{
+						return {
+							...item,
+							icon: `/pagesMyScore/static/score-type${item.type}.png`
+						}
+					})
+					console.log('this.historyList', this.historyList)
+				})
+			},
+			getIntegralType(){
+				myApis.getIntegralType().then(res =>{
+					const resType = res.map(item =>{
+						return {
+							label: item.name,
+							id: item.code
+						}
+					})
+					resType.unshift({
+						label: '全部类型',
+						id: ''
+					})
+					this.typeList.push(resType)
+					console.log('this.typeList', this.typeList)
+				})
+			},
+			getIntegralTimeType(){
+				return myApis.getIntegralTimeType().then(res =>{
+					const resTime = res.map(item =>{
+						return {
+							label: item.name,
+							id: item.code
+						}
+					})
+					this.timeId = resTime[0].id
+					this.timeList.push(resTime)
+				})
 			}
 		},
 		computed: {
 			type: function(){
-				return this.typeList[0].find(item => item.id === this.typeId).label
+				return this.typeList[0] && this.typeList[0].find(item => item.id === this.typeId).label
 			},
 			time: function(){
-				return this.timeList[0].find(item => item.id === this.timeId).label
+				return this.timeList[0] && this.timeList[0].find(item => item.id === this.timeId).label
 			}
+		},
+		created() {
+			this.getIntegralType()
+			this.getIntegralTimeType().then(() =>{
+				this.queryList()
+			})
 		}
 	}
 </script>
