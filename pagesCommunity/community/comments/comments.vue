@@ -42,7 +42,7 @@
 					<!-- 地理位置展示  -->
 					<view class="location-address" v-if="communityList.locationName || communityList.storeName">
 						<view class="location-address-label">
-							<image class="address-img" src="/pagesCommunity/static/community/location-address.png" mode="aspectFit"></image>
+							<image class="address-img" src="/pagesCommunity/static/community/location-address-img.png" mode="aspectFit"></image>
 							<view class="address-text">{{ communityList.locationName || communityList.storeName }}</view>
 						</view>
 					</view>
@@ -50,8 +50,8 @@
 				<!-- 动态评论和点赞数 -->
 				<view class="community-operate">
 					 <view class="operate-chat">
-						 <u-icon name="chat" color="#959BA4" size="28"></u-icon>
-						 <text>{{ communityList.commentNum }}</text>
+					 	<image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit"></image>
+					 	<text>{{ communityList.commentNum }}</text>
 					 </view>
 					 <view class="operate-thumb" @click="operateThumb(communityList)">
 						<u-icon name="thumb-up" color="#959BA4" size="28"></u-icon>
@@ -553,8 +553,8 @@
 						width: 36rpx;
 						height: 36rpx;
 						margin: 0 0 0 8rpx;
-						border-radius: 50%;
-						background-color: #567DF4;
+						// border-radius: 50%;
+						// background-color: #567DF4;
 					}
 					.address-text {
 						width: auto;
@@ -591,6 +591,11 @@
 					}
 					text {
 						float: left;
+						padding: 0 0 0 8rpx;
+					}
+					.chat-photo {
+						width: 32rpx;
+						height: 32rpx;
 					}
 					
 				}

@@ -26,7 +26,7 @@ const commentsApis = {
 	},
 	//  获取动态评论回复
 	apiReplyListByReplyId(data){
-		return http('/learning-interaction-api/communityReply/queryReplyListByReplyId', 'POST', {data})
+		return http('/learning-interaction-api/communityReply/queryReplyListByReplyId', 'POST', {data, fullRes: true})
 	},
 }
 export default commentsApis
