@@ -196,6 +196,22 @@
 				    }
 				}
 			]
+		},
+		{
+			"root": "pagesStudy",
+			"pages": [
+				{
+				    "path" : "study-list",
+				    "style" :                                                                                 
+				    {
+				        "navigationBarTitleText": "学习",
+						"navigationBarTextStyle": "black",
+				        "enablePullDownRefresh": false,
+						"navigationStyle":"default"
+				    }
+				    
+				}
+			]
 		}
 	],
 	"globalStyle": {
