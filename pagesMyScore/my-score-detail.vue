@@ -97,7 +97,7 @@
 					const resType = res.map(item =>{
 						return {
 							label: item.name,
-							id: item.code
+							id: item.memo
 						}
 					})
 					resType.unshift({
@@ -113,7 +113,7 @@
 					const resTime = res.map(item =>{
 						return {
 							label: item.name,
-							id: item.code
+							id: item.memo
 						}
 					})
 					this.timeId = resTime[0].id

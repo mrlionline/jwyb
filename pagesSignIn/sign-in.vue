@@ -38,6 +38,7 @@
 			doSignIn(){
 				myApi.loginIn().then(res =>{
 					this.showPop = true
+					this.loginRecord()
 				})
 			},
 			loginRecord(){
