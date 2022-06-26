@@ -40,15 +40,15 @@
 			<view class="information white-section">
 				<view class="header">资讯</view>
 				<view class="content">
-					<view class="information-item" @click="goto('/pages/information/list')">
+					<view class="information-item" @click="goto('/pages/information/list?currentTab=1')">
 						<view class="number">{{information.collectionTotalNum}}</view>
 						<view class="name">收藏</view>
 					</view>
-					<view class="information-item">
+					<view class="information-item" @click="goto('/pages/information/list?currentTab=2')">
 						<view class="number">{{information.pointTotalNum}}</view>
 						<view class="name">点赞</view>
 					</view>
-					<view class="information-item">
+					<view class="information-item" @click="goto('/pages/information/list?currentTab=3')">
 						<view class="number">{{information.replyTotalNum}}</view>
 						<view class="name">评论</view>
 					</view>

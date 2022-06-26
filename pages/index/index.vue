@@ -223,6 +223,14 @@
 		},
 		created() {
 			this.getConfig()
+			uni.$on('tabChange', data =>{
+				if(data === '资讯'){
+					const newTab = this.tabbarList.find(item => item.name === '资讯')
+					if(newTab){
+						this.activeTabBar = newTab.name
+					}
+				}
+			})
 		}
 	}
 </script>

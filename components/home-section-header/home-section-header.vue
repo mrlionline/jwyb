@@ -2,7 +2,7 @@
 	<view class="section-header">
 		<image :src="config.icon"></image>
 		<text class="title">{{config.title}}</text>
-		<image class="see-all" src="../../static/home/see-all.png"></image>
+		<image class="see-all" src="../../static/home/see-all.png" @click="outClick()"></image>
 	</view>
 </template>
 
@@ -14,6 +14,11 @@
 			return {
 				
 			};
+		},
+		methods: {
+			outClick(){
+				this.$emit('click')
+			}
 		}
 	}
 </script>
