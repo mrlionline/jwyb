@@ -15,8 +15,8 @@
 		<image class="circle" src="/pagesSignIn/static/circle.png"></image>
 		<image class="btn" @click="doSignIn()" src="/pagesSignIn/static/sign-in-btn.png"></image>
 		
-		<u-popup :show="showPop" mode="center" bgColor="transparent">
-			<view style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+		<u-popup :show="showPop" mode="center" bgColor="transparent" @close="showPop = false">
+			<view style="display: flex; flex-direction: column; justify-content: center; align-items: center;" @click="showPop = false">
 				<image style="width: 542rpx; height: 542rpx;" src="/pagesSignIn/static/ten.png"></image>
 				<image style="width: 388rpx; height: 124rpx;" src="/pagesSignIn/static/use.png"></image>
 				<image style="width: 80rpx; height: 80rpx; margin-top: 32rpx;" @click="showPop=false" src="/pagesSignIn/static/close.png"></image>
