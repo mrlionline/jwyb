@@ -44,7 +44,7 @@
 					multiple
 					:maxCount="9"
 					accept="media"
-					v-if="!isVideo"
+					v-if="!isVideo && fileListImg.length < 9"
 				>
 				<view class="add-picture">
 					<image :showLoading="true" class="operate-img" src="/pagesCommunity/static/community/community-picture.png" mode="aspectFit"></image>
@@ -135,6 +135,10 @@
 				//不显示
 				thisObj.formData.locationStatus = 1
 				thisObj.formData.storeStatus = 1
+				thisObj.formData.locationLgt = null
+				thisObj.formData.locationLat = null
+				thisObj.formData.locationName = null
+				thisObj.formData.storeName = null
 				
 			} else if(option.type === "1") {
 			console.info("option-->",option)
@@ -144,11 +148,15 @@
 				thisObj.formData.locationLgt = option.longitude
 				thisObj.formData.locationLat = option.latitude
 				thisObj.formData.locationName = option.address
+				thisObj.formData.storeName = null
 			} else if(option.type === "2"){
 				//关联门店
 				thisObj.formData.locationStatus = 1
 				thisObj.formData.storeStatus = 0
 				thisObj.formData.storeName = option.store
+				thisObj.formData.locationLgt = null
+				thisObj.formData.locationLat = null
+				thisObj.formData.locationName = null
 			}
 			
 			
