@@ -4,7 +4,7 @@
 		<PageNavbar title="资讯" :bgColor="'transparent'" :leftIconColor="'#FFFFFF'" :titleStyle="titleStyle"></PageNavbar>
 		<view class="community-main">
 			<view class="search-label">
-				<u-search placeholder="搜索资讯标题" @search="searchCommunity" v-model="formData.title" :show-action="false" :bgColor="'#FFFFFF'"></u-search>
+				<u-search placeholder="搜索资讯标题" @search="searchCommunity" v-model="formData.title" :show-action="false" :bgColor="'#FFFFFF'" @clear="searchCommunityClear" clearabled></u-search>
 			</view>
 			<u-tabs class="tabs-list" :list="tabsList" :current="tabsCurrent" @change="tabsChange" :activeStyle="activeStyle" :inactiveStyle="inactiveStyle"></u-tabs>
 			<!-- 资讯 -1- -->
@@ -33,7 +33,7 @@
 
 <script>
 	import infoListApis from '../../http/information/list.js'
-	import PageNavbar from './components/pageNavbar.vue'
+	import PageNavbar from '@/components/pageNavbar/pageNavbar.vue'
 	import uParseMax from '@/components/u-parse/u-parse.vue'
 	import {marked} from "marked" 
 	export default {
@@ -163,6 +163,7 @@
 				// uni.$u.deepClone()
 				let thisData = thisObj.formData
 				if(thisData.title){
+					thisObj.infoList = []
 					thisData.pageNum = 1
 					thisObj.queryAppletList()
 				} else {
@@ -171,7 +172,6 @@
 						icon: 'none'
 					})
 				}
-				
 			},
 			tabsChange(item){
 				console.info("切换!!!!",item)
@@ -179,7 +179,16 @@
 				// uni.$u.deepClone()
 				let thisData = thisObj.formData
 				thisData.informationTypeId = item.id
+				thisObj.infoList = []
 				thisData.pageNum = 1
+				thisObj.queryAppletList()
+			},
+			searchCommunityClear(){
+				const thisObj = this
+				let thisData = thisObj.formData
+				// thisData.informationTypeId = item.id
+				thisData.pageNum = 1
+				thisObj.infoList = []
 				thisObj.queryAppletList()
 			},
 			previewContent(src, e) {
@@ -276,13 +285,13 @@
 				.info-content {
 					width: 100%;
 					height: auto;
-					max-height: 132rpx;
+					// max-height: 126rpx;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
 					padding: 0;
 					font-weight: 400;
 					font-size: 30rpx;
-					line-height: 44rpx;
+					line-height: 42rpx;
 					color: #959BA4;
 					text-overflow: ellipsis;
 					display: -webkit-box;

@@ -411,8 +411,8 @@
 					height: auto;
 					// max-height: 144rpx;
 					overflow: hidden;
-					// margin: 0 0 32rpx 0;
-					margin: 0 0 0 0;
+					margin: 0 0 28rpx 0;
+					// margin: 0 0 0 0;
 					padding: 0;
 					font-weight: 400;
 					line-height: 48rpx;

@@ -20,41 +20,40 @@
                 "enablePullDownRefresh": false
             }
             
-        },
-		{
+        }
+		,{
 		    "path" : "pages/information/list",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "资讯",
+		        "navigationBarTitleText": "资讯列表",
 		        "enablePullDownRefresh": true
 		    }
 		    
-		},
-		{
+		}
+		,{
 		    "path" : "pages/information/detail",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "资讯",
+		        "navigationBarTitleText": "资讯详情",
 		        "enablePullDownRefresh": true
 		    }
 		    
-		},
-		{
-		    "path" : "pages/index/my/my-set",
+		}
+		,{
+		    "path" : "pages/information/myList",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
+		        "navigationBarTitleText": "我的资讯",
 		        "enablePullDownRefresh": true
 		    }
 		    
-		},
-		{
-		    "path" : "pages/myWebView/my-web-view",
+		}
+		,{
+		    "path" : "pages/communityList/list",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": true,
-				"navigationBarTextStyle": "black"
+		        "navigationBarTitleText": "我的动态",
+		        "enablePullDownRefresh": true
 		    }
 		    
 		}
@@ -159,40 +158,6 @@
 						"navigationBarTextStyle": "black",
 				        "enablePullDownRefresh": false,
 						"onReachBottomDistance": 100
-				    }
-				}
-			]
-		},
-		{
-			"root": "pagesSignIn",
-			"pages": [
-				{
-				    "path" : "sign-in",
-				    "style" :                                                                                    
-				    {
-				        "navigationBarTitleText": "",
-				        "enablePullDownRefresh": false
-				    }
-				}
-			]
-		},
-		{
-			"root": "pagesMyScore",
-			"pages": [
-				{
-				    "path" : "my-score",
-				    "style" :                                                                                    
-				    {
-				        "navigationBarTitleText": "",
-				        "enablePullDownRefresh": false
-				    }
-				},
-				{
-				    "path" : "my-score-detail",
-				    "style" :                                                                                    
-				    {
-				        "navigationBarTitleText": "",
-				        "enablePullDownRefresh": false
 				    }
 				}
 			]
