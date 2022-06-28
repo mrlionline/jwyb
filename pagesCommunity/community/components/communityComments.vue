@@ -9,13 +9,13 @@
 			 </view>
 			 <!-- 评论内容 -->
 			 <view class="comments-content" @click="replyToComment(item)">
-				 <u-read-more ref="uReadMore" showHeight="80" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true" @close="setReadMoreReply(item)" @open="setReadMoreReply(item)">
+				 <u-read-more ref="uReadMore" showHeight="42" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true" @close="setReadMoreReply(item)" @open="setReadMoreReply(item)">
 				 	<u-parse :content="item.content" @load="loadReadMoreReply(interactionList.length,'uReadMore')"></u-parse>
 				 </u-read-more>
 			 </view>
 			 <!-- 回复内容 -->
 			 <view class="comments-reply" v-if="item.replyList && item.replyList.length > 0">
-				<view class="reply-item" v-for="(itm, idx) in item.replyList.slice(0,4)" :key="idx">
+				<view class="reply-item" v-for="(itm, idx) in item.replyList.slice(0,3)" :key="idx">
 					<view class="reply-content" @click="replyToCommentToReply(item,idx)">
 						<view class="" v-if="itm.responderName">
 							<text class="commenter-name">{{ itm.commenterName }}</text>
@@ -28,13 +28,13 @@
 							<text class="with-symbol">：</text>
 						</view>
 						<view class="reply-content-label">
-							<u-read-more :ref="'uReadMoreToReply-'+index" showHeight="84" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true" @close="setReadMoreToReply(index,idx,item)" @open="setReadMoreToReply(index,idx,item)">
+							<u-read-more :ref="'uReadMoreToReply-'+index" showHeight="42" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true" @close="setReadMoreToReply(index,idx,item)" @open="setReadMoreToReply(index,idx,item)">
 								<u-parse :content="itm.content" @load="loadReadMoreToReply(index,idx,item)"></u-parse>
 							</u-read-more>
 						</view>
 					</view>
 				</view>
-				<view class="replies-all-view" @click="repliesAllView(item)" v-if="item.replyList.length > 4">查看全部回复</view>
+				<view class="replies-all-view" @click="repliesAllView(item)" v-if="item.replyList.length > 3">查看全部回复</view>
 			 </view>
 			 <!-- 评论日期 -->
 			 <view class="comments-timer">{{ item.ctime }}</view>
@@ -43,7 +43,7 @@
 			 </view>
 		</view>
 		<!--  查看全部回复 -开始-  -->
-		<u-popup class="reply-to-reply-popup" :show="showCommentReply" @close="closeCommentReply" @open="openCommentReply" :round="16" @click="clickCommentReplyPopup">
+		<u-popup class="reply-to-reply-popup" :show="showCommentReply" @close="closeCommentReply" @open="openCommentReply" :round="16" @click="clickCommentReplyPopup" :overlayStyle="overlayReplyToReply">
 			<view class="comment-reply-header">{{ queryReplyTotal + '条回复' }}</view>
 			<scroll-view class="scroll-Y" :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lowerReplyToReply" @scroll="scroll">
 				<!--  回复列表  inFloorReplies -->
@@ -56,7 +56,7 @@
 					 </view>
 					 <!-- 评论内容   @click="replyToComment(inFloorReplies)"  @close="setReadMoreReply(item)" @open="setReadMoreReply(item)" -->
 					 <view class="comments-content">
-						 <u-read-more ref="uReadMoreInFloor" showHeight="80" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true">
+						 <u-read-more ref="uReadMoreInFloor" showHeight="42" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true">
 						 	<u-parse :content="inFloorReplies.content" @load="loadReadMoreReply(1,'uReadMoreInFloor')"></u-parse>
 						 </u-read-more>
 					 </view>
@@ -80,7 +80,7 @@
 					 </view>
 					 <view class="comments-content" @click="replyToReplyComment(item)">
 						<view class="comments-content-label">
-							<u-read-more ref="uReadMoreReplyToReply" showHeight="80" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true" @close="setReadMoreReplyToReply(index,item)" @open="setReadMoreReplyToReply(index,item)">
+							<u-read-more ref="uReadMoreReplyToReply" showHeight="42" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true" @close="setReadMoreReplyToReply(index,item)" @open="setReadMoreReplyToReply(index,item)">
 								<u-parse :content="item.content" @load="loadReadMoreReplyToReply(queryReplyList.length,'uReadMoreReplyToReply')"></u-parse>
 							</u-read-more>
 						</view>
@@ -189,6 +189,9 @@
 				showCommentsDel: false,
 				commentsDelIco: false,
 				confirmCommentsDelIco: false,
+				overlayReplyToReply: {
+					background: 'rgba(245,246,247,0.8)'
+				}
 			}
 		},
 		created() {
@@ -582,7 +585,7 @@
 			.reply-content-label {
 				padding: 0 0 16rpx 0;
 				font-weight: 400;
-				font-size: 26rpx;
+				font-size: 30rpx;
 				color: #444251;
 			}
 		}
@@ -594,7 +597,7 @@
 			margin: 0 0 32rpx 0;
 			padding: 0 0 0 72rpx;
 			font-weight: 400;
-			line-height: 40rpx;
+			line-height: 42rpx;
 			font-size: 30rpx;
 			color: #222222;
 			// text-overflow: ellipsis;
@@ -615,7 +618,7 @@
 		margin: 0 0 32rpx 0;
 		padding: 0 0 0 72rpx;
 		font-weight: 400;
-		line-height: 40rpx;
+		line-height: 42rpx;
 		font-size: 30rpx;
 		color: #222222;
 		// text-overflow: ellipsis;
@@ -674,7 +677,7 @@
 		width: 50%;
 		height: 36rpx;
 		float: left;
-		margin: 0 0 32rpx 72rpx;
+		margin: 0 0 0 72rpx;
 		font-weight: 400;
 		font-size: 12px;
 		color: #959BA4;
@@ -688,13 +691,16 @@
 	}
 	.operate-chat {
 		width: 32rpx;
-		margin: 0 0 32rpx 0;
 		float: right;
 		text-align: right;
 	}
 }
 .in-floor-replies {
 	margin: 32rpx auto 0 auto;
+	padding: 32rpx 32rpx 0 32rpx;
+	.comments-content {
+		margin: 0;
+	}
 }
 .comment-reply-header {
 	width: 100%;
@@ -739,13 +745,14 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		
 	}
-	.u-textarea__field {
+	.textarea-label /deep/ .u-textarea__field {
 		padding: 16rpx 16rpx 0 16rpx;
 		background: #F5F6F7;
 	}
-	/deep/ .u-textarea {
-		height: 120rpx;
+	.textarea-label /deep/ .u-textarea {
+		// height: 120rpx;
 		padding: 0 !important;
 	}
 	.reply-to-comment-header {
@@ -814,6 +821,7 @@
 			background-color: #F5F6F7;
 			border-radius: 16rpx;
 			border-color: #F5F6F7;
+			color: #888888;
 		}
 		button.comments-del-cancel::after {
 			border-color: #F5F6F7;

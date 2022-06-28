@@ -1,7 +1,7 @@
 <template>
-	<view>
+	<view class="label-container">
 		<PageNavbar title="发动态"></PageNavbar>
-		<view class="label-container">
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<view class="release-main">
 				<u--textarea class="textarea-style" v-model="formData.content" placeholder="记录此刻的想法" border="none" cursorSpacing="30" autoHeight></u--textarea>
 			</view>
@@ -18,7 +18,7 @@
 					height="110"
 					accept="media"
 				>
-				<view class="add-picture">
+				<view class="add-picture" v-if="!isVideo && fileListImg.length < 9">
 					<u-icon name="plus" size="40" color="#333333"></u-icon>
 				</view>
 				</u-upload>
@@ -50,7 +50,9 @@
 					<image :showLoading="true" class="operate-img" src="/pagesCommunity/static/community/community-picture.png" mode="aspectFit"></image>
 				</view>
 				</u-upload>
-				<image :showLoading="true" class="operate-img operate-location" src="/pagesCommunity/static/community/community-location.png" @click="locationClick"></image>
+				<view class="operate-location-label">
+					<image :showLoading="true" class="operate-img operate-location" src="/pagesCommunity/static/community/community-location.png" @click="locationClick"></image>
+				</view>
 				<u-button class="operate-button" type="primary" @click="getPublished()">发表</u-button>
 			</view>
 		</view>
@@ -94,6 +96,8 @@
 					// 渐变色
 					// backgroundImage: 'linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))'
 				},
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		onLoad(option) {
@@ -139,7 +143,6 @@
 				thisObj.formData.locationLat = null
 				thisObj.formData.locationName = null
 				thisObj.formData.storeName = null
-				
 			} else if(option.type === "1") {
 			console.info("option-->",option)
 				//实时位置
@@ -366,12 +369,23 @@
 </script>
 
 <style lang="scss" scoped>
+	page {
+		height: 100vh;
+	}
 	.label-container {
-		position: fixed;
-		bottom: 0;
-		width: 100%;
-		height: 89%;
-		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
+		.community-main {
+			width: 100%;
+			height: auto;
+			margin: 128rpx 0 0 0;
+			padding:0;
+			// background-color: #F5F6F7;
+		}
 		.release-main,
 		.picture-list{
 			width: 686rpx;
@@ -426,8 +440,9 @@
 				}
 			}
 		}
-		
-		
+	}
+	.picture-list /deep/ .uicon-plus {
+		color: #B2B6BB!important;
 	}
 	.textarea-style {
 		font-weight: 400;
@@ -468,8 +483,18 @@
 			width: 48rpx;
 			height: 48rpx;
 		}
-		.operate-location {
+		.add-picture {
+			width: 48rpx;
+			height: 48rpx;
+		}
+		.operate-location-label {
+			width: 48rpx;
+			height: 48rpx;
 			margin: 0 0 0 48rpx;
+		}
+		.operate-location {
+			width: 48rpx;
+			height: 48rpx;
 		}
 		/deep/ .u-button {
 			width: 140rpx;
@@ -483,6 +508,9 @@
 			font-family: Microsoft Yahei;
 			align-self: center;
 		}
+	}
+	.community-main /deep/ .u-textarea__field {
+		color: #444251!important;
 	}
 	.del-video {
 		width: 200rpx;

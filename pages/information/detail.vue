@@ -1,7 +1,7 @@
 <template>
 	<view class="label-container">
 		<PageNavbar title="资讯"></PageNavbar>
-		<view class="community-main" v-if="infoDetail.title">
+		<view class="community-main" v-if="infoDetail.title" :style="{'margin-top': navBarHeight + 'px'}">
 			<!-- 资讯 -1- -->
 			<view class="detail-information">
 				<view class="info-title">
@@ -15,7 +15,14 @@
 				<view class="info-content">
 					<uParseMax :content="infoDetail.contentStr" @preview="previewContent" @navigate="navigateContent" noData="暂无数据"></uParseMax>
 				</view>
-				
+				<!-- 缩略图  -->
+				<view class="info-thumbnail" v-if="infoDetail.informationFileList">
+					<u-grid :col="3">
+						<u-grid-item v-for="(itm, idx) in infoDetail.informationFileList" :key="idx">
+							<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
+						</u-grid-item>
+					</u-grid>
+				</view>
 			</view>
 			<view class="detail-comments-label">
 				<view class="detail-comments-list">
@@ -118,7 +125,9 @@
 					replyId: "",  //评论id
 					hbType: 3,  // 心动类型 1:资讯点赞，2:收藏， 3:阅读’ 4:评论点赞
 				},
-				tabsList: []
+				tabsList: [],
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		onLoad(option) {
@@ -146,7 +155,11 @@
 		methods: {
 			queryAppletList(){
 				const thisObj = this
-				infoDetailApis.apiInfoFindId(thisObj.id).then(res => {
+				let thisData = {
+					id: thisObj.id,
+					enter: "applet"
+				}
+				infoDetailApis.apiInfoFindId(thisData).then(res => {
 					if(Object.keys(res).length > 1){
 						console.info("res res res-->",res)
 						//
@@ -164,7 +177,6 @@
 							for (let i = 0; i < tabsList.length; i++) {
 								if(res.informationTypeId == tabsList[i].id){
 									res.informationType = tabsList[i].name
-									return
 								}
 							}
 						}
@@ -450,6 +462,35 @@
 					font-size: 30rpx;
 					color: #444251;
 					text-align: justify;
+					
+					.wxParse view {
+						display: inline-block;
+					}
+					.wxParse view.text {
+						display: inline;
+					}
+					.wxParse p {
+						display: block;
+						margin: 16rpx 0;
+					}
+					.wxParse span {
+						display: inline-block;
+						margin: 0;
+						padding: 0 6rpx;
+					}
+				}
+				.info-thumbnail {
+					width: 100%;
+					height: auto;
+					overflow: hidden;
+					margin: 0 0 16rpx 0;
+					.u-grid-item {
+						margin: 0 0 8rpx 0;
+					}
+					.grid-img {
+						width: 216rpx;
+						height: 136rpx;
+					}
 				}
 			}
 			.detail-comments-label {

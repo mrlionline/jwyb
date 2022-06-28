@@ -1,7 +1,6 @@
 import http from '../http.js'
 const informationApis = {
-	// 社区动态的列表
-	listPageOfCommunit(data){
+	listPageOfCommunit(data){	// 社区列表
 		return http('/learning-interaction-api/community/selectListPageOfCommunit', 'POST', {data})
 	},
 	// 获取我的动态---有分页  

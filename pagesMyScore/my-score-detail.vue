@@ -17,7 +17,6 @@
 			<scroll-view
 				:scroll-y="true"
 				:style="'height: calc(100vh - ' + navBarHeight + 'px - 82rpx);'"
-				@scrolltolower="arriveBottom()"
 			>
 				<view class="history-item" v-for="item in historyList">
 					<view class="head-box">
@@ -32,7 +31,6 @@
 						<text class="negative" v-if="item.integralScore < 0">{{item.integralScore}}</text>
 					</view>
 				</view>
-				<u-loadmore :line="true" :status="moreDataStatus" @loadmore="arriveBottom()" />
 			</scroll-view>
 		</view>
 		<u-picker
@@ -64,57 +62,33 @@
 				timeId: '',
 				showTimeList: false,
 				timeList: [],
-				historyList: [],
-				pageNum: 1,
-				pageSize: 10,
-				moreDataStatus: 'loadmore'
+				historyList: []
 			}
 		},
 		methods: {
-			arriveBottom(){
-				this.pageNum++
-				this.queryList()
-			},
 			typeChange(e){
 				this.typeId = e.value[0].id
 				this.showTypeList = false
-				this.moreDataStatus = 'loadmore'
-				this.historyList = []
-				this.pageNum = 1
 				this.queryList()
 			},
 			timeChange(e){
 				this.timeId = e.value[0].id
 				this.showTimeList = false
-				this.moreDataStatus = 'loadmore'
-				this.historyList = []
-				this.pageNum = 1
 				this.queryList()
 			},
 			queryList(){
-				if(this.moreDataStatus === 'nomore'){
-					return;
-				}
+				this.historyList = []
 				const params = {
 					type: this.typeId,
-					integralTimeType: this.timeId,
-					pageNum: this.pageNum,
-					pageSize: this.pageSize
+					integralTimeType: this.timeId
 				}
-				this.moreDataStatus = 'loading'
 				myApis.queryList(params).then(res =>{
-					const newList = res.dataSet.map(item =>{
+					this.historyList = res.map(item =>{
 						return {
 							...item,
 							icon: `/pagesMyScore/static/score-type${item.type}.png`
 						}
 					})
-					this.historyList = [...this.historyList, ...newList]
-					if (!res.dataSet || res.dataSet.length === 0 || res.pageTotal === res.pageNum) {
-						this.moreDataStatus = 'nomore'
-					}else {
-						this.moreDataStatus = 'loadmore'
-					}
 					console.log('this.historyList', this.historyList)
 				})
 			},

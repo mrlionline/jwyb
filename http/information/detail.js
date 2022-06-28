@@ -4,8 +4,8 @@ const infoDetailApis = {
 		return http('/jurisdiction-api/auth/formula?d=' + Math.random(), 'GET', {noToken: true})
 	},
 	// 根据id获取资讯  
-	apiInfoFindId(id) {
-		return http('/learning-interaction-api/information/find?id=' + id, 'GET')
+	apiInfoFindId(data) {
+		return http('/learning-interaction-api/information/find', 'GET', {data})
 	},
 	// 根据id获取资讯  
 	apiAddInfoReply(data) {

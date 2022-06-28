@@ -2,7 +2,7 @@
 	<view class="label-container">
 		<PageNavbar></PageNavbar>
 		<!-- 社区列表  -->
-		<view class="community-main">
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<view class="community-list" v-if="Object.keys(communityList).length>0 ">
 				<!-- 动态内容 -->
 				<view class="community-info">
@@ -11,8 +11,13 @@
 						<view class="user-name">{{ communityList.authorName || '佚名' }}</view>
 						<view class="timer">{{ communityList.releaseTime || communityList.mtime }}</view>
 					</view>
-					<view class="status">{{ '·' + (communityList.statusName || communityList.approveTypeName) }}</view>
-					<u-icon class="more-dot" name="more-dot-fill" color="#000000" size="24" @click="openCommunityDelState(communityList)"></u-icon>
+					<view class="community-right" v-if="communityList.isMe == 1">
+						<view class="status">{{ '·' + (communityList.statusName || communityList.approveTypeName) }}</view>
+						<view class="line-content">
+							<u-line color="#EEEEEE" direction="col" length="32rpx"></u-line>
+						</view>
+						<u-icon class="more-dot" name="more-dot-fill" color="#000000" size="24" @click="openCommunityDelState(communityList)"></u-icon>
+					</view>
 				</view>
 				<!-- 动态图片视频 -->
 				<view class="community-content">
@@ -35,7 +40,7 @@
 					<view class="community-media" v-else>
 						<u-grid :col="3">
 							<u-grid-item v-for="(itm, idx) in communityList.fileList" :key="idx">
-								<image class="grid-img" :src="itm.fileUrl" mode="aspectFit"></image>
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill"></image>
 							</u-grid-item>
 						</u-grid>
 					</view>
@@ -54,7 +59,8 @@
 					 	<text>{{ communityList.commentNum }}</text>
 					 </view>
 					 <view class="operate-thumb" @click="operateThumb(communityList)">
-						<u-icon name="thumb-up" color="#959BA4" size="28"></u-icon>
+						<u-icon v-if="communityList.isHb" name="thumb-up-fill" color="#567DF4" size="20"></u-icon>
+						<u-icon v-else name="thumb-up" color="#959BA4" size="20"></u-icon>
 						<view>{{ communityList.hbNum }}</view>
 					 </view>
 				</view>
@@ -78,10 +84,14 @@
 		</view>
 		<!--  评论动态  -->
 		<view class="fix-community-comments" v-if="communityList.status === '2'">
-			<view class="textarea-label">
-				<!--  focus="true" -->
-				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" @blur="commentPost" :formatter="fixCommentsFormatter" border="none" cursorSpacing="30"></u-textarea>
+			<view class="textarea-community-label">
+				<!--  focus="true"   @blur="commentPost" -->
+				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" confirmType="完成" :focus="fixCommentsTextareaFocus" :formatter="fixCommentsFormatter" border="none" cursorSpacing="30" :height="21" @blur="commentPostBlur"></u-textarea>
 			</view>
+			<view class="comment-post-btn">
+				<button @click="commentPost" color="#567DF4" :disabled="disabledComments">发送</button>
+			</view>
+			
 		</view>
 		<!--  删除动态相关  -->
 		<u-popup :show="showCommunityDel" @close="closeCommunityDel" @open="openCommunityDel" :round="16">
@@ -120,7 +130,7 @@
 					// status: 2,
 				},
 				fixCommentsContent: {
-					content: null,	//回复内容
+					content: "",	//回复内容
 					interactiveCommunityId: null, //动态id
 					replyType: 0, //回复类型 0 动态回复 1 动态评论回复
 				},
@@ -135,7 +145,11 @@
 				//全部回复
 				showCommunityDel: false,
 				showCommentReply: false,
-				content: "<text class='commenter-name'>李振</text><text class='with-text'>回复</text><text class='responder-name'>李雷</text><text></text><text class='with-symbol'>：</text><text class='reply-content'>山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有？</text>",
+				disabledComments: false,
+				/* 写评论是否弹窗 */
+				fixCommentsTextareaFocus: false,
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		onLoad(option) {
@@ -170,6 +184,9 @@
 				const thisObj = this
 				commentsApis.getUsersByStarId(this.formData.interactiveCommunityId).then(res => {
 					if(Object.keys(res).length > 1){
+						if(!res.commentNum){
+							thisObj.fixCommentsTextareaFocus = true
+						}
 						thisObj.communityList = res
 					} else {
 						console.info("获取社区列表接口失败！001")
@@ -250,13 +267,20 @@
 				// 让输入框只能输入数值，过滤其他字符
 				// return value.replace(/[^0-9]/ig, "")
 			},
-			commentPost(event){
+			commentPostBlur(event){
 				const thisObj = this
 				let {value, cursor} = event.detail
 				let fixComments = thisObj.fixCommentsContent
-				console.info("发布-->",value)
 				if(value){
 					fixComments.content = value
+				}
+			},
+			commentPost(event){
+				const thisObj = this
+				// let {value, cursor} = event.detail
+				let fixComments = thisObj.fixCommentsContent
+				console.info("发布-->",fixComments.content)
+				if(fixComments.content){
 					thisObj.queryAddCommuityReply(fixComments)
 				} else {
 					uni.showToast({
@@ -363,7 +387,7 @@
 		.community-list {
 			width: 100%;
 			height: auto;
-			margin: 0 0 16rpx 0;
+			margin: 0 0 24rpx 0;
 			padding: 0;
 			background-color: #FFFFFF;
 			//列表 头部 列表信息
@@ -383,7 +407,7 @@
 					// box-shadow: 0rpx 4rpx 12rpx 0rpx rgba(0, 0, 0, 0.4);
 				}
 				.user-info {
-					width: 360rpx;
+					width: 350rpx;
 					height: 96rpx;
 					overflow: hidden;
 					float: left;
@@ -400,14 +424,20 @@
 						height: 48rpx;
 						line-height: 48rpx;
 						font-weight: 400;
-						font-size: 28rpx;
+						font-size: 24rpx;
 						color: #888888;
 					}
 				}
-				.status{
+				.community-right {
 					width: auto;
 					height: 48rpx;
-					margin: 0 32rpx 0 0;
+					overflow: hidden;
+					float: right;
+				}
+				.status {
+					width: auto;
+					height: 48rpx;
+					margin: 0 16rpx 0 0;
 					padding: 0 20rpx;
 					float: left;
 					background: rgba(242,115,30, 0.1);
@@ -418,7 +448,26 @@
 					text-align: center;
 					color: #F2731E;
 				}
+				.line-content {
+					width: 1rpx;
+					height: 48rpx;
+					overflow: hidden;
+					display: flex;
+					align-items: center;
+					margin: 0 16rpx 0 0;
+					float: left;
+					.u-line {
+						width: 1rpx;
+					}
+				}
+				
 				.more-dot {
+					width: 48rpx;
+					height: 48rpx;
+					float: left;
+				}
+				.u-icon--right{
+					width: 48rpx;
 				}
 			}
 			//列表主体内容
@@ -434,14 +483,14 @@
 					font-weight: 400;
 					line-height: 48rpx;
 					font-size: 30rpx;
-					color: #222222;
+					color: #444251;
 					// text-overflow: ellipsis;
 					// display: -webkit-box;
 					// -webkit-line-clamp: 3;
 					// -webkit-box-orient: vertical;
 				}
 				.community-media {
-					width: 100%;
+					width: 492rpx;
 					height: auto;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
@@ -454,84 +503,6 @@
 					}
 				}
 			}
-			// .community-comments {
-			// 	width: 686rpx;
-			// 	height: auto;
-			// 	overflow: hidden;
-			// 	margin: 32rpx auto 32rpx auto;
-			// 	padding: 0rpx 0 0 0;
-			// 	border-bottom: 2rpx solid #EEEEEE;
-			// 	clear: both;
-			// 	.comments-user {
-			// 		width: 100%;
-			// 		height: 56rpx;
-			// 		overflow: hidden;
-			// 		margin: 0 0 4rpx 0;
-			// 		float: left;
-			// 		.user-photo {
-			// 			width: 56rpx;
-			// 			height: 56rpx;
-			// 			overflow: hidden;
-			// 			border-radius: 50%;
-			// 			float: left;
-			// 			// box-shadow: 0rpx 4rpx 12rpx 0rpx rgba(0, 0, 0, 0.4);
-			// 		}
-			// 		.user-name {
-			// 			height: 56rpx;
-			// 			padding: 0 0 0 16rpx;
-			// 			font-weight: 600;
-			// 			font-size: 24rpx;
-			// 			color: #444251;
-			// 			line-height: 56rpx;
-			// 			float: left;
-						
-			// 		}
-			// 	}
-			// 	.comments-content {
-			// 		width: 614rpx;
-			// 		max-height: 352rpx;
-			// 		overflow: hidden;
-			// 		margin: 0 0 32rpx 0;
-			// 		padding: 0 0 0 72rpx;
-			// 		font-weight: 400;
-			// 		line-height: 44rpx;
-			// 		font-size: 30rpx;
-			// 		color: #222222;
-			// 		text-overflow: ellipsis;
-			// 		display: -webkit-box;
-			// 		-webkit-line-clamp: 8;
-			// 		-webkit-box-orient: vertical;
-			// 	}
-			// 	.comments-reply {
-			// 		margin: 0 0 32rpx 72rpx;
-			// 		padding: 24rpx;
-			// 		background: #F5F6F7;
-			// 		border-radius: 8rpx;
-			// 		.reply-item {
-			// 			.commenter-name,
-			// 			.responder-name,
-			// 			.with-symbol {
-			// 				font-weight: 500;
-			// 				font-size: 28rpx;
-			// 				color: #444251;
-			// 				line-height: 40rpx;
-			// 				}
-			// 				.with-text {
-			// 					font-weight: 400;
-			// 					font-size: 28rpx;
-			// 					color: #567DF4;
-			// 					line-height: 40rpx;
-			// 				}
-			// 				.reply-content {
-			// 					font-weight: 400;
-			// 					font-size: 26rpx;
-			// 					color: #444251;
-			// 				}
-							
-			// 			}
-						
-			// 		}
-			// 	}
 			
 			.location-address {
 				width: 100%;
@@ -574,7 +545,8 @@
 				height: auto;
 				overflow: hidden;
 				padding: 0 32rpx 0 144rpx;
-				border-top: 2rpx solid #EEEEEE;
+				border-top: 1rpx solid #EEEEEE;
+				border-bottom: 24rpx solid #F5F6F7;
 				.operate-chat,
 				.operate-thumb{
 					width: 50%;
@@ -586,12 +558,12 @@
 					line-height: 80rpx;
 					display: flex;
 					align-items: center;
-					.u-icon {
-						
-					}
+					
 					text {
 						float: left;
 						padding: 0 0 0 8rpx;
+						font-size: 20px!important;
+						line-height: 20px!important;
 					}
 					.chat-photo {
 						width: 32rpx;
@@ -664,28 +636,55 @@
 		position: fixed;
 		bottom: 0;
 		background-color: white;
-		.textarea-label {
-			width: 686rpx;
-			height: 152rpx;
+		.textarea-community-label {
+			// width: 686rpx;
+			width: 556rpx;
+			height: 72rpx;
 			margin: 0 auto;
 			padding: 0;
+			border-radius: 36rpx;
+			
 		}
-		.u-textarea__field {
-			padding: 16rpx 16rpx 0 16rpx;
-			background: #F5F6F7;
+		.comment-post-btn {
+			width: 114rpx;
+			height: 72rpx;
+			overflow: hidden;
+			margin: 0 32rpx 0 0;
+			button {
+				width: 114rpx;
+				height: 72rpx;
+				overflow: hidden;
+				background-color: #567DF4;
+				line-height: 72rpx;
+				font-size: 30rpx;
+				color: #FFFFFF;
+			}
 		}
-		/deep/ .u-textarea {
-			height: 136rpx;
-			padding: 0 !important;
-		}
+		
 	}
-	
+	.textarea-community-label /deep/ .u-textarea__field {
+		padding: 16rpx 0 14rpx 0 32rpx !important;
+		
+		
+	}
+	.textarea-community-label /deep/ .u-textarea {
+		// height: 72rpx;
+		padding: 16rpx 0 14rpx 32rpx!important;
+		background: #F5F6F7!important;
+		// border-radius: 36rpx!important;
+	}
+	.textarea-community-label /deep/ .textarea-placeholder {
+		// padding: 16rpx 0 14rpx 32rpx;
+	}
 	/* 查看全文样式修正 */
 	.u-read-more /deep/ .u-read-more__toggle {
 		display: block!important;
 	}
 	.u-read-more /deep/ .u-read-more__toggle__text {
 		display: block!important;
+	}
+	.u-read-more /deep/ .u-read-more__content {
+		color: #444251!important;
 	}
 	.u-read-more .u-read-more__toggle__text  /deep/ .u-text {
 		display: block!important;
@@ -697,5 +696,10 @@
 	}
 	.u-read-more__toggle /deep/ .u-read-more__toggle__icon {
 		display: none!important;
+	}
+	
+	.community-operate /deep/ .uicon-thumb-up-fill {
+		font-size: 20px!important;
+		line-height: 20px!important;
 	}
 </style>

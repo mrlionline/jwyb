@@ -50,8 +50,8 @@
 						<text>{{ item.commentNum }}</text>
 					 </view>
 					 <view class="operate-thumb" @click="operateThumb(item)">
-						<u-icon v-if="item.isHb" name="thumb-up-fill" color="#567DF4" size="28"></u-icon>
-						<u-icon v-else name="thumb-up" color="#959BA4" size="28"></u-icon>
+						<u-icon v-if="item.isHb" name="thumb-up-fill" color="#567DF4" size="20"></u-icon>
+						<u-icon v-else name="thumb-up" color="#959BA4" size="20"></u-icon>
 						<view>{{ item.hbNum }}</view>
 					 </view>
 				</view>

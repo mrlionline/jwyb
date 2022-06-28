@@ -2,7 +2,7 @@
 	<view class="label-container">
 		<PageNavbar title="发动态"></PageNavbar>
 		<!-- 社区列表  -->
-		<view class="community-main">
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<view class="community-list" v-if="Object.keys(communityList).length>0 ">
 				<!-- 动态内容 -->
 				<view class="community-info">
@@ -175,6 +175,7 @@
 				showCommunityDel: false,
 				communityDelIco: false,
 				confirmDelIco: false,
+				navBarHeight: getApp().globalData.statusBarHeight + 48,
 				content: "<text class='commenter-name'>李振</text><text class='with-text'>回复</text><text class='responder-name'>李雷</text><text></text><text class='with-symbol'>：</text><text class='reply-content'>山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有？</text>",
 			}
 		},
@@ -270,6 +271,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		
 	}
 	.community-main {
 		width: 100%;
