@@ -18,7 +18,7 @@ const myApi = {
 	},
 	// 积分明细
 	queryList(data){
-		return http('/learning-interaction-api/integralRecord/queryList', 'POST', {data: data})
+		return http('/learning-interaction-api/integralRecord/queryList', 'POST', {data: data, fullRes: true})
 	},
 	// 我的-积分明细-分类
 	getIntegralType(){
