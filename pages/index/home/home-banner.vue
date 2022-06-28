@@ -9,6 +9,7 @@
 			height="480rpx"
 			radius="0"
 			indicatorStyle="bottom: 48rpx"
+			@click="click($event)"
 		>
 			<!-- <view
 				slot="indicator"
@@ -29,6 +30,20 @@
 		data() {
 			return {
 				currentNum: 0
+			}
+		},
+		methods: {
+			click(index){
+				const item = this.list[index]
+				if(!item.link.startsWith('http')){
+					uni.navigateTo({
+						url: item.link
+					})
+				}else {
+					uni.navigateTo({
+						url: `/pages/myWebView/my-web-view?url=${item.link}`
+					})
+				}
 			}
 		},
 		computed: {

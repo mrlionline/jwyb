@@ -18,9 +18,6 @@ const indexApis = {
 	},
 	find(data){
 		return http('/learning-interaction-api/information/find', 'GET', {data})
-	},
-	getFile(id){
-		return http('/learning-interaction-api/starsCapsule-api/file/getFile/' + id, 'GET')
 	}
 	
 }

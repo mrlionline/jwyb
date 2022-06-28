@@ -53,16 +53,18 @@
 					fileUrl: ''
 				}
 				this.list.push(item)
-				indexApis.find({id: item.id}).then(res =>{
+				indexApis.find({
+					id: item.id,
+					enter: 'web'
+				}).then(res =>{
 					item.title = res.title
 					item.ctime = res.ctime
 					item.informationTypeName = res.informationTypeName
 					item.authorName = res.authorName
-					if(res.fileList && res.fileList.length && res.fileList[0]){
-						indexApis.getFile(res.fileList[0]).then(file =>{
-							item.fileType = file.fileType
-							item.fileUrl = file.fileUrl
-						})
+					if(res.informationFileList && res.informationFileList.length){
+						const file = res.informationFileList[0]
+						item.fileType = file.fileType
+						item.fileUrl = file.fileUrl
 					}
 				})
 			})

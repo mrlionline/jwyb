@@ -1,14 +1,14 @@
 <template>
 	<view class="home-card">
 		<view v-if="config.cols === 1" class="hc-single">
-			<view class="single-item" v-for="card in config.contents">
+			<view class="single-item" v-for="card in config.contents" @click="goto(card)">
 				<image :src="card.img"></image>
 				<text class="card-title ellipsis">{{card.label}}</text>
 				<text class="card-desc ellipsis">{{card.description}}</text>
 			</view>
 		</view>
 		<view v-if="config.cols === 2" class="hc-double">
-			<view class="double-item" v-for="card in config.contents">
+			<view class="double-item" v-for="card in config.contents" @click="goto(card)">
 				<image :src="card.img"></image>
 				<view class="card-title-wrap">
 					<text class="card-title ellipsis">{{card.label}}</text>
@@ -25,6 +25,19 @@
 		data(){
 			return {
 				
+			}
+		},
+		methods: {
+			goto(card){
+				let url = ''
+				if(card.type === 'star'){
+					url = '/pagesCapsule/capsule/capsule'
+				}else if(card.type === 'signIn'){
+					url = '/pagesSignIn/sign-in'
+				}
+				if(url){
+					uni.navigateTo({ url })
+				}
 			}
 		}
 	}
