@@ -12,10 +12,13 @@
 		    <u-tabs :list="tabs" @change="tabChange($event)"></u-tabs>
 		</u-sticky>
 		<view class="curriculum-box">
-			<view class="curriculum-item" v-for="item in curriculum">
+			<view class="curriculum-item" v-for="item in curriculum" @click="goDetail(item)">
 				<view class="image-box">
 					<image :src="item.image"></image>
 					<text class="time" v-if="item.time">{{item.time}}</text>
+					<view class="lock" v-if="item.lock">
+						<image src="/pagesStudy/static/lock.png" mode=""></image>
+					</view>
 				</view>
 				<view class="text-box">
 					<text class="title">{{item.title}}</text>
@@ -54,7 +57,8 @@
 						learnedPerson: 1234,
 						type: 'video',
 						time: '1:00:00',
-						id: Math.random()
+						id: Math.random(),
+						lock: true
 					},
 					{
 						image: 'http://39.105.146.234:30001/jw/assets/images/wx/default-bg.jpg',
@@ -82,6 +86,16 @@
 				console.log(e)
 				this.activeTabId = e.id
 				this.getList()
+			},
+			goDetail(item){
+				if(item.lock){
+					return
+				}
+				if(item.type === 'video'){
+					uni.navigateTo({
+						url: `/pagesStudy/study-video?id=${item.id}`
+					})
+				}
 			}
 		},
 		created() {
@@ -136,6 +150,21 @@
 						font-size: 16rpx;
 						color: #FFFFFF;
 					}
+					.lock{
+						position: absolute;
+						left: 0;
+						top: 0;
+						right: 0;
+						bottom: 0;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						background-color: rgba(0, 0, 0, .6);
+						image{
+							width: 40rpx;
+							height: 40rpx;
+						}
+					}
 				}
 				.text-box{
 					background-color: #FFFFFF;
@@ -159,6 +188,7 @@
 						font-weight: 400;
 						font-size: 20rpx;
 						color: #F2731E;
+						border-radius: 4px;
 					}
 				}
 			}

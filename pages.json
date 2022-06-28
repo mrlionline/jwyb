@@ -210,6 +210,17 @@
 						"navigationStyle":"default"
 				    }
 				    
+				},
+				{
+				    "path" : "study-video",
+				    "style" :                                                                                 
+				    {
+				        "navigationBarTitleText": "学习",
+						"navigationBarTextStyle": "black",
+				        "enablePullDownRefresh": false,
+						"navigationStyle":"default"
+				    }
+				    
 				}
 			]
 		}
