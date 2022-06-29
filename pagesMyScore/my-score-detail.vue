@@ -66,7 +66,7 @@
 				timeList: [],
 				historyList: [],
 				pageNum: 1,
-				pageSize: 10,
+				pageSize: 20,
 				moreDataStatus: 'loadmore'
 			}
 		},

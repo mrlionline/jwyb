@@ -2,7 +2,7 @@
 	<view class="label-container">
 		<PageNavbar title="选择位置"></PageNavbar>
 		<!-- 位置列表  -->
-		<view class="community-main">
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<view class="location-choose">
 				<view class="location-choose-item" v-for="(item, index) in locationChooseOption" :key="index" :name="item.value" @click="locationChooseHandle(item)">
 					{{ item.name }} 
@@ -62,6 +62,8 @@
 				// u-radio-group的v-model绑定的值如果设置为某个radio的name，就会被默认选中
 				locationChoose: 0,
 				storeChoose: "",
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		created() {

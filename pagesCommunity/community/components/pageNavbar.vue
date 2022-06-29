@@ -37,7 +37,6 @@
 			};
 		},
 		created() {
-			
 		},
 		computed: {
 			leftIconSize: function(){
@@ -50,6 +49,14 @@
 				// console.info("pages-->",pages)
 				if(pages.length > 1){
 					uni.navigateBack()
+				}
+			},
+			// 查询是否刘海屏设备
+			hasNotch(){
+				if(plus.navigator.hasNotchInScreen()){
+					alert('此设备是刘海屏');
+				} else {
+					alert('此设备不是刘海屏');
 				}
 			}
 		}

@@ -6,7 +6,11 @@ const infoListApis = {
 	},
 	// 获取我的咨询列表 
 	apiInfoTypeList(data){
-		return http('/learning-interaction-api/informationType/myList', 'POST', {data})
+		return http('/learning-interaction-api/informationType/list', 'POST', {data})
+	},
+	// 小程序-我的-资讯统计进入资讯列表 
+	apiMyHeartList(data){
+		return http('/learning-interaction-api/information/appletMyHeartList', 'POST', {data})
 	},
 	// 根据id获取资讯
 	apiCode2Session(code) {

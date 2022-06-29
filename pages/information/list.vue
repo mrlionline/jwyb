@@ -1,10 +1,10 @@
 <template>
 	<view class="label-container">
 		<image class="label-background-img" src="/static/community/bg.png"></image>
-		<PageNavbar title="资讯" :bgColor="'transparent'" :leftIconColor="'#FFFFFF'" :titleStyle="titleStyle"></PageNavbar>
-		<view class="community-main">
+		<PageNavbar title="资讯" :bgColor="'transparent'" :leftIconColor="'#FFFFFF'" :isShowBack="false" :titleStyle="titleStyle"></PageNavbar>
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<view class="search-label">
-				<u-search placeholder="搜索资讯标题" @search="searchCommunity" v-model="formData.title" :show-action="false" :bgColor="'#FFFFFF'" @clear="searchCommunityClear" clearabled></u-search>
+				<u-search placeholder="搜索资讯标题" @search="searchCommunity" v-model="formData.title" :show-action="false" :bgColor="'#FFFFFF'"></u-search>
 			</view>
 			<u-tabs class="tabs-list" :list="tabsList" :current="tabsCurrent" @change="tabsChange" :activeStyle="activeStyle" :inactiveStyle="inactiveStyle"></u-tabs>
 			<!-- 资讯 -1- -->
@@ -16,9 +16,17 @@
 					<view class="info-content">
 						<uParseMax :content="item.contentStr" @preview="previewContent" @navigate="navigateContent" ></uParseMax>
 					</view>
+					<!-- 缩略图  -->
+					<view class="info-thumbnail" v-if="item.informationFileList">
+						<u-grid :col="3">
+							<u-grid-item v-for="(itm, idx) in item.informationFileList" :key="idx">
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
+							</u-grid-item>
+						</u-grid>
+					</view>
 					<view class="info-message">
 						<text class="message-time">{{ item.ctime }}</text>
-						<text v-if="item.informationType" class="message-post">{{ item.informationType }}</text>
+						<text v-if="item.informationTypeName || item.informationType" class="message-post">{{ item.informationTypeName || item.informationType }}</text>
 						<text class="message-name">{{ item.authorName }}</text>
 					</view>
 				</view>
@@ -33,7 +41,7 @@
 
 <script>
 	import infoListApis from '../../http/information/list.js'
-	import PageNavbar from '@/components/pageNavbar/pageNavbar.vue'
+	import PageNavbar from './components/pageNavbar.vue'
 	import uParseMax from '@/components/u-parse/u-parse.vue'
 	import {marked} from "marked" 
 	export default {
@@ -65,7 +73,9 @@
 					color: '#444251',
 					fontWeight: 400,
 					fontSize: '30rpx'
-				}
+				},
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		created() {
@@ -100,7 +110,6 @@
 							for (let i = 0; i < tabsList.length; i++) {
 								if(ele.informationTypeId == tabsList[i].id){
 									ele.informationType = tabsList[i].name
-									return
 								}
 							}
 							// ele.contentStr = (ele.content);
@@ -172,6 +181,7 @@
 						icon: 'none'
 					})
 				}
+				
 			},
 			tabsChange(item){
 				console.info("切换!!!!",item)
@@ -181,14 +191,6 @@
 				thisData.informationTypeId = item.id
 				thisObj.infoList = []
 				thisData.pageNum = 1
-				thisObj.queryAppletList()
-			},
-			searchCommunityClear(){
-				const thisObj = this
-				let thisData = thisObj.formData
-				// thisData.informationTypeId = item.id
-				thisData.pageNum = 1
-				thisObj.infoList = []
 				thisObj.queryAppletList()
 			},
 			previewContent(src, e) {
@@ -285,20 +287,46 @@
 				.info-content {
 					width: 100%;
 					height: auto;
-					// max-height: 126rpx;
+					max-height: 132rpx;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
 					padding: 0;
 					font-weight: 400;
 					font-size: 30rpx;
-					line-height: 42rpx;
+					line-height: 44rpx;
 					color: #959BA4;
 					text-overflow: ellipsis;
 					display: -webkit-box;
 					-webkit-line-clamp: 3;
 					-webkit-box-orient: vertical;
-					.wxParse .p {
+					.wxParse view {
+						display: inline-block;
+					}
+					.wxParse view.text {
+						display: inline;
+					}
+					.wxParse p {
+						display: block;
 						margin: 16rpx 0;
+					}
+					.wxParse span {
+						display: inline-block;
+						margin: 0;
+						padding: 0 6rpx;
+					}
+					
+				}
+				.info-thumbnail {
+					width: 100%;
+					height: auto;
+					overflow: hidden;
+					margin: 0 0 16rpx 0;
+					.u-grid-item {
+						margin: 0 0 8rpx 0;
+					}
+					.grid-img {
+						width: 216rpx;
+						height: 136rpx;
 					}
 				}
 				.info-message {
@@ -316,5 +344,9 @@
 				}
 			}
 		}
+	}
+	/deep/ .u-tabbar {
+		position: relative;
+		z-index: 5;
 	}
 </style>

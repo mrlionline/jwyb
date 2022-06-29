@@ -2,7 +2,7 @@
 	<view class="label-container">
 		<PageNavbar title="互动社区"></PageNavbar>
 		<!-- 社区列表  -->
-		<view class="community-main">
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<view class="community-list" v-for="(item, index) in communityList" :key="index">
 				<!-- 动态内容 -->
 				<view class="community-info">
@@ -11,8 +11,13 @@
 						<view class="user-name">{{ item.authorName || '佚名' }}</view>
 						<view class="timer">{{ item.releaseTime || item.mtime }}</view>
 					</view>
-					<view class="status">{{ '·' + (item.statusName || item.approveTypeName) }}</view>
-					<u-icon class="more-dot" name="more-dot-fill" color="#000000" size="24" @click="openCommunityDelState(item)"></u-icon>
+					<view class="community-right" v-if="item.isMe == 1">
+						<view class="status">{{ '·' + (item.statusName || item.approveTypeName) }}</view>
+						<view class="line-content">
+							<u-line color="#EEEEEE" direction="col" length="32rpx"></u-line>
+						</view>
+						<u-icon class="more-dot" name="more-dot-fill" color="#000000" size="20" @click="openCommunityDelState(item)"></u-icon>
+					</view>
 				</view>
 				<!-- 动态图片视频 -->
 				<view class="community-content" v-if="item.content">
@@ -30,7 +35,7 @@
 					<view class="community-media" v-else>
 						<u-grid :col="3">
 							<u-grid-item v-for="(itm, idx) in item.fileList" :key="idx">
-								<image class="grid-img" :src="itm.fileUrl" mode="aspectFit" @click="previewCommunityImage(itm.fileUrl)"></image>
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
 							</u-grid-item>
 						</u-grid>
 					</view>
@@ -51,7 +56,7 @@
 					 </view>
 					 <view class="operate-thumb" @click="operateThumb(item)">
 						<u-icon v-if="item.isHb" name="thumb-up-fill" color="#567DF4" size="28"></u-icon>
-						<u-icon v-else name="thumb-up" color="#959BA4" size="28"></u-icon>
+						<u-icon v-else name="thumb-up" color="#959BA4" size="20"></u-icon>
 						<view>{{ item.hbNum }}</view>
 					 </view>
 				</view>
@@ -125,6 +130,8 @@
 					paddingTop: "0px",
 					marginTop: "0px",
 				},
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		onLoad(option) {
@@ -362,7 +369,7 @@
 					// box-shadow: 0rpx 4rpx 12rpx 0rpx rgba(0, 0, 0, 0.4);
 				}
 				.user-info {
-					width: 360rpx;
+					width: 350rpx;
 					height: 96rpx;
 					overflow: hidden;
 					float: left;
@@ -383,10 +390,16 @@
 						color: #888888;
 					}
 				}
-				.status{
+				.community-right {
 					width: auto;
 					height: 48rpx;
-					margin: 0 32rpx 0 0;
+					overflow: hidden;
+					float: right;
+				}
+				.status {
+					width: auto;
+					height: 48rpx;
+					margin: 0 16rpx 0 0;
 					padding: 0 20rpx;
 					float: left;
 					background: rgba(242,115,30, 0.1);
@@ -397,9 +410,26 @@
 					text-align: center;
 					color: #F2731E;
 				}
+				.line-content {
+					width: 1rpx;
+					height: 48rpx;
+					overflow: hidden;
+					display: flex;
+					align-items: center;
+					margin: 0 16rpx 0 0;
+					float: left;
+					.u-line {
+						width: 1rpx;
+					}
+				}
+				
 				.more-dot {
 					width: 48rpx;
 					height: 48rpx;
+					float: left;
+				}
+				.u-icon--right{
+					width: 48rpx;
 				}
 			}
 			//列表主体内容
@@ -411,8 +441,8 @@
 					height: auto;
 					// max-height: 144rpx;
 					overflow: hidden;
-					margin: 0 0 28rpx 0;
-					// margin: 0 0 0 0;
+					// margin: 0 0 32rpx 0;
+					margin: 0 0 0 0;
 					padding: 0;
 					font-weight: 400;
 					line-height: 48rpx;
@@ -424,7 +454,7 @@
 					// -webkit-box-orient: vertical;
 				}
 				.community-media {
-					width: 100%;
+					width: 492rpx;
 					height: auto;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
@@ -463,7 +493,7 @@
 					.address-text {
 						width: auto;
 						height: 36rpx;
-						padding: 0 16rpx;
+						padding: 0 16rpx 0 8rpx;
 						font-weight: 400;
 						font-size: 26rpx;
 						line-height: 36rpx;
@@ -478,7 +508,7 @@
 				height: auto;
 				overflow: hidden;
 				padding: 0 32rpx 0 144rpx;
-				border-top: 2rpx solid #EEEEEE;
+				border-top: 1rpx solid #EEEEEE;
 				.operate-chat,
 				.operate-thumb{
 					width: 50%;

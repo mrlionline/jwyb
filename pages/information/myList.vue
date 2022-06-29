@@ -1,7 +1,7 @@
 <template>
 	<view class="label-container">
 		<PageNavbar title="我的资讯"></PageNavbar>
-		<view class="community-main">
+		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
 			<u-sticky bgColor="#fff">
 				<u-tabs :list="infoTabList" :current="tabsCurrent" @change="tabsChange" :activeStyle="activeStyle" :inactiveStyle="inactiveStyle" :itemStyle="itemStyle" scrollable="false"></u-tabs>
 			</u-sticky>
@@ -13,6 +13,14 @@
 					</view>
 					<view class="info-content">
 						<uParseMax :content="item.contentStr" @preview="previewContent" @navigate="navigateContent" ></uParseMax>
+					</view>
+					<!-- 缩略图  -->
+					<view class="info-thumbnail" v-if="item.informationFileList">
+						<u-grid :col="3">
+							<u-grid-item v-for="(itm, idx) in item.informationFileList" :key="idx">
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
+							</u-grid-item>
+						</u-grid>
 					</view>
 					<view class="info-message">
 						<text class="message-time">{{ item.ctime }}</text>
@@ -82,13 +90,24 @@
 				itemStyle: {
 					width: "33.33%",
 					height: "88rpx"
-				}
+				},
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 48
 			}
 		},
 		created() {
-			console.info("你好呀………………………………")
-			this.queryAppletList()
-			this.queryInfoTypeList()
+			console.info("created………………………………")
+		},
+		onLoad(option) {
+			const thisObj = this
+			if (option.currentTab) {
+				thisObj.tabsCurrent = parseInt(option.currentTab)-1
+			} else {
+				thisObj.tabsCurrent = 0
+			}
+			thisObj.queryAppletList()
+			thisObj.queryInfoTypeList()
+			
 		},
 		//上拉加载
 		onReachBottom() {
@@ -103,7 +122,7 @@
 			queryAppletList(){
 				const thisObj = this
 				let thisData = uni.$u.deepClone(thisObj.formData)
-				infoListApis.apiAppletList(thisData).then(res => {
+				infoListApis.apiMyHeartList(thisData).then(res => {
 						// console.info("res res res-->",res)
 					if(res.length > 0){
 						let infoTypeList = uni.$u.deepClone(thisObj.infoTypeList)
@@ -224,7 +243,7 @@
 			height: auto;
 			margin: 176rpx 0 0 0;
 			padding:0;
-			z-index: 2;
+			z-index: 1;
 			// background-color: #F5F6F7;
 			.tabs-information,
 			.information-empty {
@@ -272,6 +291,25 @@
 					-webkit-box-orient: vertical;
 					.wxParse .p {
 						margin: 16rpx 0;
+					}
+					.wxParse span {
+						display: inline-block;
+						margin: 0;
+						padding: 0;
+					}
+
+				}
+				.info-thumbnail {
+					width: 100%;
+					height: auto;
+					overflow: hidden;
+					margin: 0 0 16rpx 0;
+					.u-grid-item {
+						margin: 0 0 8rpx 0;
+					}
+					.grid-img {
+						width: 216rpx;
+						height: 136rpx;
 					}
 				}
 				.info-message {
