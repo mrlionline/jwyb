@@ -22,6 +22,7 @@
 				<image style="width: 80rpx; height: 80rpx;" @click="showPop=false" src="/pagesSignIn/static/close.png"></image>
 			</view>
 		</u-popup>
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 <script>
@@ -31,11 +32,22 @@
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
 				showPop: false,
-				signInList: []
+				signInList: [],
+				todayIsSignIn: false
 			}
 		},
 		methods: {
 			doSignIn(){
+				if(this.todayIsSignIn){
+					// uni.showToast({
+					// 	title: '今天已签到'
+					// })
+					this.$refs.uToast.show({
+						type: 'default',
+						message: "今天已签到"
+					})
+					return
+				}
 				myApi.loginIn().then(res =>{
 					this.showPop = true
 					this.loginRecord()
@@ -44,6 +56,7 @@
 			loginRecord(){
 				myApi.loginRecord().then(res =>{
 					const todayIndex = res.findIndex(item => item.isNowDay === 1)
+					this.todayIsSignIn = res[todayIndex].isLogin === 1
 					this.signInList = res.map((item, i) =>{
 						return {
 							...item,

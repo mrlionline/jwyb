@@ -75,7 +75,7 @@
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
 				userInfo: {
-					avatar: '/static/header.jpg',
+					avatar: '',
 					name: ''
 				},
 				logoutConfirm: false,
