@@ -17,9 +17,9 @@
 		
 		<u-popup :show="showPop" mode="center" bgColor="transparent" @close="showPop = false">
 			<view style="display: flex; flex-direction: column; justify-content: center; align-items: center;" @click="showPop = false">
-				<image style="width: 542rpx; height: 542rpx;" src="/pagesSignIn/static/ten.png"></image>
-				<image style="width: 388rpx; height: 124rpx;" src="/pagesSignIn/static/use.png"></image>
-				<image style="width: 80rpx; height: 80rpx; margin-top: 32rpx;" @click="showPop=false" src="/pagesSignIn/static/close.png"></image>
+				<image style="width: 320rpx; height: 320rpx;" src="/pagesSignIn/static/ten.png"></image>
+				<image style="width: 210rpx; height: 58rpx; margin: 56rpx 0 94rpx;" src="/pagesSignIn/static/accept.png"></image>
+				<image style="width: 80rpx; height: 80rpx;" @click="showPop=false" src="/pagesSignIn/static/close.png"></image>
 			</view>
 		</u-popup>
 	</view>
