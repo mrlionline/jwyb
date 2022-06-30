@@ -60,6 +60,11 @@
 			// 	console.log('sdfsdf')
 			// })
 		},
+		onPageScroll(res){
+			if(res.scrollTop <= 100){
+				uni.$emit('scroll-top-change',res.scrollTop)
+			}
+		},
 		methods: {
 			tabBarChange(e){
 				this.activeTabBar = e
@@ -237,7 +242,7 @@
 
 <style scoped>
 	.content{
-		background-color: #F4F6F8;
+		background-color: #F5F6F7;
 		min-height: 100vh;
 	}
 	.tab-bar-icon{

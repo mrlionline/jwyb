@@ -1,5 +1,5 @@
 <template>
-	<view class="page-header">
+	<view class="page-header" v-if="showWidthScroll ? scrollTop > 0 : true">
 		<!-- <view class="ph-status-space"></view>
 		<view class="ph-navbar-space"></view> -->
 		<view class="ph-content" v-if="!isDefault">
@@ -21,6 +21,7 @@
 				:title="title"
 				:leftIconColor="titleColor"
 				:bgColor="'transparent'"
+				:border="border"
 				:titleStyle="{color: titleColor}"
 				@leftClick="back()"
 			></u-navbar>
@@ -46,15 +47,26 @@
 			titleColor: {
 				type: String,
 				default: '#fff'
+			},
+			showWidthScroll: {
+				type: Boolean,
+				default: false
+			},
+			border: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
 			return {
-				
+				scrollTop: 0
 			};
 		},
 		created() {
-			
+			uni.$on('scroll-top-change',e =>{
+				this.scrollTop = e
+				console.log(this.showWidthScroll)
+			})
 		},
 		computed: {
 			backArrowSize: function(){

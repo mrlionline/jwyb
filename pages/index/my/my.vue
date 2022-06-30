@@ -1,6 +1,12 @@
 <template>
 	<view style="height: 100%;">
-		<page-header title="我的" :showBack="false" :isDefault="true" titleColor="#000"></page-header>
+		<page-header
+			title="我的"
+			:showBack="false"
+			:isDefault="true"
+			titleColor="#000"
+			:border="true"
+		></page-header>
 		<view class="my-container" :style="{'padding-top': navBarHeight + 'px'}">
 			<view class="base-info section">
 				<view class="left">
@@ -18,8 +24,9 @@
 				</view>
 			</view>
 			<view class="integral section">
+				<image src="/static/my/scroll-bg.png" class="bg"></image>
 				<view class="left">
-					<image src="../../../static/time-line-dot.png" style="width: 20px; height: 20px;"></image>
+					<image src="../../../static/my/scroll-icon.png" style="width: 20px; height: 20px;"></image>
 					<text style="font-weight: 400;font-size: 15px;color: #FFE3A5; margin-left: 20rpx;">我的积分</text>
 				</view>
 				<view class="right" @click="goto('/pagesMyScore/my-score')">
@@ -29,11 +36,15 @@
 			</view>
 			<view class="function white-section">
 				<view class="fun-item" @click="goto('/pagesCommunity/community/list/list?type=mine')">
-					<image src="../../../static/my/my-updates.png"></image>
+					<view class="icon-box">
+						<image src="../../../static/my/my-updates.png"></image>
+					</view>
 					<text>我的动态</text>
 				</view>
 				<view class="fun-item" @click="goto('pages/index/my/my-set')">
-					<image src="../../../static/my/set.png"></image>
+					<view class="icon-box">
+						<image src="../../../static/my/set.png"></image>
+					</view>
 					<text>设置</text>
 				</view>
 			</view>
@@ -166,8 +177,8 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		height: 152rpx;
-		padding: 0 12rpx 0 8rpx;
+		height: 200rpx;
+		padding: 40rpx 12rpx 0 8rpx;
 		.left{
 			display: flex;
 			align-items: center;
@@ -190,18 +201,29 @@
 		}
 	}
 	.integral{
+		position: relative;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		border-radius: 8px;
+		width: 686rpx;
 		height: 144rpx;
-		background-image: linear-gradient(193deg, #7A36DC 3%, #1F1D8E 83%);
 		margin-top: 40rpx;
 		padding: 0 32rpx;
 		.left,
 		.right{
+			position: relative;
 			display: flex;
 			align-items: center;
+			z-index: 1;
+		}
+		.bg{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 686rpx;
+			height: 144rpx;
+			z-index: 0;
 		}
 	}
 	.function{
@@ -220,9 +242,14 @@
 			&:nth-child(3n+0){
 				margin-right: 0;
 			}
-			image{
+			.icon-box{
 				width: 96rpx;
 				height: 96rpx;
+				padding: 15rpx;
+				image{
+					width: 100%;
+					height: 100%;
+				}
 			}
 			text{
 				font-weight: 400;

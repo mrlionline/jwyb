@@ -1,5 +1,12 @@
 <template>
 	<view class="content">
+		<page-header
+			title="绝味人在一起"
+			:showBack="false"
+			:isDefault="true"
+			titleColor="#000"
+			:showWidthScroll="true"
+		></page-header>
 		<view v-for="item in configList" :class="[item.name, {'radius-content': item.name !== 'banner'}]">
 			<home-banner v-if="item.name === 'banner'" :config="item.config"></home-banner>
 			<home-nav v-if="item.name === 'navigation'" :config="item.config.navs"></home-nav>
@@ -118,7 +125,7 @@
 	.banner + view{
 		position: relative;
 		margin-top: -32rpx;
-		z-index: 100;
+		z-index: 1;
 	}
 	.radius-content{
 		margin: 0 32rpx 24rpx;

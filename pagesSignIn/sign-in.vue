@@ -2,7 +2,7 @@
 	<view class="sign-in">
 		<page-header title="每日签到" :showBack="true" :isDefault="true"></page-header>
 		<image class="bg" src="/pagesSignIn/static/bg@2x.png" mode="aspectFill"></image>
-		<view class="calendar" :style="{top: navBarHeight + 'px'}">
+		<view class="calendar" :style="{top: navBarHeight + 10 + 'px'}">
 			<view class="item" v-for="item in signInList">
 				<image mode="widthFix" v-if="item.isHistory && item.isLogin === 0" src="/pagesSignIn/static/sign-in-history-no.png"></image>
 				<image mode="widthFix" v-if="item.isHistory && item.isLogin === 1" src="/pagesSignIn/static/sign-in-history-yes.png"></image>
@@ -12,8 +12,9 @@
 				<text>{{item.weekDay}}</text>
 			</view>
 		</view>
-		<image class="circle" src="/pagesSignIn/static/circle.png"></image>
-		<image class="btn" @click="doSignIn()" src="/pagesSignIn/static/sign-in-btn.png"></image>
+		<image class="circle up-down" src="/pagesSignIn/static/circle.png"></image>
+		<image class="btn" v-if="todayIsSignIn" src="/pagesSignIn/static/sign-in-btn2.png"></image>
+		<image class="btn" v-else @click="doSignIn()" src="/pagesSignIn/static/sign-in-btn.png"></image>
 		
 		<u-popup :show="showPop" mode="center" bgColor="transparent" @close="showPop = false">
 			<view style="display: flex; flex-direction: column; justify-content: center; align-items: center;" @click="showPop = false">
@@ -124,5 +125,30 @@
 			width: 388rpx;
 			height: 120rpx;
 		}
+	}
+	@keyframes upDown {
+		0%{
+			// transform: translateY(0);
+			margin-top: 0;
+		}
+		25%{
+			// transform: translateY(-10rpx);
+			margin-top: -10rpx;
+		}
+		50%{
+			// transform: translateY(0);
+			margin-top: 0;
+		}
+		75%{
+			// transform: translateY(10rpx);
+			margin-top: 10rpx;
+		}
+	
+		100%{
+			margin-top: 0;
+		}
+	}
+	.up-down{
+		animation: upDown 5.1s  linear infinite;
 	}
 </style>
