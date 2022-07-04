@@ -52,7 +52,6 @@
 					fileType: '',
 					fileUrl: ''
 				}
-				this.list.push(item)
 				indexApis.find({
 					id: item.id,
 					enter: 'web'
@@ -66,6 +65,7 @@
 						item.fileType = file.fileType
 						item.fileUrl = file.fileUrl
 					}
+					this.list.push(item)
 				})
 			})
 		}

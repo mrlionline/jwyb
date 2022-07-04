@@ -11,7 +11,12 @@ const studyApi = {
 		return http('/learning-interaction-api/course/queryById/' + id, 'GET')
 	},
 	queryById(id){
-		return http('/learning-interaction-api/courseProgress/queryById/' + id, 'GET')
+		const data = {
+			"courseId": id,
+			"pageNum": 1,
+			"pageSize": 99,
+		}
+		return http('/learning-interaction-api/courseProgress/queryMyList', 'POST', {data})
 	},
 	addProgress(data){
 		return http('/learning-interaction-api/courseProgress/add', 'POST', {data})

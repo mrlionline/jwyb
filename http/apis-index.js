@@ -18,6 +18,9 @@ const indexApis = {
 	},
 	find(data){
 		return http('/learning-interaction-api/information/find', 'GET', {data})
+	},
+	getCardDetail(id){
+		return http('/learning-interaction-api/course/queryByIdNoPermission/' + id, 'GET')
 	}
 	
 }

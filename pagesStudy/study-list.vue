@@ -81,7 +81,8 @@
 							image: item.mainDiagram,
 							title: item.name,
 							learnedPerson: 0,
-							id: item.id
+							id: item.id,
+							lock: !item.permission
 						}
 					})
 					this.curriculum = [...this.curriculum, ...newList]

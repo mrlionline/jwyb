@@ -12,7 +12,7 @@
 			<view class="catalogue-box">
 				<view class="title">
 					<text style="font-weight: 600;font-size: 15px;color: #444251;">课程目录</text>
-					<text style="margin-left: 8rpx;color: #959BA4;font-weight: 400;">共{{info.coursewares.length}}个课件</text>
+					<text style="margin-left: 8rpx;color: #959BA4;font-weight: 400;">共{{info.coursewares ? info.coursewares.length : 0}}个课件</text>
 				</view>
 				<scroll-view
 					:scroll-y="true"
@@ -117,7 +117,8 @@
 							this.activeVideoSrc = item.fileUrl
 						}else {	// PDF
 							this.startStudyPdfTime = new Date().getTime()	// 开始学习pdf的时间戳，'study-done'事件中使用计算学习时长
-							const url = `/pages/myWebView/my-web-view?type=study&url=${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${this.userInfo.name}&phone=${this.userInfo.mobile}`
+							const query = encodeURIComponent(`${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${encodeURIComponent(this.userInfo.name)}&phone=${this.userInfo.mobile}`)
+							const url = `/pages/myWebView/my-web-view?type=study&url=${query}`
 							uni.navigateTo({
 								url: url
 							})
@@ -147,20 +148,19 @@
 			},
 			updatePdfProgress(){
 				const endStudyTime = new Date().getTime()
-				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + (this.progress[this.studyingItem.id].progess || 0)	// 学习时长，本次时长 + 以往时长
+				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && this.progress[this.studyingItem.id].progess) || 0)	// 学习时长，本次时长 + 以往时长
 				const complete = studySecond >= 120 ? 1 : 0	// 超过2分钟为学习完成
 				const params = {
 					complete: complete,	// 0 未完成， 1 已完成
 					courseId: this.id,
 					coursewareId: this.studyingItem.id,
-					progess: studySecond
+					progess: Math.round(studySecond)
 				}
 				studyApi.updateProgress(params).then(() =>{
-
+					this.queryById()
 				})
 				this.studyingItem = null
 				this.startStudyPdfTime = 0
-				this.queryById()
 			},
 			updateVideoProgress(){
 				
