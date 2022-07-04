@@ -1,114 +1,126 @@
 <template>
-	<view class="study-list">
-		<view class="search">
-			<u-search
-				placeholder="搜索课程标题"
-				v-model="keyword"
-				:showAction="false"
-				@search="getList()"
-			></u-search>
-		</view>
-		<u-sticky bgColor="#fff">
-		    <u-tabs :list="tabs" @change="tabChange($event)"></u-tabs>
-		</u-sticky>
-		<view class="curriculum-box">
-			<view class="curriculum-item" v-for="item in curriculum" @click="goDetail(item)">
-				<view class="image-box">
-					<image :src="item.image"></image>
-					<text class="time" v-if="item.time">{{item.time}}</text>
-					<view class="lock" v-if="item.lock">
-						<image src="/pagesStudy/static/lock.png" mode=""></image>
+	<scroll-view
+		:scroll-y="true"
+		:style="'height: 100vh;'"
+		@scrolltolower="arriveBottom()"
+	>
+		<view class="study-list">
+			<view class="search">
+				<u-search
+					placeholder="搜索课程标题"
+					v-model="keyword"
+					:showAction="false"
+					@search="getList()"
+				></u-search>
+			</view>
+			<u-sticky bgColor="#fff">
+				<u-tabs :list="tabs" @change="tabChange($event)"></u-tabs>
+			</u-sticky>
+			<view class="curriculum-box">
+				<view class="curriculum-item" v-for="item in curriculum" @click="goDetail(item)">
+					<view class="image-box">
+						<image :src="item.image"></image>
+						<text class="time" v-if="item.time">{{item.time}}</text>
+						<view class="lock" v-if="item.lock">
+							<image src="/pagesStudy/static/lock.png" mode=""></image>
+						</view>
+					</view>
+					<view class="text-box">
+						<text class="title">{{item.title}}</text>
+						<text class="learned" v-if="item.learnedPerson && item.learnedPerson>0">{{item.learnedPerson}}人学过</text>
 					</view>
 				</view>
-				<view class="text-box">
-					<text class="title">{{item.title}}</text>
-					<text class="learned" v-if="item.learnedPerson && item.learnedPerson>0">{{item.learnedPerson}}人学过</text>
-				</view>
+				<u-loadmore :line="true" :status="moreDataStatus" @loadmore="arriveBottom()" />
 			</view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
+	import studyApi from "@/http/apis-study.js"
 	export default{
 		data(){
 			return {
 				keyword: '',
 				activeTabId: '',
-				tabs: [
-					{name: '全部', id: ''},
-					{name: '全部2', id: '2'},
-					{name: '全部3', id: '3'},
-					{name: '全部4', id: '4'},
-					{name: '全部5', id: '5'},
-					{name: '全部6', id: '6'},
-					{name: '全部7', id: '7'},
-					{name: '全部8', id: '8'},
-					{name: '全部9', id: '9'},
-					{name: '全部10', id: '10'},
-					{name: '全部11', id: '11'},
-					{name: '全部12', id: '12'},
-					{name: '全部13', id: '13'}
-				],
-				curriculum: [
-					{
-						image: 'http://39.105.146.234:30001/jw/assets/images/wx/default-bg.jpg',
-						title: '绝味人在一起入职培训绝味人在一起入职培训绝味人在一起入职培训绝味人在一起入职培训绝味人在一起入职培训绝味人在一起入职培训',
-						learnedPerson: 1234,
-						type: 'video',
-						time: '1:00:00',
-						id: Math.random(),
-						lock: true
-					},
-					{
-						image: 'http://39.105.146.234:30001/jw/assets/images/wx/default-bg.jpg',
-						title: '绝味人在一起入职培训绝味人在一起入职培训',
-						learnedPerson: 1234,
-						type: 'pdf',
-						id: Math.random()
-					},
-					{
-						image: 'http://39.105.146.234:30001/jw/assets/images/wx/default-bg.jpg',
-						title: '绝味人在一起入职培训绝味人在一起入职培训',
-						learnedPerson: 0,
-						type: 'video',
-						time: '1:00:00',
-						id: Math.random()
-					}
-				]
+				tabs: [],
+				pageSize: 10,
+				pageNum: 1,
+				moreDataStatus: 'loadmore',
+				curriculum: []
 			}
 		},
 		methods: {
-			getList(){
-				
+			arriveBottom(){
+				this.pageNum++
+				this.queryList()
+			},
+			groupList(){
+				studyApi.groupList().then(res =>{
+					this.tabs = [
+						{
+							name: '全部',
+							id: ''
+						},
+						...res.children
+					]
+				})
+			},
+			queryList(){
+				if(this.moreDataStatus === 'nomore'){
+					return;
+				}
+				const params = {
+					pageNum: this.pageNum,
+					pageSize: this.pageSize,
+					knowledgeId: this.activeTabId
+				}
+				studyApi.queryList(params).then(res =>{
+					const newList = res.dataSet.map(item =>{
+						return {
+							image: item.mainDiagram,
+							title: item.name,
+							learnedPerson: 0,
+							id: item.id
+						}
+					})
+					this.curriculum = [...this.curriculum, ...newList]
+					if (!res.dataSet || res.dataSet.length === 0 || res.pageTotal === res.pageNum) {
+						this.moreDataStatus = 'nomore'
+					}else {
+						this.moreDataStatus = 'loadmore'
+					}
+				})
 			},
 			tabChange(e){
 				console.log(e)
+				this.moreDataStatus = 'loadmore'
+				this.curriculum = []
 				this.activeTabId = e.id
-				this.getList()
+				this.queryList()
 			},
 			goDetail(item){
 				if(item.lock){
 					return
 				}
-				if(item.type === 'video'){
-					uni.navigateTo({
-						url: `/pagesStudy/study-video?id=${item.id}`
-					})
-				}
+				uni.navigateTo({
+					url: `/pagesStudy/study-video?id=${item.id}`
+				})
 			}
 		},
 		created() {
-			for (let i = 0; i < 100; i++) {
-			this.curriculum.push({
-						image: 'http://39.105.146.234:30001/jw/assets/images/wx/default-bg.jpg',
-						title: '绝味人在一起入职培训绝味人在一起入职培训',
-						learnedPerson: 0,
-						type: 'video',
-						time: '1:00:00',
-						id: Math.random()
-					})
-			}
+			this.groupList()
+			this.queryList()
+			// for (let i = 0; i < 100; i++) {
+			// this.curriculum.push({
+			// 			image: 'http://39.105.146.234:30001/jw/assets/images/wx/default-bg.jpg',
+			// 			title: '绝味人在一起入职培训绝味人在一起入职培训',
+			// 			learnedPerson: 0,
+			// 			type: 'video',
+			// 			time: '1:00:00',
+			// 			id: Math.random()
+			// 		})
+			// }
 		}
 	}
 </script>

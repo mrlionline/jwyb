@@ -1,31 +1,27 @@
 <template>
 	<div class="study-video">
-		<view class="active-video-box">
-			<video class="active-video" :src="src"></video>
+		<view class="active-video-box" v-if="playVideo">
+			<video class="active-video" :src="activeVideoSrc"></video>
 			<view class="mask">
 				<text v-for="item in 100">李明华</text>
 			</view>
 		</view>
 		<div class="content">
-			<view class="title">绝味人在一起入职培训绝味人在一起入职培训</view>
-			<text class="learned">1234人学过</text>
+			<view class="title">{{info.name}}</view>
+			<text class="learned" v-if="info.learnedPerson">{{info.learnedPerson}}</text>
 			<view class="catalogue-box">
 				<view class="title">
 					<text style="font-weight: 600;font-size: 15px;color: #444251;">课程目录</text>
-					<text style="margin-left: 8rpx;color: #959BA4;font-weight: 400;">共5个课件</text>
+					<text style="margin-left: 8rpx;color: #959BA4;font-weight: 400;">共{{info.coursewares.length}}个课件</text>
 				</view>
 				<scroll-view
 					:scroll-y="true"
-					:style="'height: calc(100vh - 688rpx);'"
+					:style="{height: playVideo ? 'calc(100vh - 688rpx)' : 'calc(100vh - 266rpx)'}"
 				>
-					<view class="catalogue-item" v-for="item in 10">
-						<video
-							class="video"
-							:src="src"
-							:show-center-play-btn="false"
-							:controls="false"
-						></video>
-						<text class="name">第一节 时间的价值</text>
+					<view class="catalogue-item" v-for="(item, index) in info.coursewares" @click="study(item, index)">
+						<image v-if="item.type === 'video'"  mode="aspectFit" src="/static/bg.png"></image>
+						<image v-if="item.type === 'pdf'" mode="aspectFit" src="/pagesStudy/static/pdf.png"></image>
+						<text class="name">{{item.name}}</text>
 					</view>
 				</scroll-view>
 			</view>
@@ -34,18 +30,68 @@
 </template>
 
 <script>
+	import studyApi from "@/http/apis-study.js"
+	import baseUrl from '@/config/baseUrl.js'
 	export default{
 		data(){
 			return {
-				src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/%E7%AC%AC1%E8%AE%B2%EF%BC%88uni-app%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D%EF%BC%89-%20DCloud%E5%AE%98%E6%96%B9%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B@20200317.mp4'
+				id: '',
+				playVideo: false,
+				activeVideoSrc: '',
+				progress: '',
+				userInfo: '',
+				info: {}
 			}
 		},
 		onLoad (option) { //option为object类型，会序列化上个页面传递的参数
+			this.id = option.id
+			this.userInfo = uni.getStorageSync('userInfo');
 			this.getDetail(option.id)
+			this.queryById(option.id)
+			uni.$on('study-done',() =>{
+				console.log('stydy-dddd')
+			})
 		},
 		methods: {
 			getDetail(id){
-				
+				studyApi.getDetail(id).then(res =>{
+					res.coursewares = res.coursewares.map(item =>{
+						return {
+							...item,
+							type: item.fileName.slice(item.fileName.indexOf('.') + 1) === 'mp4' ? 'video' : 'pdf'
+						}
+					})
+					this.playVideo = res.coursewares[0].type === 'video'
+					this.info = res
+				})
+			},
+			queryById(id){
+				studyApi.queryById(id).then(res =>{
+					this.progress = res
+				})
+			},
+			study(item, index){
+				if(index === 0 && (!this.progress || !this.progress[item.id])){	// 第一个，且没有学习过
+					this.addProgress(item.id)
+					if(item.type === 'video'){
+						this.activeVideoSrc = item.fileUrl
+					}else {
+						const url = `/pages/myWebView/my-web-view?type=study&url=${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${this.userInfo.name}&phone=${this.userInfo.mobile}`
+						console.log('url', url)
+						uni.navigateTo({
+							url: url
+						})
+					}
+				}
+			},
+			addProgress(id){
+				const params = {
+					complete: 1,
+					courseId: this.id,
+					coursewareId: id,
+					progess: 0
+				}
+				studyApi.addProgress(params)
 			}
 		}
 	}
@@ -109,9 +155,9 @@
 				.catalogue-item{
 					display: flex;
 					align-items: center;
-					height: 140rpx;
-					margin-bottom: 32rpx;
-					video{
+					height: 172rpx;
+					padding: 16rpx 0;
+					image{
 						width: 248rpx;
 						height: 140rpx;
 					}
