@@ -76,8 +76,9 @@
 					if(item.type === 'video'){
 						this.activeVideoSrc = item.fileUrl
 					}else {
-						const url = `/pages/myWebView/my-web-view?type=study&url=${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${this.userInfo.name}&phone=${this.userInfo.mobile}`
-						console.log('url', url)
+						const query = encodeURIComponent(`${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${encodeURIComponent(this.userInfo.name)}&phone=${this.userInfo.mobile}`)
+						const url = `/pages/myWebView/my-web-view?type=study&url=${query}`
+						// console.log('url', url)
 						uni.navigateTo({
 							url: url
 						})

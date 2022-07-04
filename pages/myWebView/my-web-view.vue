@@ -1,6 +1,6 @@
 <template>
 	<view class="my-web-view">
-			<web-view :src="url" @message="message($event)"></web-view>
+			<web-view v-if="link" :src="link" @message="message($event)"></web-view>
 	</view>
 </template>
 
@@ -9,7 +9,7 @@
 		data(){
 			return {
 				link: '',
-				type: ''
+				type: '',
 			}
 		},
 		methods: {
@@ -18,7 +18,7 @@
 			}
 		},
 		onLoad(e) {
-			this.url = e.url
+			this.link = decodeURIComponent(e.url)
 			this.type = e.type
 		},
 		onUnload(){
