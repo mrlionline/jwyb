@@ -15,6 +15,9 @@ const studyApi = {
 	},
 	addProgress(data){
 		return http('/learning-interaction-api/courseProgress/add', 'POST', {data})
+	},
+	updateProgress(data){
+		return http('/learning-interaction-api/courseProgress/edit', 'POST', {data})
 	}
 }
 
