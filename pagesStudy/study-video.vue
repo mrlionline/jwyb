@@ -9,7 +9,8 @@
 				@play="startPlayVideo()"
 				@pause="pauseVideo()"
 				@ended="endedVideo()"
-				bindloadedmetadata="getLength"
+				@loadedmetadata="getLength($event)"
+				@timeupdate="timeupdate($event)"
 			></video>
 			<view class="mask">
 				<text v-for="item in 100">李明华</text>
@@ -28,8 +29,17 @@
 					:style="{height: playVideo ? 'calc(100vh - 688rpx)' : 'calc(100vh - 266rpx)'}"
 				>
 					<view class="catalogue-item" v-for="(item, index) in info.coursewares" @click="study(item, index)">
-						<image v-if="item.type === 'video'"  mode="aspectFit" src="/static/bg.png"></image>
-						<image v-if="item.type === 'pdf'" mode="aspectFit" src="/pagesStudy/static/pdf.png"></image>
+						<view class="head">
+							<video
+								v-if="item.type === 'video'"
+								:src="item.fileUrl"
+								:show-fullscreen-btn="false"
+								:show-play-btn="false"
+								:show-center-play-btn="false"
+								:controls="false"
+							></video>
+							<image v-if="item.type === 'pdf'" mode="aspectFit" src="/pagesStudy/static/pdf.png"></image>
+						</view>
 						<text class="name">{{item.name}}</text>
 					</view>
 				</scroll-view>
@@ -54,7 +64,7 @@
 				videoContext: null,
 				videoTime: 0,
 				startStudyPdfTime: 0,
-				startStudyVideoTime: 0,
+				videoPoint: new Set(),
 				studyingItem: null,
 				info: {}
 			}
@@ -62,7 +72,7 @@
 		onLoad (option) { //option为object类型，会序列化上个页面传递的参数
 			this.id = option.id
 			this.userInfo = uni.getStorageSync('userInfo');
-			this.videoContext = uni.createVideoContext('myVideo')
+			// this.videoContext = uni.createVideoContext('myVideo')
 			this.getDetail(option.id)
 			this.queryById()
 			uni.$on('study-done',() =>{
@@ -74,6 +84,9 @@
 				// this.videoContext.pause()
 			}
 			if(this.timer){
+				this.videoContext = wx.createVideoContext('myVideo')
+				console.log('this.videoContext', this.videoContext)
+				this.videoContext.pause()
 				clearInterval(this.timer)
 			}
 		},
@@ -95,11 +108,13 @@
 			endedVideo(){
 				clearInterval(this.timer)
 				this.timer = null
-				this.startStudyVideoTime = 0
 			},
 			getLength(e) {
-				this.videoTime = parseInt(e.detail.duration)
+				this.videoTime = parseInt(e.detail.duration) / 60
 				console.log('@@@@@@@@@@@@@@@@@@@@@@@@@', this.videoTime)
+			},
+			timeupdate(e){
+				this.videoPoint.add(Math.floor(e.detail.currentTime / 60))
 			},
 			getDetail(id){
 				studyApi.getDetail(id).then(res =>{
@@ -118,21 +133,42 @@
 					this.progress = {}
 					if (res && res.length) {
 						res.forEach(item =>{
+							try{
+								item.progress = JSON.parse(item.progess)
+							}catch(e){
+								//TODO handle the exception
+								item.progress = Number(item.progess)
+							}
+							
 							this.progress[item.coursewareId] = item
 						})
 					}
 				})
 			},
 			async study(item, index){
+				// const params = {
+				// 	complete: 0,	// 0 未完成， 1 已完成
+				// 	courseId: this.id,
+				// 	coursewareId: item.id,
+				// 	id: this.progress[item.id] ? this.progress[item.id].id : null,
+				// 	progess: JSON.stringify([])
+				// }
+				// studyApi.updateProgress(params)
+				// return 
+				if(item.type !== 'video'){
+					this.videoContext = wx.createVideoContext('myVideo')
+					console.log('this.videoContext', this.videoContext)
+					this.videoContext.pause()
+					// return
+				}
 				if(!this.progress[item.id]){	// 没学习过此课程
 					const preId = index !== 0 && this.info.coursewares[index - 1].id	// 上一节课id
 					let canStudy = index === 0 ? true : (this.progress[preId] && this.progress[preId].complete === 1)	// 是否可以学习当前课
 					if (canStudy) {
 						this.studyingItem = item
-						this.addProgress(item.id)
+						this.addProgress(item)
 						if(item.type === 'video'){
-							this.activeVideoSrc = item.fileUrl
-							this.playVideo = true
+							this.startStudyVideo(item)
 							// this.videoContext.play()
 						}else {	// PDF
 							this.startStudyPdf(item)
@@ -146,9 +182,7 @@
 				}else {	// 学习过
 					this.studyingItem = item
 					if(item.type === 'video'){
-						this.playVideo = true
-						this.videoContext.play()
-						this.activeVideoSrc = item.fileUrl
+						this.startStudyVideo(item)
 					}else {	// PDF
 						this.startStudyPdf(item)
 					}
@@ -162,24 +196,30 @@
 					url: url
 				})
 			},
+			startStudyVideo(item){
+				this.activeVideoSrc = item.fileUrl
+				this.videoPoint = (this.progress[item.id] && this.progress[item.id].progress) ? new Set(this.progress[item.id].progress) : new Set()
+				this.playVideo = true
+			},
 			startVideoTiming(){
 				this.timer = setInterval(() => {
-					this.startStudyVideoTime += 10
 					this.updateVideoProgress()
-				}, 10000);
+				}, 30000);
 			},
-			addProgress(id){
+			addProgress(item){
 				const params = {
-					complete: 1,	// 0 未完成， 1 已完成
+					complete: 0,	// 0 未完成， 1 已完成
 					courseId: this.id,
-					coursewareId: id,
-					progess: 0
+					coursewareId: item.id,
+					progess: item.type === 'video' ? JSON.stringify([]) : 0
 				}
-				studyApi.addProgress(params)
+				studyApi.addProgress(params).then(() =>{
+					this.queryById()
+				})
 			},
 			updatePdfProgress(){
 				const endStudyTime = new Date().getTime()
-				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && Number(this.progress[this.studyingItem.id].progess)) || 0)	// 学习时长，本次时长 + 以往时长
+				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && Number(this.progress[this.studyingItem.id].progress)) || 0)	// 学习时长，本次时长 + 以往时长
 				const complete = studySecond >= 120 ? 1 : 0	// 超过2分钟为学习完成
 				const params = {
 					complete: complete,	// 0 未完成， 1 已完成
@@ -191,20 +231,21 @@
 				studyApi.updateProgress(params).then(() =>{
 					this.queryById()
 				})
-				this.studyingItem = null
+				// this.studyingItem = null
 				this.startStudyPdfTime = 0
 			},
 			updateVideoProgress(){
-				// const params = {
-				// 	complete: complete,	// 0 未完成， 1 已完成
-				// 	courseId: this.id,
-				// 	coursewareId: this.studyingItem.id,
-				// 	id: '',
-				// 	progess: Math.round(studySecond)
-				// }
-				// studyApi.updateProgress(params).then(() =>{
-				// 	this.queryById()
-				// })
+				const complete = this.videoPoint.size / this.videoTime > 0.75 ? 1 : 0
+				const params = {
+					complete: complete,	// 0 未完成， 1 已完成
+					courseId: this.id,
+					coursewareId: this.studyingItem.id,
+					id: this.progress[this.studyingItem.id] ? this.progress[this.studyingItem.id].id : null,
+					progess: JSON.stringify([...this.videoPoint])
+				}
+				studyApi.updateProgress(params).then(() =>{
+					this.queryById()
+				})
 			}
 		}
 	}
@@ -270,9 +311,21 @@
 					align-items: center;
 					height: 172rpx;
 					padding: 16rpx 0;
-					image{
+					border-bottom: 1px solid #eee;
+					.head{
+						display: flex;
+						justify-content: center;
+						align-items: center;
 						width: 248rpx;
 						height: 140rpx;
+						image{
+							width: 76rpx;
+							height: 84rpx;
+						}
+						video{
+							width: 100%;
+							height: 100%;
+						}
 					}
 					.name{
 						flex:2;
