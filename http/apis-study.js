@@ -2,7 +2,7 @@ import http from './http.js'
 const studyApi = {
 	// 课程列表
 	queryList(data){
-		return http('/learning-interaction-api/course/queryList', 'POST', {data, fullRes: true})
+		return http('/learning-interaction-api/course/queryAllList', 'POST', {data, fullRes: true})
 	},
 	groupList(){
 		return http('/learning-interaction-api/knowledge/queryList', 'GET')

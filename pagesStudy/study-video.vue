@@ -1,7 +1,16 @@
 <template>
 	<div class="study-video">
 		<view class="active-video-box" v-if="playVideo">
-			<video id="myVideo" class="active-video" :src="activeVideoSrc" @play="startPlayVideo()" bindloadedmetadata="getLength"></video>
+			<video
+				id="myVideo"
+				class="active-video"
+				:src="activeVideoSrc"
+				:autoplay="true"
+				@play="startPlayVideo()"
+				@pause="pauseVideo()"
+				@ended="endedVideo()"
+				bindloadedmetadata="getLength"
+			></video>
 			<view class="mask">
 				<text v-for="item in 100">李明华</text>
 			</view>
@@ -53,6 +62,7 @@
 		onLoad (option) { //option为object类型，会序列化上个页面传递的参数
 			this.id = option.id
 			this.userInfo = uni.getStorageSync('userInfo');
+			this.videoContext = uni.createVideoContext('myVideo')
 			this.getDetail(option.id)
 			this.queryById()
 			uni.$on('study-done',() =>{
@@ -61,26 +71,35 @@
 		},
 		onHide(){
 			if(this.videoContext){
-				this.videoContext.pause()
+				// this.videoContext.pause()
 			}
 			if(this.timer){
 				clearInterval(this.timer)
 			}
 		},
-		startPlayVideo(){
-			this.startVideoTiming()
-		},
-		watch: {
-			playVideo: function(newVal, oldVal){
-				if (newVal) {	//	显示视频组件
-					this.videoContext = uni.createVideoContext('myVideo')
-				}
-			}
-		},
+		// watch: {
+		// 	playVideo: function(newVal, oldVal){
+		// 		if (newVal) {	//	显示视频组件
+		// 			this.videoContext = uni.createVideoContext('myVideo')
+		// 		}
+		// 	}
+		// },
 		methods: {
+			startPlayVideo(){
+				console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+				this.startVideoTiming()
+			},
+			pauseVideo(){
+				clearInterval(this.timer)
+			},
+			endedVideo(){
+				clearInterval(this.timer)
+				this.timer = null
+				this.startStudyVideoTime = 0
+			},
 			getLength(e) {
 				this.videoTime = parseInt(e.detail.duration)
-				
+				console.log('@@@@@@@@@@@@@@@@@@@@@@@@@', this.videoTime)
 			},
 			getDetail(id){
 				studyApi.getDetail(id).then(res =>{
@@ -99,7 +118,7 @@
 					this.progress = {}
 					if (res && res.length) {
 						res.forEach(item =>{
-							this.progress[item.id] = item
+							this.progress[item.coursewareId] = item
 						})
 					}
 				})
@@ -107,21 +126,16 @@
 			async study(item, index){
 				if(!this.progress[item.id]){	// 没学习过此课程
 					const preId = index !== 0 && this.info.coursewares[index - 1].id	// 上一节课id
-					let canStudy = index === 0 ? true : (this.progress[preId] && this.progress[preId].complete === 0)	// 是否可以学习当前课
+					let canStudy = index === 0 ? true : (this.progress[preId] && this.progress[preId].complete === 1)	// 是否可以学习当前课
 					if (canStudy) {
 						this.studyingItem = item
 						this.addProgress(item.id)
 						if(item.type === 'video'){
-							this.playVideo = true
-							this.videoContext.play()
 							this.activeVideoSrc = item.fileUrl
+							this.playVideo = true
+							// this.videoContext.play()
 						}else {	// PDF
-							this.startStudyPdfTime = new Date().getTime()	// 开始学习pdf的时间戳，'study-done'事件中使用计算学习时长
-							const query = encodeURIComponent(`${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${encodeURIComponent(this.userInfo.name)}&phone=${this.userInfo.mobile}`)
-							const url = `/pages/myWebView/my-web-view?type=study&url=${query}`
-							uni.navigateTo({
-								url: url
-							})
+							this.startStudyPdf(item)
 						}
 					}else {
 						this.$refs.uToast.show({
@@ -129,7 +143,24 @@
 							message: "请依次学习"
 						})
 					}
+				}else {	// 学习过
+					this.studyingItem = item
+					if(item.type === 'video'){
+						this.playVideo = true
+						this.videoContext.play()
+						this.activeVideoSrc = item.fileUrl
+					}else {	// PDF
+						this.startStudyPdf(item)
+					}
 				}
+			},
+			startStudyPdf(item){
+				this.startStudyPdfTime = new Date().getTime()	// 开始学习pdf的时间戳，'study-done'事件中使用计算学习时长
+				const query = encodeURIComponent(`${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${encodeURIComponent(this.userInfo.name)}&phone=${this.userInfo.mobile}`)
+				const url = `/pages/myWebView/my-web-view?type=study&url=${query}`
+				uni.navigateTo({
+					url: url
+				})
 			},
 			startVideoTiming(){
 				this.timer = setInterval(() => {
@@ -148,12 +179,13 @@
 			},
 			updatePdfProgress(){
 				const endStudyTime = new Date().getTime()
-				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && this.progress[this.studyingItem.id].progess) || 0)	// 学习时长，本次时长 + 以往时长
+				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && Number(this.progress[this.studyingItem.id].progess)) || 0)	// 学习时长，本次时长 + 以往时长
 				const complete = studySecond >= 120 ? 1 : 0	// 超过2分钟为学习完成
 				const params = {
 					complete: complete,	// 0 未完成， 1 已完成
 					courseId: this.id,
 					coursewareId: this.studyingItem.id,
+					id: this.progress[this.studyingItem.id] ? this.progress[this.studyingItem.id].id : null,
 					progess: Math.round(studySecond)
 				}
 				studyApi.updateProgress(params).then(() =>{
@@ -163,7 +195,16 @@
 				this.startStudyPdfTime = 0
 			},
 			updateVideoProgress(){
-				
+				// const params = {
+				// 	complete: complete,	// 0 未完成， 1 已完成
+				// 	courseId: this.id,
+				// 	coursewareId: this.studyingItem.id,
+				// 	id: '',
+				// 	progess: Math.round(studySecond)
+				// }
+				// studyApi.updateProgress(params).then(() =>{
+				// 	this.queryById()
+				// })
 			}
 		}
 	}

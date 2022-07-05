@@ -142,8 +142,8 @@
 			align-items: center;
 			background-color: rgba(0, 0, 0, .6);
 			image{
-				width: 40rpx;
-				height: 40rpx;
+				width: 40rpx !important;
+				height: 40rpx !important;
 			}
 		}
 	}

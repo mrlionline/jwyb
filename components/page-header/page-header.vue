@@ -20,7 +20,7 @@
 				:leftIconSize="backArrowSize"
 				:title="title"
 				:leftIconColor="titleColor"
-				:bgColor="'transparent'"
+				:bgColor="bgColor"
 				:border="border"
 				:titleStyle="{color: titleColor}"
 				@leftClick="back()"
@@ -55,6 +55,10 @@
 			border: {
 				type: Boolean,
 				default: false
+			},
+			bgColor: {
+				type: String,
+				default: 'transparent'
 			}
 		},
 		data() {

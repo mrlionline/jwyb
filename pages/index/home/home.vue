@@ -4,6 +4,7 @@
 			title="绝味人在一起"
 			:showBack="false"
 			:isDefault="true"
+			bgColor="#fff"
 			titleColor="#000"
 			:showWidthScroll="true"
 		></page-header>
