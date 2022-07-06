@@ -13,7 +13,7 @@
 				@timeupdate="timeupdate($event)"
 			></video>
 			<view class="mask">
-				<text v-for="item in 100">{{userInfo.name}}</text>
+				<text v-for="item in 100">{{userInfo.name}}({{userInfo.mobile}})</text>
 			</view>
 		</view>
 		<div class="content">
