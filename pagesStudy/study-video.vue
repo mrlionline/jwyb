@@ -38,7 +38,10 @@
 								:show-center-play-btn="false"
 								:controls="false"
 							></video>
-							<image v-if="item.type === 'pdf'" mode="aspectFit" src="/pagesStudy/static/pdf.png"></image>
+							<image class="img" v-if="item.type === 'pdf'" mode="aspectFit" src="/pagesStudy/static/pdf.png"></image>
+							<view class="lock" v-if="!canStudy(index)">
+								<image src="/pagesStudy/static/lock.png" mode=""></image>
+							</view>
 						</view>
 						<text class="name">{{item.name}}</text>
 					</view>
@@ -145,6 +148,11 @@
 					}
 				})
 			},
+			canStudy(index) {
+				const preIndex = Math.max(0, index - 1)
+				const preId = this.info.coursewares[preIndex].id
+				return index === 0 ? true : (this.progress[preId] && this.progress[preId].complete === 0)	// 是否可以学习当前课
+			},
 			async study(item, index){
 				// const params = {
 				// 	complete: 0,	// 0 未完成， 1 已完成
@@ -155,6 +163,14 @@
 				// }
 				// studyApi.updateProgress(params)
 				// return 
+				const canStudy = this.canStudy(index)
+				if (!canStudy) {
+					this.$refs.uToast.show({
+						type: 'default',
+						message: "请依次学习"
+					})
+					return
+				}
 				if(item.type !== 'video'){
 					this.videoContext = wx.createVideoContext('myVideo')
 					console.log('this.videoContext', this.videoContext)
@@ -162,22 +178,13 @@
 					// return
 				}
 				if(!this.progress[item.id]){	// 没学习过此课程
-					const preId = index !== 0 && this.info.coursewares[index - 1].id	// 上一节课id
-					let canStudy = index === 0 ? true : (this.progress[preId] && this.progress[preId].complete === 1)	// 是否可以学习当前课
-					if (canStudy) {
-						this.studyingItem = item
-						this.addProgress(item)
-						if(item.type === 'video'){
-							this.startStudyVideo(item)
-							// this.videoContext.play()
-						}else {	// PDF
-							this.startStudyPdf(item)
-						}
-					}else {
-						this.$refs.uToast.show({
-							type: 'default',
-							message: "请依次学习"
-						})
+					this.studyingItem = item
+					this.addProgress(item)
+					if(item.type === 'video'){
+						this.startStudyVideo(item)
+						// this.videoContext.play()
+					}else {	// PDF
+						this.startStudyPdf(item)
 					}
 				}else {	// 学习过
 					this.studyingItem = item
@@ -197,6 +204,7 @@
 				})
 			},
 			startStudyVideo(item){
+				debugger
 				this.activeVideoSrc = item.fileUrl
 				this.videoPoint = (this.progress[item.id] && this.progress[item.id].progress) ? new Set(this.progress[item.id].progress) : new Set()
 				this.playVideo = true
@@ -318,7 +326,8 @@
 						align-items: center;
 						width: 248rpx;
 						height: 140rpx;
-						image{
+						position: relative;
+						.img {
 							width: 76rpx;
 							height: 84rpx;
 						}
@@ -336,6 +345,21 @@
 					}
 				}
 			}
+		}
+	}
+	.lock{
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: rgba(0, 0, 0, .6);
+		image{
+			width: 40rpx;
+			height: 40rpx;
 		}
 	}
 </style>
