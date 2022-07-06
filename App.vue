@@ -1,7 +1,8 @@
 <script>
 	export default {
 		globalData: {
-			statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+			statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+			wechatUserInfo: null
 		},
 		onLaunch: function() {
 			console.log('App Launch')

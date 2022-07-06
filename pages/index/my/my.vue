@@ -11,12 +11,15 @@
 			<view class="base-info section">
 				<view class="left">
 					<view class="head">
-						<image v-if="userInfo.avatar" :src="userInfo.avatar"></image>
-						<image mode="aspectFit" v-if="!userInfo.avatar" src="/static/defaultAvatar.png"></image>
+						<image v-if="wechatUserInfo.avatarUrl" :src="wechatUserInfo.avatarUrl"></image>
+						<image mode="aspectFit" v-if="!wechatUserInfo.avatarUrl" src="/static/defaultAvatar.png"></image>
 					</view>
-					<view>
+					<view class="user-name">
 						<text>{{userInfo.name}}</text>
-
+						<view class="user-star" v-if="myStar.name">
+							<image :src="myStar.icon" mode="aspectFit"></image>
+							<text>{{myStar.name}}</text>
+						</view>
 					</view>
 				</view>
 				<view class="right">
@@ -85,6 +88,7 @@
 		data() {
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
+				wechatUserInfo: {},
 				userInfo: {
 					avatar: '',
 					name: ''
@@ -104,6 +108,20 @@
 			}
 		},
 		methods: {
+			getUserProfile(){
+				const wechatUserInfo = getApp().globalData.wechatUserInfo
+				if(wechatUserInfo){
+					this.wechatUserInfo = wechatUserInfo
+				}else {
+					uni.getUserProfile({
+						desc: '展示头像',
+						success: res =>{
+							this.wechatUserInfo = res.userInfo
+							getApp().globalData.wechatUserInfo = this.wechatUserInfo
+						}
+					})
+				}
+			},
 			goto(url){
 				uni.navigateTo({
 					url: url
@@ -134,6 +152,7 @@
 			}
 		},
 		created() {
+			this.getUserProfile()
 			this.userInfo = uni.getStorageSync('userInfo')
 			indexApis.getUserInfoById(-1).then(res => {
 				this.position = res.userPositions
@@ -182,6 +201,32 @@
 		.left{
 			display: flex;
 			align-items: center;
+			.user-name{
+				display: flex;
+				flex-direction: column;
+				.user-star{
+					position: relative;
+					margin-top: 12rpx;
+					font-size: 0;
+					image{
+						position: absolute;
+						left: 0;
+						top: -2rpx;
+						width: 64rpx;
+						height: 44rpx;
+					}
+					text{
+						display: inline-block;
+						height: 40rpx;
+						line-height: 40rpx;
+						padding: 0 22rpx 0 86rpx;
+						font-size: 20rpx;
+						color: #8A4F0A;
+						background: #FFDA20;
+						border-radius: 0 80px 80px 0;
+					}
+				}
+			}
 		}
 		.head{
 			width: 160rpx;

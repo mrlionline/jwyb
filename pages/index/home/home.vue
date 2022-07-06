@@ -14,7 +14,7 @@
 			<home-card v-if="item.name === 'card'" :config="item.config"></home-card>
 			<home-news v-if="item.name === 'news'" :config="item.config"></home-news>
 		</view>
-		<!-- <image class="promote-star-fixed" :src="upModalImg" @click="goCapsule"></image> -->
+		<image class="promote-star-fixed" v-if="showUpStar && myStarIcon" :src="myStarIcon" @click="promoteShow = true"></image>
 		<u-modal
 			:show="promoteShow"
 			width="654rpx"
@@ -24,7 +24,7 @@
 			@close="promoteShow = false"
 		>
 			<view class="promote-box">
-				<image :src="upModalImg"></image>
+				<image :src="myStarIcon"></image>
 				<view class="congratulations">恭喜您获得升星勋章</view>
 				<view class="thanks">感谢您对公司的努力付出</view>
 				<button class="see" @click="goCapsule">查看我的星路历程</button>
@@ -38,6 +38,7 @@
 	import HomeBanner from './home-banner.vue'
 	import HomeCard from './home-card.vue'
 	import HomeNews from './home-news.vue'
+	import indexApis from '../../../http/apis-index.js'
 	export default {
 		props: [
 			'configList'
@@ -54,7 +55,9 @@
 				upInfo: {
 					level: 3,
 					identity: 'leader'
-				}
+				},
+				showUpStar: false,
+				myStarIcon: ''
 			}
 		},
 		created() {
@@ -62,6 +65,13 @@
 			// 	this.promoteShow = true
 			// }, 1000)
 			// this.getConfig()
+			indexApis.getMyStar(0).then(res => {
+				this.myStarIcon = res.icon
+			})
+			const userInfo = uni.getStorageSync('userInfo');
+			if(user.upgradeTips && user.upgradeTips === 1 && tipsDate && tipsDate > new Date()){
+				this.showUpStar = true
+			}
 		},
 		methods: {
 			goto(url){
@@ -73,12 +83,7 @@
 				this.promoteShow = false
 				this.goto('/pagesCapsule/capsule/capsule')
 			}
-		},
-		computed: {
-			upModalImg: function(){
-				return `/static/home/level-${this.upInfo.level}-${this.upInfo.identity}.png`
-			}
-		},
+		}
 	}
 </script>
 
@@ -89,8 +94,8 @@
 		align-items: center;
 		flex-direction: column;
 		image{
-			width: 292rpx;
-			height: 292rpx;
+			width: 342rpx;
+			height: 240rpx;
 		}
 		.congratulations{
 			font-size: 18px;
@@ -119,8 +124,8 @@
 		position: fixed;
 		right: 40px;
 		bottom: 122px;
-		width: 116rpx;
-		height: 116rpx;
+		width: 136rpx;
+		height: 96rpx;
 		z-index: 1;
 	}
 	.banner + view{

@@ -3,7 +3,7 @@
 		<view v-if="config.cols === 1" class="hc-single">
 			<view class="single-item" v-for="card in list" @click="goto(card)">
 				<image :src="card.img"></image>
-				<text class="card-title ellipsis">{{card.label}}{{card.lock}}</text>
+				<text class="card-title ellipsis">{{card.label}}</text>
 				<text class="card-desc ellipsis">{{card.description}}</text>
 				<view class="lock" v-if="card.lock">
 					<image src="/static/home/lock.png" mode=""></image>

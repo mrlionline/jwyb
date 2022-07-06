@@ -66,6 +66,11 @@
 					]
 				})
 			},
+			getList(){
+				this.moreDataStatus = "loadmore"
+				this.curriculum = []
+				this.queryList()
+			},
 			queryList(){
 				if(this.moreDataStatus === 'nomore'){
 					return;
@@ -73,7 +78,8 @@
 				const params = {
 					pageNum: this.pageNum,
 					pageSize: this.pageSize,
-					knowledgeId: this.activeTabId
+					knowledgeId: this.activeTabId,
+					courseName: this.keyword
 				}
 				studyApi.queryList(params).then(res =>{
 					const newList = res.dataSet.map(item =>{
