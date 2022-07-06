@@ -87,6 +87,7 @@
 				// this.videoContext.pause()
 			}
 			if(this.timer){
+				this.updateVideoProgress()
 				this.videoContext = wx.createVideoContext('myVideo')
 				console.log('this.videoContext', this.videoContext)
 				this.videoContext.pause()
@@ -106,18 +107,20 @@
 				this.startVideoTiming()
 			},
 			pauseVideo(){
+				this.updateVideoProgress()
 				clearInterval(this.timer)
 			},
 			endedVideo(){
+				this.updateVideoProgress()
 				clearInterval(this.timer)
 				this.timer = null
 			},
 			getLength(e) {
-				this.videoTime = parseInt(e.detail.duration) / 60
+				this.videoTime = parseInt(e.detail.duration)
 				console.log('@@@@@@@@@@@@@@@@@@@@@@@@@', this.videoTime)
 			},
 			timeupdate(e){
-				this.videoPoint.add(Math.floor(e.detail.currentTime / 60))
+				this.videoPoint.add(Math.floor(e.detail.currentTime / this.videoTime * 100))
 			},
 			getDetail(id){
 				studyApi.getDetail(id).then(res =>{
@@ -204,7 +207,6 @@
 				})
 			},
 			startStudyVideo(item){
-				debugger
 				this.activeVideoSrc = item.fileUrl
 				this.videoPoint = (this.progress[item.id] && this.progress[item.id].progress) ? new Set(this.progress[item.id].progress) : new Set()
 				this.playVideo = true
@@ -212,7 +214,7 @@
 			startVideoTiming(){
 				this.timer = setInterval(() => {
 					this.updateVideoProgress()
-				}, 30000);
+				}, 5);
 			},
 			addProgress(item){
 				const params = {
@@ -243,7 +245,8 @@
 				this.startStudyPdfTime = 0
 			},
 			updateVideoProgress(){
-				const complete = this.videoPoint.size / this.videoTime > 0.75 ? 0 : 1
+				const completePointNumber = Math.min(75, this.videoTime * 4 * 0.75)
+				const complete = this.videoPoint.size > completePointNumber ? 0 : 1
 				const params = {
 					complete: complete,	// 1 未完成， 0 已完成
 					courseId: this.id,
