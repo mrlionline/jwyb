@@ -214,7 +214,7 @@
 			startVideoTiming(){
 				this.timer = setInterval(() => {
 					this.updateVideoProgress()
-				}, 5);
+				}, 5 * 1000);
 			},
 			addProgress(item){
 				const params = {
