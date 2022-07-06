@@ -155,7 +155,7 @@
 			},
 			async study(item, index){
 				// const params = {
-				// 	complete: 0,	// 0 未完成， 1 已完成
+				// 	complete: 1,	// 1 未完成， 0 已完成
 				// 	courseId: this.id,
 				// 	coursewareId: item.id,
 				// 	id: this.progress[item.id] ? this.progress[item.id].id : null,
@@ -216,7 +216,7 @@
 			},
 			addProgress(item){
 				const params = {
-					complete: 0,	// 0 未完成， 1 已完成
+					complete: 1,	// 1 未完成， 0 已完成
 					courseId: this.id,
 					coursewareId: item.id,
 					progess: item.type === 'video' ? JSON.stringify([]) : 0
@@ -228,9 +228,9 @@
 			updatePdfProgress(){
 				const endStudyTime = new Date().getTime()
 				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && Number(this.progress[this.studyingItem.id].progress)) || 0)	// 学习时长，本次时长 + 以往时长
-				const complete = studySecond >= 120 ? 1 : 0	// 超过2分钟为学习完成
+				const complete = studySecond >= 120 ? 0 : 1	// 超过2分钟为学习完成
 				const params = {
-					complete: complete,	// 0 未完成， 1 已完成
+					complete: complete,	// 1 未完成， 0 已完成
 					courseId: this.id,
 					coursewareId: this.studyingItem.id,
 					id: this.progress[this.studyingItem.id] ? this.progress[this.studyingItem.id].id : null,
@@ -243,9 +243,9 @@
 				this.startStudyPdfTime = 0
 			},
 			updateVideoProgress(){
-				const complete = this.videoPoint.size / this.videoTime > 0.75 ? 1 : 0
+				const complete = this.videoPoint.size / this.videoTime > 0.75 ? 0 : 1
 				const params = {
-					complete: complete,	// 0 未完成， 1 已完成
+					complete: complete,	// 1 未完成， 0 已完成
 					courseId: this.id,
 					coursewareId: this.studyingItem.id,
 					id: this.progress[this.studyingItem.id] ? this.progress[this.studyingItem.id].id : null,
