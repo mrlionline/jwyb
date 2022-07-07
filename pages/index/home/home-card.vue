@@ -4,7 +4,7 @@
 			<view class="single-item" v-for="card in list" @click="goto(card)">
 				<image :src="card.img"></image>
 				<text class="card-title ellipsis">{{card.label}}</text>
-				<text class="card-desc ellipsis">{{card.description}}</text>
+				<text class="card-desc ellipsis" v-if="card.descriptionVisible">{{card.description}}</text>
 				<view class="lock" v-if="card.lock">
 					<image src="/static/home/lock.png" mode=""></image>
 				</view>
@@ -15,7 +15,7 @@
 				<image :src="card.img"></image>
 				<view class="card-title-wrap">
 					<text class="card-title ellipsis">{{card.label}}</text>
-					<text class="card-desc ellipsis">{{card.description}}</text>
+					<text class="card-desc ellipsis" v-if="card.descriptionVisible">{{card.description}}</text>
 				</view>
 				<view class="lock" v-if="card.lock">
 					<image src="/static/home/lock.png" mode=""></image>
