@@ -118,9 +118,17 @@
 						success: res =>{
 							this.wechatUserInfo = res.userInfo
 							getApp().globalData.wechatUserInfo = this.wechatUserInfo
+							this.updateAvatar(this.wechatUserInfo.avatarUrl)
 						}
 					})
 				}
+			},
+			updateAvatar(avatar){
+				const params = {
+					"isReplace": 0,
+					avatar
+				}
+				myApis.updateAvatar(params)
 			},
 			goto(url){
 				uni.navigateTo({

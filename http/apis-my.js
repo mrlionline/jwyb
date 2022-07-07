@@ -31,6 +31,9 @@ const myApi = {
 	// 我的-资讯数
 	statisticsMyInformationCount(data){
 		return http('/learning-interaction-api/information/statisticsMyInformationCount', 'GET')
+	},
+	updateAvatar(data){
+		return http('/jurisdiction-api/user/updateAvatar', 'POST', {data})
 	}
 }
 
