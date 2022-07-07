@@ -41,7 +41,7 @@
 						<next class="next"></next>
 					</view>
 				</swiper-item>
-				<!-- <swiper-item>
+				<swiper-item>
 					<view class="capsule-step step1 por" v-if="current === 0 || current === 1 || current === 2">
 						<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星系</view>
 						<view class="btn-wrap" v-show="current === 1">
@@ -56,9 +56,9 @@
 							</view>
 						</view>
 					</view>
-				</swiper-item> -->
+				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step2 por" v-if="current === 0 || current === 1 || current === 2">
+					<view class="capsule-step step2 por" v-if="current === 1 || current === 2 || current === 3">
 						<scroll-view :scroll-y="true" style="height: 100vh;">
 							<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属片区</view>
 							<view class="content">
@@ -81,7 +81,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step3 por" v-if="current === 1 || current === 2 || current === 3">
+					<view class="capsule-step step3 por" v-if="current === 2 || current === 3 || current === 4">
 						<scroll-view :scroll-y="true" style="height: 100vh;">
 							<view class="choose-tips" :style="{'padding-top': navBarHeight}">请点击您的所属星球</view>
 							<view class="content por" :style="{'min-height': `calc(100vh - 22px - ${navBarHeightNum}px)`}">
@@ -105,7 +105,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step4" v-if="current === 2 || current === 3 || current === 4">
+					<view class="capsule-step step4" v-if="current === 3 || current === 4 || current === 5">
 							<view class="content por">
 								<image style="width: 100%; height: 100vh;" mode="aspectFill" :src="'/pagesCapsule/static/capsule/starbg.png'"></image>
 								<scroll-view :scroll-y="true"  class="img-box" style="height: 100vh;">
@@ -134,7 +134,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step7" v-if="current === 3 || current === 4 || current === 5">
+					<view class="capsule-step step7" v-if="current === 4 || current === 5 || current === 6">
 						<scroll-view :scroll-y="true" style="height: 100%;" @scrolltolower="getSameLevelFamily()">
 							<view style="padding-bottom: 228rpx;">
 								<view class="level">
@@ -156,13 +156,13 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step5" v-if="current === 4 || current === 5 || current === 6">
+					<view class="capsule-step step5" v-if="current === 5 || current === 6 || current === 7">
 						<scroll-view :scroll-y="true" style="height: 100vh; padding-top: 220rpx; color: #fff;">
 							<view style="text-align: center; font-size: 24px;">
 								<view style="margin-bottom: 16rpx;">亲爱的{{userInfo.name}}！</view>
 								<view>您已和绝味一起走过<text style="color: #FFD940">{{step5Day}}</text>天</view>
 							</view>
-							<view style="padding: 96rpx 48rpx 428rpx;" class="time-line" :class="{'time-line-show': current === 5}">
+							<view style="padding: 96rpx 48rpx 428rpx;" class="time-line" :class="{'time-line-show': current === 6}">
 								<time-line theme="dark" :list="step5TimeLineList"></time-line>
 							</view>
 							<view style="position: fixed; bottom: 120rpx; text-align: center; width: 100%;">
@@ -172,7 +172,7 @@
 					</view>
 				</swiper-item>
 				<swiper-item>
-					<view class="capsule-step step6 por" v-if="current === 5 || current === 6">
+					<view class="capsule-step step6 por" v-if="current === 6 || current === 7">
 						<view class="textarea-wrap" :class="{'hide': step6SubmitWish}">
 							<view class="title">星语心愿</view>
 							<view class="textarea-bg">
@@ -187,7 +187,7 @@
 						</view>
 						<view class="aircraft-success" v-if="step6SubmitSuccess">
 							<view class="aircraft-icon">
-								<image mode="widthFix" src="/pagesCapsule/static/capsule/submit-success.gif"></image>
+								<image mode="widthFix" :src="'/pagesCapsule/static/capsule/submit-success.gif?t='+Math.random()"></image>
 							</view>
 							<view class="text">您的星语心愿发布成功</view>
 						</view>
@@ -270,10 +270,10 @@
 		methods: {
 			reShow(){
 				this.galaxyInfo.selectedId = 0
-				// this.nebulaInfo = {
-				// 	list: [],
-				// 	selectedId: null
-				// }
+				this.nebulaInfo = {
+					list: [],
+					selectedId: null
+				}
 				this.starInfo = {
 					list: [],
 					selectedId: null
@@ -341,23 +341,23 @@
 			},
 			animationfinish(e) {
 				this.current = e.detail.current
-				// if (this.current >= 2 && this.galaxyInfo.selectedId === 0) {
-				// 	setTimeout(() => {
-				// 		this.current = 1
-				// 	}, 0)
-				// }
-				if (this.current >= 2 && !this.nebulaInfo.selectedId) {
+				if (this.current >= 2 && this.galaxyInfo.selectedId === 0) {
 					setTimeout(() => {
 						this.current = 1
 					}, 0)
 				}
-				if (this.current >= 4 && !this.starLevelInfo.selectedId) {
+				if (this.current >= 3 && !this.nebulaInfo.selectedId) {
 					setTimeout(() => {
-						this.current = 3
+						this.current = 2
 					}, 0)
 				}
+				// if (this.current >= 4 && !this.starLevelInfo.selectedId) {
+				// 	setTimeout(() => {
+				// 		this.current = 3
+				// 	}, 0)
+				// }
 
-				if (this.current === 5) {
+				if (this.current === 6) {
 					this.initStep5()
 				} else {
 					this.step5Day = 0
@@ -485,11 +485,11 @@
 				}
 				this.getNebulaList(id)
 				this.queryStarListByGalaxyId(id)
-				this.galaxyInfo.selectedId = id
-				// setTimeout(() => {
-				// 	this.galaxyInfo.selectedId = id
-				// 	this.current++
-				// }, 20)
+				// this.galaxyInfo.selectedId = id
+				setTimeout(() => {
+					this.galaxyInfo.selectedId = id
+					this.current++
+				}, 20)
 			},
 			chooseNebula(id) {
 				this.starInfo = {
@@ -601,7 +601,7 @@
 						}
 					})
 					// this.galaxyInfo.selectedId = this.galaxyInfo.list[0].id
-					this.chooseGalaxy(this.galaxyInfo.list[0].id)
+					// this.chooseGalaxy(this.galaxyInfo.list[0].id)
 				})
 			}
 		},
@@ -1271,7 +1271,9 @@
 				}
 				
 				.section7 {
-					top: 60%;					left: 0;
+					top: 60%;
+					left: 0;
+
 					image {
 						width: 200rpx;
 					}
