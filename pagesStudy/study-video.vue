@@ -18,7 +18,7 @@
 		</view>
 		<div class="content">
 			<view class="title">{{info.name}}</view>
-			<text class="learned" v-if="info.learnedPerson">{{info.learnedPerson}}</text>
+			<text class="learned" v-if="info.hits">{{info.hits}}</text>
 			<view class="catalogue-box">
 				<view class="title">
 					<text style="font-weight: 600;font-size: 15px;color: #444251;">课程目录</text>
@@ -76,6 +76,7 @@
 			this.id = option.id
 			this.userInfo = uni.getStorageSync('userInfo');
 			// this.videoContext = uni.createVideoContext('myVideo')
+			this.addHits(option.id)
 			this.getDetail(option.id)
 			this.queryById()
 			uni.$on('study-done',() =>{
@@ -102,6 +103,9 @@
 		// 	}
 		// },
 		methods: {
+			addHits(id){
+				studyApi.addHits(id)
+			},
 			startPlayVideo(){
 				console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 				this.startVideoTiming()
@@ -277,19 +281,21 @@
 			}
 			.mask{
 				position: absolute;
-				left: 0;
-				top: 0;
-				right: 0;
-				bottom: 0;
+				left: -20rpx;
+				top: -100rpx;
+				right: -100rpx;
+				bottom: -100rpx;
 				pointer-events: none;
 				word-wrap: break-word;
 				overflow: hidden;
+				font-size: 0;
 				text{
 					display: inline-block;
-					margin: 10rpx 20rpx;
+					margin: 20rpx 20rpx;
 					color: #fff;
 					transform: rotate(-30deg);
 					opacity: .3;
+					font-size: 24rpx;
 				}
 			}
 		}

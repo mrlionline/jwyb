@@ -23,6 +23,9 @@ const studyApi = {
 	},
 	updateProgress(data){
 		return http('/learning-interaction-api/courseProgress/edit', 'POST', {data})
+	},
+	addHits(id){
+		return http('/learning-interaction-api/course/addHits/' + id, 'GET')
 	}
 }
 

@@ -86,7 +86,7 @@
 						return {
 							image: item.mainDiagram,
 							title: item.name,
-							learnedPerson: 0,
+							learnedPerson: item.hits,
 							id: item.id,
 							lock: !item.permission
 						}
@@ -200,6 +200,7 @@
 						overflow: hidden;
 					}
 					.learned{
+						display: inline-block;
 						padding: 0 8rpx;
 						background-color: #FBF1E8;
 						height: 32rpx;
