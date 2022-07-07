@@ -18,7 +18,7 @@
 		</view>
 		<div class="content">
 			<view class="title">{{info.name}}</view>
-			<text class="learned" v-if="info.hits">{{info.hits}}</text>
+			<text class="learned" v-if="info.hits">{{info.hits}}人学过</text>
 			<view class="catalogue-box">
 				<view class="title">
 					<text style="font-weight: 600;font-size: 15px;color: #444251;">课程目录</text>
@@ -308,6 +308,7 @@
 				color: #444251;
 			}
 			.learned{
+				display: inline-block;
 				padding: 0 8rpx;
 				background-color: #FBF1E8;
 				height: 32rpx;
