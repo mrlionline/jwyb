@@ -11,10 +11,15 @@
 				@ended="endedVideo()"
 				@loadedmetadata="getLength($event)"
 				@timeupdate="timeupdate($event)"
-			></video>
-			<view class="mask">
+				@fullscreenchange="fullChange($event)"
+			>
+				<view :class="{'mask': true, 'full-mask': isFull}">
+					<text v-for="item in 100">{{userInfo.name}}({{userInfo.mobile}})</text>
+				</view>
+			</video>
+<!-- 			<view class="mask">
 				<text v-for="item in 100">{{userInfo.name}}({{userInfo.mobile}})</text>
-			</view>
+			</view> -->
 		</view>
 		<div class="content">
 			<view class="title">{{info.name}}</view>
@@ -69,7 +74,8 @@
 				startStudyPdfTime: 0,
 				videoPoint: new Set(),
 				studyingItem: null,
-				info: {}
+				info: {},
+				isFull: false
 			}
 		},
 		onLoad (option) { //option为object类型，会序列化上个页面传递的参数
@@ -140,6 +146,9 @@
 			},
 			timeupdate(e){
 				this.videoPoint.add(Math.floor(e.detail.currentTime / this.videoTime * 100))
+			},
+			fullChange(e) {
+				this.isFull = e.detail.fullScreen
 			},
 			getDetail(id){
 				return studyApi.getDetail(id)
@@ -283,13 +292,14 @@
 			.active-video{
 				width: 100%;
 				height: 422rpx;
+				position: relative;
 			}
 			.mask{
 				position: absolute;
 				left: -20rpx;
 				top: -100rpx;
 				right: -100rpx;
-				bottom: -100rpx;
+				bottom: 85rpx;
 				pointer-events: none;
 				word-wrap: break-word;
 				overflow: hidden;
@@ -302,6 +312,10 @@
 					opacity: .3;
 					font-size: 24rpx;
 				}
+			}
+			.full-mask {
+				top: 100rpx;
+				bottom: 95rpx;
 			}
 		}
 		.content{
