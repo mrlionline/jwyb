@@ -42,13 +42,17 @@
 								:show-play-btn="false"
 								:show-center-play-btn="false"
 								:controls="false"
+								@loadedmetadata="getItemLength($event, item)"
 							></video>
 							<image class="img" v-if="item.type === 'pdf'" mode="aspectFit" src="/pagesStudy/static/pdf.png"></image>
 							<view class="lock" v-if="!canStudy(index)">
 								<image src="/pagesStudy/static/lock.png" mode=""></image>
 							</view>
 						</view>
-						<text class="name">{{item.name}}</text>
+						<view class="name">
+							<view class="n">{{item.name}}</view>
+							<view class="t" v-if="item.timeLength">学习时长：{{item.timeLength}}</view>
+						</view>
 					</view>
 				</scroll-view>
 			</view>
@@ -91,6 +95,7 @@
 				res.coursewares = res.coursewares.map(item =>{
 					return {
 						...item,
+						timeLength: '',
 						type: item.fileName.slice(item.fileName.indexOf('.') + 1) === 'mp4' ? 'video' : 'pdf'
 					}
 				})
@@ -143,6 +148,24 @@
 			},
 			getLength(e) {
 				this.videoTime = e.detail.duration
+			},
+			getItemLength(e, item){
+				item.timeLength = this.getTimeLength(Math.floor(e.detail.duration))
+			},
+			getTimeLength(second){
+				if(second < 60){
+					return second + '秒'
+				}else if(second >= 60 && second < 3600){
+					let min = Math.floor(second/60)
+					let s = second - min * 60
+					return `${min}分${s === 0 ? '' : s + '秒'}`
+				}else if(second >= 3600){
+					let hour = Math.floor(second/(60*60))
+					let afterHour = second - hour*60*60;
+					let min = Math.floor(afterHour/60)
+					let s = second - hour * 60 * 60 - min * 60
+					return `${hour}小时${(min === 0 && s === 0) ? '' : min + '分'}${s === 0 ? '' : s + '秒'}`
+				}
 			},
 			timeupdate(e){
 				this.videoPoint.add(Math.floor(e.detail.currentTime / this.videoTime * 100))
@@ -370,7 +393,13 @@
 						padding: 0 32rpx;
 						font-weight: 500;
 						font-size: 26rpx;
-						color: #444251;
+						.n{
+							color: #000;
+							font-weight: bold;
+						}
+						.t{
+							color: #a5a4b0;
+						}
 					}
 				}
 			}
