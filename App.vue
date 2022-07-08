@@ -2,7 +2,7 @@
 	export default {
 		globalData: {
 			statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-			wechatUserInfo: null
+			avatarUrl: null
 		},
 		onLaunch: function() {
 			console.log('App Launch')

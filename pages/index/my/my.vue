@@ -11,8 +11,8 @@
 			<view class="base-info section">
 				<view class="left">
 					<view class="head">
-						<image v-if="wechatUserInfo.avatarUrl" :src="wechatUserInfo.avatarUrl"></image>
-						<image mode="aspectFit" v-if="!wechatUserInfo.avatarUrl" src="/static/defaultAvatar.png"></image>
+						<image v-if="avatarUrl" :src="avatarUrl"></image>
+						<image mode="aspectFit" v-if="!avatarUrl" src="/static/defaultAvatar.png"></image>
 					</view>
 					<view class="user-name">
 						<text>{{userInfo.name}}</text>
@@ -88,7 +88,7 @@
 		data() {
 			return {
 				navBarHeight: getApp().globalData.statusBarHeight + 48,
-				wechatUserInfo: {},
+				avatarUrl: '',
 				userInfo: {
 					avatar: '',
 					name: ''
@@ -108,17 +108,17 @@
 			}
 		},
 		methods: {
-			getUserProfile(){
-				const wechatUserInfo = getApp().globalData.wechatUserInfo
-				if(wechatUserInfo){
-					this.wechatUserInfo = wechatUserInfo
+			async getUserProfile(){
+				const avatarUrl = getApp().globalData.avatarUrl
+				if(avatarUrl){
+					this.avatarUrl = avatarUrl
 				}else {
 					uni.getUserProfile({
 						desc: '展示头像',
 						success: res =>{
-							this.wechatUserInfo = res.userInfo
-							getApp().globalData.wechatUserInfo = this.wechatUserInfo
-							this.updateAvatar(this.wechatUserInfo.avatarUrl)
+							this.avatarUrl = res.userInfo.avatarUrl
+							getApp().globalData.avatarUrl = this.avatarUrl
+							this.updateAvatar(this.avatarUrl)
 						}
 					})
 				}
@@ -160,10 +160,15 @@
 			}
 		},
 		created() {
-			this.getUserProfile()
+			
 			this.userInfo = uni.getStorageSync('userInfo')
 			indexApis.getUserInfoById(-1).then(res => {
 				this.position = res.userPositions
+				if(res.baseInfo.avatar){
+					this.avatarUrl = res.baseInfo.avatar
+				}else {
+					this.getUserProfile()
+				}
 			})
 			indexApis.getMyStar(0).then(res => {
 				this.myStar = res
