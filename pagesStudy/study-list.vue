@@ -194,6 +194,7 @@
 						font-weight: 400;
 						font-size: 26rpx;
 						color: #444251;
+						width: 100%;
 						height: 72rpx;
 						line-height: 36rpx;
 						margin-bottom: 16rpx;

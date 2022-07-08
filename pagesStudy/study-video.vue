@@ -83,11 +83,29 @@
 			this.userInfo = uni.getStorageSync('userInfo');
 			// this.videoContext = uni.createVideoContext('myVideo')
 			this.addHits(option.id)
-			this.getDetail(option.id)
-			this.queryById()
+			Promise.all([
+				this.queryById(),
+				this.getDetail(option.id)
+			]).then(response =>{
+				const res = response[1]
+				res.coursewares = res.coursewares.map(item =>{
+					return {
+						...item,
+						type: item.fileName.slice(item.fileName.indexOf('.') + 1) === 'mp4' ? 'video' : 'pdf'
+					}
+				})
+				this.playVideo = res.coursewares[0].type === 'video'
+				this.info = res
+			})
 			uni.$on('study-done',() =>{
 				this.updatePdfProgress()
 			})
+		},
+		onUnload(){
+			uni.$off('study-done')
+			this.videoContext = wx.createVideoContext('myVideo')
+			this.videoContext.pause()
+			clearInterval(this.timer)
 		},
 		onHide(){
 			if(this.videoContext){
@@ -96,7 +114,6 @@
 			if(this.timer){
 				this.updateVideoProgress()
 				this.videoContext = wx.createVideoContext('myVideo')
-				console.log('this.videoContext', this.videoContext)
 				this.videoContext.pause()
 				clearInterval(this.timer)
 			}
@@ -113,7 +130,6 @@
 				studyApi.addHits(id)
 			},
 			startPlayVideo(){
-				console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 				this.startVideoTiming()
 			},
 			pauseVideo(){
@@ -126,8 +142,7 @@
 				this.timer = null
 			},
 			getLength(e) {
-				this.videoTime = parseInt(e.detail.duration)
-				console.log('@@@@@@@@@@@@@@@@@@@@@@@@@', this.videoTime)
+				this.videoTime = e.detail.duration
 			},
 			timeupdate(e){
 				this.videoPoint.add(Math.floor(e.detail.currentTime / this.videoTime * 100))
@@ -136,19 +151,10 @@
 				this.isFull = e.detail.fullScreen
 			},
 			getDetail(id){
-				studyApi.getDetail(id).then(res =>{
-					res.coursewares = res.coursewares.map(item =>{
-						return {
-							...item,
-							type: item.fileName.slice(item.fileName.indexOf('.') + 1) === 'mp4' ? 'video' : 'pdf'
-						}
-					})
-					this.playVideo = res.coursewares[0].type === 'video'
-					this.info = res
-				})
+				return studyApi.getDetail(id)
 			},
 			queryById(){
-				studyApi.queryById(this.id).then(res =>{
+				return studyApi.queryById(this.id).then(res =>{
 					this.progress = {}
 					if (res && res.length) {
 						res.forEach(item =>{
@@ -189,7 +195,6 @@
 				}
 				if(item.type !== 'video'){
 					this.videoContext = wx.createVideoContext('myVideo')
-					console.log('this.videoContext', this.videoContext)
 					this.videoContext.pause()
 					// return
 				}
