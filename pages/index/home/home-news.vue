@@ -1,7 +1,7 @@
 <template>
 	<view class="home-news">
 		<home-section-header :config="headerConfig" @click="headClick()"></home-section-header>
-		<view class="hn-item" v-for="news in list" @click="goto(news.id)">
+		<view class="hn-item" v-for="news in list" v-if="news.pubStatus === 1" @click="goto(news.id)">
 			<view class="item-info" :style="{'width': news.img ? 'calc(100% - 136rpx)' : '100%'}">
 				<view class="title">{{news.title}}</view>
 				<view class="desc">
@@ -42,7 +42,7 @@
 			}
 		},
 		created() {
-			this.config.contents.forEach(item =>{
+			this.config.contents.forEach((item, index) =>{
 				item = {
 					id: item.id,
 					title: '',
@@ -52,20 +52,22 @@
 					fileType: '',
 					fileUrl: ''
 				}
+				this.list.push(item)
 				indexApis.find({
 					id: item.id,
 					enter: 'web'
 				}).then(res =>{
-					item.title = res.title
-					item.ctime = res.ctime
-					item.informationTypeName = res.informationTypeName
-					item.authorName = res.authorName
+					this.list[index].title = res.title
+					this.list[index].ctime = res.ctime
+					this.list[index].informationTypeName = res.informationTypeName
+					this.list[index].authorName = res.authorName
+					this.list[index].pubStatus = res.pubStatus
 					if(res.informationFileList && res.informationFileList.length){
 						const file = res.informationFileList[0]
-						item.fileType = file.fileType
-						item.fileUrl = file.fileUrl
+						this.list[index].fileType = file.fileType
+						this.list[index].fileUrl = file.fileUrl
 					}
-					this.list.push(item)
+					
 				})
 			})
 		}
