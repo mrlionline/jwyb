@@ -51,7 +51,7 @@
 						</view>
 						<view class="name">
 							<view class="n">{{item.name}}</view>
-							<view class="t" v-if="item.timeLength">学习时长：{{item.timeLength}}</view>
+							<view class="t" v-if="item.timeLength">学习时长：{{item.timeLength}}{{item.type === 'pdf' ? '分钟' : ''}}</view>
 						</view>
 					</view>
 				</scroll-view>
@@ -95,15 +95,18 @@
 				res.coursewares = res.coursewares.map(item =>{
 					return {
 						...item,
-						timeLength: '',
+						timeLength: item.duration,
 						type: item.fileName.slice(item.fileName.indexOf('.') + 1) === 'mp4' ? 'video' : 'pdf'
 					}
 				})
 				this.playVideo = res.coursewares[0].type === 'video'
 				this.info = res
 			})
-			uni.$on('study-done',() =>{
-				this.updatePdfProgress()
+			uni.$on('study-done',pdfProgress =>{
+				console.log('pdf done', pdfProgress)
+				if(pdfProgress){
+					this.updatePdfProgress(pdfProgress)
+				}
 			})
 		},
 		onUnload(){
@@ -240,8 +243,10 @@
 				}
 			},
 			startStudyPdf(item){
-				this.startStudyPdfTime = new Date().getTime()	// 开始学习pdf的时间戳，'study-done'事件中使用计算学习时长
-				const query = encodeURIComponent(`${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${encodeURIComponent(this.userInfo.name)}&phone=${this.userInfo.mobile}`)
+				// this.startStudyPdfTime = new Date().getTime()	// 开始学习pdf的时间戳，'study-done'事件中使用计算学习时长
+				const pdfProgress = this.progress[this.studyingItem.id] ? Number(this.progress[this.studyingItem.id].progress) : 0
+				const query = encodeURIComponent(`${baseUrl}/jw/pdf-viewer/viewer.html?url=${item.fileUrl}&name=${encodeURIComponent(this.userInfo.name)}&phone=${this.userInfo.mobile}&duration=${item.timeLength}&progress=${pdfProgress}`)
+				console.log('query', query)
 				const url = `/pages/myWebView/my-web-view?type=study&url=${query}`
 				uni.navigateTo({
 					url: url
@@ -268,16 +273,16 @@
 					this.queryById()
 				})
 			},
-			updatePdfProgress(){
-				const endStudyTime = new Date().getTime()
-				const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && Number(this.progress[this.studyingItem.id].progress)) || 0)	// 学习时长，本次时长 + 以往时长
-				const complete = studySecond >= 120 ? 0 : 1	// 超过2分钟为学习完成
+			updatePdfProgress(pdfProgress){
+				// const endStudyTime = new Date().getTime()
+				// const studySecond = (endStudyTime - this.startStudyPdfTime) / 1000 + ((this.progress[this.studyingItem.id] && Number(this.progress[this.studyingItem.id].progress)) || 0)	// 学习时长，本次时长 + 以往时长
+				const complete = pdfProgress >= Number(this.studyingItem.timeLength) * 60 ? 0 : 1
 				const params = {
 					complete: complete,	// 1 未完成， 0 已完成
 					courseId: this.id,
 					coursewareId: this.studyingItem.id,
 					id: this.progress[this.studyingItem.id] ? this.progress[this.studyingItem.id].id : null,
-					progess: Math.round(studySecond)
+					progess: pdfProgress
 				}
 				studyApi.updateProgress(params).then(() =>{
 					this.queryById()

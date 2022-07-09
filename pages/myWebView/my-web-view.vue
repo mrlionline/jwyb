@@ -10,11 +10,15 @@
 			return {
 				link: '',
 				type: '',
+				pdfProgress: 0
 			}
 		},
 		methods: {
 			message(e){
-				console.log('!!!!!!!!!!!!', e)
+				console.log('!!!!!!!!!!!!', e.detail.data)
+				if(e && e.detail && e.detail.data && e.detail.data.length){
+					this.pdfProgress = e.detail.data[e.detail.data.length - 1].progress
+				}
 			}
 		},
 		onLoad(e) {
@@ -23,7 +27,7 @@
 		},
 		onUnload(){
 			if(this.type === 'study'){
-				uni.$emit('study-done')
+				uni.$emit('study-done', this.pdfProgress)
 			}
 		}
 	}
