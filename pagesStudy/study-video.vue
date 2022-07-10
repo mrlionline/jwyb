@@ -171,7 +171,11 @@
 				}
 			},
 			timeupdate(e){
-				this.videoPoint.add(Math.floor(e.detail.currentTime / this.videoTime * 100))
+				if(this.videoTime < 100){
+					this.videoPoint.add(Math.floor(e.detail.currentTime))
+				}else {
+					this.videoPoint.add(Math.floor(e.detail.currentTime / this.videoTime * 100))
+				}
 			},
 			fullChange(e) {
 				this.isFull = e.detail.fullScreen
@@ -291,8 +295,12 @@
 				this.startStudyPdfTime = 0
 			},
 			updateVideoProgress(){
-				const completePointNumber = Math.min(75, this.videoTime * 4 * 0.75)
-				const complete = this.videoPoint.size > completePointNumber ? 0 : 1
+				let complete = null
+				if(this.videoTime < 100){
+					complete = this.videoPoint.size >= this.videoTime * 0.75 ? 0 : 1
+				}else {
+					complete = this.videoPoint.size >= 75  ? 0 : 1
+				}
 				const params = {
 					complete: complete,	// 1 未完成， 0 已完成
 					courseId: this.id,
