@@ -219,14 +219,14 @@
 				flex-direction: column;
 				.user-star{
 					position: relative;
-					margin-top: 12rpx;
+					margin-top: 20rpx;
 					font-size: 0;
 					image{
 						position: absolute;
-						left: 0;
-						top: -2rpx;
-						width: 64rpx;
-						height: 44rpx;
+						left: -10rpx;
+						top: -24rpx;
+						width: 80rpx;
+						height: 80rpx;
 					}
 					text{
 						display: inline-block;
@@ -236,7 +236,7 @@
 						font-size: 20rpx;
 						color: #8A4F0A;
 						background: #FFDA20;
-						border-radius: 0 80px 80px 0;
+						border-radius: 80px;
 					}
 				}
 			}

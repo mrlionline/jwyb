@@ -69,7 +69,7 @@
 				this.myStarIcon = res.icon
 			})
 			const userInfo = uni.getStorageSync('userInfo');
-			if(userInfo.upgradeTips && userInfo.upgradeTips === 1 && userInfo.tipsDate && userInfo.tipsDate > new Date()){
+			if(userInfo.upgradeTips && userInfo.upgradeTips === 1 && userInfo.tipsDate && new Date(userInfo.tipsDate) > new Date()){
 				this.showUpStar = true
 			}
 		},

@@ -34,7 +34,7 @@
 							</template>
 						  </u-input>
 					</view>
-					<view class="input-wrap">
+					<view class="input-wrap" v-if="showVerCode">
 						<image class="inp-icon" src="/static/icon-pwd.png"></image>
 						<view class="divider"></view>
 						<u-input
@@ -120,7 +120,9 @@
 				countDown: SECOND,
 				timer: null,
 				imgVerCodeSrc: '',
-				imgVerCode: ''
+				imgVerCode: '',
+				showVerCode:false,
+				loginErrTimes: 0
 			}
 		},
 		methods: {
@@ -146,7 +148,12 @@
 				loginApis.login(params).then(res =>{
 					this.loginSuccess(res)
 				}).catch(e => {
-					this.formula()
+					const loginErrTimes = ++this.loginErrTimes
+					uni.setStorageSync('login-err-times', loginErrTimes)
+					if(loginErrTimes >= 3){
+						this.formula()
+						this.showVerCode = true
+					}
 				})
 			},
 			loginByVerCode(){
@@ -164,6 +171,7 @@
 				})
 			},
 			loginSuccess(res){
+				uni.setStorageSync('login-err-times', 0)
 				uni.setStorageSync('userInfo', res.userInfo)
 				this.userWechatLogin()
 				uni.setStorage({
@@ -261,7 +269,11 @@
 			},
 			loginBtnIsDisabled: function(){
 				if(this.loginType === 'password'){
-					return this.number.trim() === '' || this.password.trim() === '' || this.imgVerCode.trim() === ''
+					if(this.showVerCode){
+						return this.number.trim() === '' || this.password.trim() === '' || this.imgVerCode.trim() === ''
+					}else {
+						return this.number.trim() === '' || this.password.trim() === ''
+					}
 				}else if(this.loginType === 'verCode'){
 					return this.mobile.trim() === '' || this.verCode.trim() === ''
 				}
@@ -275,7 +287,11 @@
 			}
 		},
 		created() {
-			this.formula()
+			this.loginErrTimes = uni.getStorageSync('login-err-times') || 0
+			if(this.loginErrTimes >= 3){
+				this.formula()
+				this.showVerCode = true
+			}
 		}
 	}
 </script>
@@ -344,7 +360,7 @@
 		}
 		.toggle-login-type{
 			margin: 32px 0 40px;
-			text-align: center;
+			text-align: right;
 			font-size: 15px;
 			color: #F2731E;
 		}
