@@ -89,7 +89,9 @@
 						  </u-input>
 					</view>
 				</template>
-				<view class="toggle-login-type" @click="changeLoginType">{{toggleLoginTypeText}}</view>
+				<view class="toggle-login-type">
+					<text @click="changeLoginType">{{toggleLoginTypeText}}</text>
+				</view>
 				<view
 					class="login-btn"
 					:class="{'login-btn-disabled': loginBtnIsDisabled}"
