@@ -26,8 +26,8 @@
 			<text class="learned" v-if="info.hits">{{info.hits}}人学过</text>
 			<view class="catalogue-box">
 				<view class="title">
-					<text style="font-weight: 600;font-size: 15px;color: #444251;">课程目录</text>
-					<text style="margin-left: 8rpx;color: #959BA4;font-weight: 400;">共{{info.coursewares ? info.coursewares.length : 0}}个课件</text>
+					<text style="font-weight: 600;font-size: 30rpx;color: #444251;">课程目录</text>
+					<text style="margin-left: 8rpx;color: #959BA4;font-size: 26rpx; font-weight: 400;">共{{info.coursewares ? info.coursewares.length : 0}}个课件</text>
 				</view>
 				<scroll-view
 					:scroll-y="true"

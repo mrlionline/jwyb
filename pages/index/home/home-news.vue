@@ -1,7 +1,7 @@
 <template>
 	<view class="home-news">
 		<home-section-header :config="headerConfig" @click="headClick()"></home-section-header>
-		<view class="hn-item" v-for="news in list" v-if="news.pubStatus === 1" @click="goto(news.id)">
+		<view class="hn-item" v-for="(news,i) in list" v-if="news.pubStatus === 1" @click="goto(news.id)">
 			<view class="item-info" :style="{'width': news.img ? 'calc(100% - 136rpx)' : '100%'}">
 				<view class="title">{{news.title}}</view>
 				<view class="desc">
@@ -10,8 +10,22 @@
 					<text>{{news.authorName}}</text>
 				</view>
 			</view>
-			<image class="item-head" v-if="news.fileType !== 'mp4' && news.fileUrl" :src="news.fileUrl"></image>
-			<video class="item-video" v-if="news.fileType === 'mp4' && news.fileUrl" @click.stop="" :src="news.fileUrl" @error="videoErrorCallback" controls></video>
+			<view class="item-box">
+				<image class="item-head" v-if="news.fileType !== 'mp4' && news.fileUrl" :src="news.fileUrl"></image>
+				<video
+					class="item-video"
+					:id="'v'+i"
+					v-if="news.fileType === 'mp4' && news.fileUrl"
+					@click.stop=""
+					:src="news.fileUrl"
+					@error="videoErrorCallback"
+					:controls="false"
+					:show-center-play-btn="false"
+				></video>
+				<view class="video-play-btn" @click.stop="playVideo(i)">
+					<u-icon name="play-right-fill" color="#fff" size="48rpx"></u-icon>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -32,6 +46,13 @@
 			}
 		},
 		methods: {
+			playVideo(i){
+				console.log('iii:',i )
+				const id = 'v' + i
+				const videoContext = wx.createVideoContext(id, this)
+				videoContext.requestFullScreen()
+				videoContext.play()
+			},
 			goto(id){
 				uni.navigateTo({
 					url: `pages/information/detail?id=${id}`
@@ -98,10 +119,26 @@
 					margin-right: 20rpx;
 				}
 			}
+			.item-box,
 			.item-head,
 			.item-video{
 				width: 136rpx;
 				height: 112rpx;
+			}
+			.item-box{
+				position: relative;
+				.video-play-btn{
+					position: absolute;
+					left: 50%;
+					top: 50%;
+					transform: translate(-50%, -50%);
+					width: 48rpx;
+					height: 48rpx;
+				}
+				.video-play-btn > *{
+					width: 100%;
+					height: 100% ;
+				}
 			}
 		}
 	}

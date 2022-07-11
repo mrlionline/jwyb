@@ -5,7 +5,8 @@
 			:showBack="false"
 			:isDefault="true"
 			titleColor="#000"
-			:border="true"
+			bgColor="#fff"
+			:border="false"
 		></page-header>
 		<view class="my-container" :style="{'padding-top': navBarHeight + 'px'}">
 			<view class="base-info section">
