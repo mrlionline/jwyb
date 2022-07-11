@@ -384,7 +384,7 @@
 					align-items: center;
 					height: 172rpx;
 					padding: 16rpx 0;
-					border-bottom: 1px solid #eee;
+					border-bottom: 2rpx solid #eee;
 					.head{
 						display: flex;
 						justify-content: center;

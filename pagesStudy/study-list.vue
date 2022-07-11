@@ -2,6 +2,7 @@
 	<scroll-view
 		:scroll-y="true"
 		:style="'height: 100vh;'"
+		bgColor="#fff"
 		@scrolltolower="arriveBottom()"
 	>
 		<view class="study-list">
