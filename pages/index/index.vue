@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" :style="{'background-color': activeTabBar === '我的' ? 'transparent' : '#F5F6F7'}">
 		<Home v-if="activeTabBar === '首页'" :configList="configList"></Home>
 		<My v-if="activeTabBar === '我的'"></My>
 		<Information v-if="activeTabBar === '资讯'"></Information>
@@ -242,7 +242,6 @@
 
 <style scoped>
 	.content{
-		background-color: #F5F6F7;
 		min-height: 100vh;
 	}
 	.tab-bar-icon{

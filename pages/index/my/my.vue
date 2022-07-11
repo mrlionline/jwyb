@@ -3,11 +3,11 @@
 		<page-header
 			title="我的"
 			:showBack="false"
-			:isDefault="true"
-			titleColor="#000"
+			:isDefault="false"
+			titleColor="#fff"
 			:border="false"
 		></page-header>
-		<view class="my-container" :style="{'padding-top': navBarHeight + 'px'}">
+		<view class="my-container" :style="{'top': 'calc('+navBarHeight + 'px'+' + 240rpx)'}">
 			<view class="base-info section">
 				<view class="left">
 					<view class="head">
@@ -15,7 +15,7 @@
 						<image mode="aspectFit" v-if="!avatarUrl" src="/static/defaultAvatar.png"></image>
 					</view>
 					<view class="user-name">
-						<text>{{userInfo.name}}</text>
+						<text style="color: #fff;">{{userInfo.name}}</text>
 						<view class="user-star" v-if="myStar.name">
 							<image :src="myStar.icon" mode="aspectFit"></image>
 							<text>{{myStar.name}}</text>
@@ -184,7 +184,7 @@
 		height: 412rpx;
 	}
 	.my-container{
-		// position: fixed;
+		position: fixed;
 		bottom: 0;
 		display: flex;
 		flex-direction: column;
@@ -193,6 +193,7 @@
 		z-index: 1;
 		border-top-left-radius: 24px;
 		border-top-right-radius: 24px;
+		background-color: #FFFFFF;
 	}
 	.section{
 		width: calc(100% - 64rpx);
@@ -209,8 +210,8 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		height: 200rpx;
 		padding: 40rpx 12rpx 0 8rpx;
+		margin-top: -240rpx;
 		.left{
 			display: flex;
 			align-items: center;
@@ -266,7 +267,7 @@
 		border-radius: 8px;
 		width: 686rpx;
 		height: 144rpx;
-		margin-top: 40rpx;
+		margin-top: 60rpx;
 		padding: 0 32rpx;
 		.left,
 		.right{
