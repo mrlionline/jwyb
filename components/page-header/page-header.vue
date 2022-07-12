@@ -79,7 +79,7 @@
 		},
 		methods: {
 			back(){
-				console.log('111')
+				uni.$emit('header-back', this.title)
 				uni.navigateBack()
 			}
 		}

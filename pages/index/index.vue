@@ -1,6 +1,6 @@
 <template>
 	<view class="content" :style="{'background-color': activeTabBar === '我的' ? 'transparent' : '#F5F6F7'}">
-		<Home v-if="activeTabBar === '首页'" :configList="configList"></Home>
+		<Home show="activeTabBar === '首页'" :configList="configList"></Home>
 		<My v-if="activeTabBar === '我的'"></My>
 		<Information v-if="activeTabBar === '资讯'"></Information>
 		<u-tabbar

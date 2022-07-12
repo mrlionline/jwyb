@@ -175,6 +175,11 @@
 			})
 			this.statisticsMyInformationCount()
 			this.myIntegralTop()
+			uni.$on('header-back', title =>{
+				if(title === '每日签到'){
+					this.myIntegralTop()
+				}
+			})
 		}
 	}
 </script>
