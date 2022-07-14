@@ -15,21 +15,20 @@
 			<home-news v-if="item.name === 'news'" :config="item.config"></home-news>
 		</view>
 		<image class="promote-star-fixed" v-if="showUpStar && myStarIcon" :src="myStarIcon" @click="promoteShow = true"></image>
-		<u-modal
+		<u-popup
 			:show="promoteShow"
 			width="654rpx"
-			:showConfirmButton="false"
-			:showCancelButton="false"
-			:closeOnClickOverlay="true"
+			mode="center"
+			bgColor="transparent"
 			@close="promoteShow = false"
 		>
 			<view class="promote-box">
-				<image :src="myStarIcon"></image>
-				<view class="congratulations">恭喜您获得升星勋章</view>
-				<view class="thanks">感谢您对公司的努力付出</view>
-				<button class="see" @click="goCapsule">查看我的星路历程</button>
+				<image class="bg" src="/static/home/up-bg.png" mode=""></image>
+				<image class="star" :src="myStarIcon"></image>
+				<image class="see" src="/static/home/up-see.png" @click="goCapsule" mode=""></image>
+				<image class="close" src="/static/home/close.png" @click="promoteShow = false" mode=""></image>
 			</view>
-		</u-modal>
+		</u-popup>
 	</view>
 </template>
 
@@ -89,35 +88,61 @@
 
 <style lang="scss" scoped>
 	.promote-box{
+		position: relative;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
-		image{
+		width: 654rpx;
+		height: 920rpx;
+		top: -50rpx;
+		.bg{
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1;
+			width: 654rpx;
+			height: 920rpx;
+		}
+		.star{
+			position: absolute;
 			width: 342rpx;
 			height: 240rpx;
-		}
-		.congratulations{
-			font-size: 18px;
-			color: #444251;
-			text-align: center;
-			margin: 84rpx 0 16rpx;
+			left: 50%;
+			bottom: 338rpx;
+			transform: translateX(-50%);
+			z-index: 2;
 		}
 		.thanks{
-			font-size: 15px;
-			color: #444251;
+			position: absolute;
+			left: 0;
+			right: 0;
+			font-size: 34rpx;
+			color: #FFFFFF;
 			text-align: center;
-			margin-bottom: 96rpx;
+			bottom: 220rpx;
+			z-index: 2;
 		}
 		.see{
-			width: 558rpx;
+			position: absolute;
+			width: 402rpx;
 			height: 108rpx;
-			line-height: 108rpx;
-			background-color: #567DF4;
-			color: #FFFFFF;
-			border-radius: 29px;
-			text-align: center;
-			font-size: 18px;
+			left: 50%;
+			bottom: 72rpx;
+			transform: translateX(-50%);
+			z-index: 2;
+			opacity: 0;
+		}
+		.close{
+			position: absolute;
+			width: 72rpx;
+			height: 72rpx;
+			left: 50%;
+			bottom: -132rpx;
+			transform: translateX(-50%);
+			z-index: 2;
 		}
 	}
 	.promote-star-fixed{
