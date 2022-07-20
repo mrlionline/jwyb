@@ -9,7 +9,7 @@
 			>
 				<view :style="{'padding-bottom': safeBottom + 'px'}">
 					<view class="tabs" v-if="!isGlobal">
-						<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 0}" @click="tabChange(0)">成员星系</text>
+						<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 0}" @click="tabChange(0)">成员信息</text>
 						<text class="tab-item" :class="{'tab-item-active': activeTabIndex === 1}" @click="tabChange(1)">星小组信息</text>
 					</view>
 					
