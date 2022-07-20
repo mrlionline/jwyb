@@ -3,63 +3,69 @@
 		<PageNavbar title="互动社区"></PageNavbar>
 		<!-- 社区列表  -->
 		<view class="community-main" :style="{'margin-top': navBarHeight + 'px'}">
-			<view class="community-list" v-for="(item, index) in communityList" :key="index">
-				<!-- 动态内容 -->
-				<view class="community-info">
-					<image class="user-photo" :src="item.authorAvatar || '/pagesCommunity/static/community/tabBarMyActive.png'" mode="aspectFit"></image>
-					<view class="user-info">
-						<view class="user-name">{{ item.authorName || '佚名' }}</view>
-						<view class="timer">{{ item.releaseTime || item.mtime }}</view>
-					</view>
-					<view class="community-right" v-if="item.isMe == 1">
-						<view class="status">{{ '·' + (item.statusName || item.approveTypeName) }}</view>
-						<view class="line-content">
-							<u-line color="#EEEEEE" direction="col" length="32rpx"></u-line>
+			<view class="community-list-label" v-if="communityList && communityList.length>0">
+				<view class="community-list" v-for="(item, index) in communityList" :key="index">
+					<!-- 动态内容 -->
+					<view class="community-info">
+						<image class="user-photo" :src="item.authorAvatar || '/pagesCommunity/static/community/tabBarMyActive.png'" mode="aspectFit"></image>
+						<view class="user-info">
+							<view class="user-name">{{ item.authorName || '佚名' }}</view>
+							<view class="timer">{{ item.releaseTime || item.mtime }}</view>
 						</view>
-						<u-icon class="more-dot" name="more-dot-fill" color="#000000" size="20" @click="openCommunityDelState(item)"></u-icon>
-					</view>
-				</view>
-				<!-- 动态图片视频 -->
-				<view class="community-content" v-if="item.content">
-					<view class="community-text">
-						<u-read-more ref="uReadMore" showHeight="144" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true">
-							<u-parse :content="item.content" @load="loadReadMoreReply"></u-parse>
-						</u-read-more>
-					</view>
-					
-					<view class="community-media" v-if="item.fileList.length && item.fileList[0].fileType === 'mp4'">
-						<view class="community-video-label" v-for="(itm, idx) in item.fileList" :key="idx">
-							<video id="community-video" :src="itm.fileUrl" object-fit="cover"></video>
+						<view class="community-right" v-if="item.isMe == 1">
+							<view class="status" v-if="item.status != 2">{{ '·' + (item.statusName || item.approveTypeName) }}</view>
+							<view class="line-content">
+								<u-line color="#EEEEEE" direction="col" length="32rpx"></u-line>
+							</view>
+							<u-icon class="more-dot" name="more-dot-fill" color="#000000" size="20" @click="openCommunityDelState(item)"></u-icon>
 						</view>
 					</view>
-					<view class="community-media" v-else>
-						<u-grid :col="3">
-							<u-grid-item v-for="(itm, idx) in item.fileList" :key="idx">
-								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
-							</u-grid-item>
-						</u-grid>
-					</view>
-					<!-- 地理位置展示  -->
-					<view class="location-address" v-if="item.locationName || item.storeName">
-						<view class="location-address-label">
-							<image class="address-img" src="/pagesCommunity/static/community/location-address-img.png" mode="aspectFit"></image>
-							<view class="address-text">{{ item.locationName || item.storeName }}</view>
+					<!-- 动态图片视频 -->
+					<view class="community-content" v-if="item.content">
+						<view class="community-text" @click="operateChat(item.id)">
+							<u-read-more ref="uReadMore" showHeight="126rpx" textIndent="0" closeText="全文" :shadowStyle="shadowStyle" toggle="true">
+								<u-parse :content="item.content" @load="loadReadMoreReply"></u-parse>
+							</u-read-more>
+						</view>
+						
+						<view class="community-media" v-if="item.fileList && item.fileList.length && (item.fileList[0].fileType === 'mp4' || item.fileList[0].fileType === 'avi' || item.fileList[0].fileType === 'mkv')">
+							<view class="community-video-label" v-for="(itm, idx) in item.fileList.slice(0,1)" :key="idx">
+								<video id="community-video" :src="itm.fileUrl" object-fit="cover"></video>
+							</view>
+						</view>
+						<view class="community-media" v-else-if="item.fileList && item.fileList.length">
+							<u-grid :col="3">
+								<u-grid-item v-for="(itm, idx) in item.fileList.slice(0,9)" :key="idx">
+									<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(idx, item.fileList)"></image>
+								</u-grid-item>
+							</u-grid>
+						</view>
+						<!-- 地理位置展示  -->
+						<view class="location-address" v-if="item.locationName || item.storeName">
+							<view class="location-address-label">
+								<image class="address-img" src="/pagesCommunity/static/community/location-address-img.png" mode="aspectFit"></image>
+								<view class="address-text">{{ item.locationName || item.storeName }}</view>
+							</view>
 						</view>
 					</view>
+					<u-line class="u-line-label" length="100%" color="#EEEEEE"></u-line>
+					<!-- 动态评论和点赞数 -->
+					<view class="community-operate">
+						 <view class="operate-chat" @click="operateChat(item.id)">
+							<image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit"></image>
+							<text>{{ item.commentNum }}</text>
+						 </view>
+						 <view class="operate-thumb" @click="operateThumb(item)">
+							<u-icon v-if="item.isHb" name="thumb-up-fill" color="#567DF4" size="20"></u-icon>
+							<u-icon v-else name="thumb-up" color="#959BA4" size="20"></u-icon>
+							<view :class="{'color-fill': item.isHb}">{{ item.hbNum }}</view>
+						 </view>
+					</view>
 				</view>
-				
-				<!-- 动态评论和点赞数 -->
-				<view class="community-operate">
-					 <view class="operate-chat" @click="operateChat(item.id)">
-					 	<image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit"></image>
-					 	<text>{{ item.commentNum }}</text>
-					 </view>
-					 <view class="operate-thumb" @click="operateThumb(item)">
-						<u-icon v-if="item.isHb" name="thumb-up-fill" color="#567DF4" size="28"></u-icon>
-						<u-icon v-else name="thumb-up" color="#959BA4" size="20"></u-icon>
-						<view>{{ item.hbNum }}</view>
-					 </view>
-				</view>
+			</view>
+			<view class="information-empty" v-else>
+				<u-empty mode="data" icon="https://cdn.uviewui.com/uview/empty/data.png">
+				</u-empty>
 			</view>
 		</view>
 		<!-- 发布动态 -->
@@ -87,6 +93,7 @@
 	import informationApis from '@/http/community/list.js'
 	import commentsApis from '@/http/community/comments.js'
 	import PageNavbar from '../components/pageNavbar.vue'
+	import utils from '@/asset/js/utils.js'
 	export default {
 		components: {
 			PageNavbar
@@ -131,7 +138,7 @@
 					marginTop: "0px",
 				},
 				/* 导航栏高度设置 */
-				navBarHeight: getApp().globalData.statusBarHeight + 48
+				navBarHeight: getApp().globalData.statusBarHeight + 44
 			}
 		},
 		onLoad(option) {
@@ -154,6 +161,14 @@
 				this.listPageOfCommunit();
 			}
 		},
+		onPullDownRefresh() {
+			console.log('refresh')
+			this.formData.pageNum = 1
+			this.listPageOfCommunit()
+			// setTimeout(function () {
+			// 	uni.stopPullDownRefresh();
+			// }, 1000);
+		},
 		methods: {
 			listPageOfCommunit(){
 				const thisObj = this
@@ -168,6 +183,9 @@
 				const thisObj = this
 				informationApis.listPageOfCommunit(thisObj.formData).then(res => {
 					if(res.length > 0){
+						res.forEach(function(ele,index){
+							ele.content = utils.uncodeUtf16(ele.content)
+						})
 						thisObj.communityList.push(...res)
 						// this.$forceUpdate()
 						thisObj.hasNext = 1
@@ -176,12 +194,19 @@
 						thisObj.hasNext = 0
 						console.info("获取社区列表接口失败！001")
 					}
+					uni.stopPullDownRefresh()
+				})
+				.catch(function(error){
+					uni.stopPullDownRefresh()
 				})
 			},
 			queryCommunitByUserId(){
 				const thisObj = this
 				informationApis.apiCommunitByUserId(thisObj.formData).then(res => {
 					if(res.length > 0){
+						res.forEach(function(ele,index){
+							ele.content = utils.uncodeUtf16(ele.content)
+						})
 						thisObj.communityList.push(...res)
 						// this.$forceUpdate()
 						thisObj.hasNext = 1
@@ -190,6 +215,10 @@
 						thisObj.hasNext = 0
 						console.info("获取社区列表接口失败！001")
 					}
+					uni.stopPullDownRefresh()
+				})
+				.catch(function(error){
+					uni.stopPullDownRefresh()
 				})
 			},
 			operateChat(id){
@@ -212,7 +241,9 @@
 							icon: 'none'
 						})
 						//刷新页面
-						thisObj.pageRefresh()
+						// thisObj.pageRefresh()
+						item.isHb = 0
+						item.hbNum = item.hbNum - 1
 					})
 					.catch(function(error){
 						uni.showToast({
@@ -228,7 +259,9 @@
 							icon: 'none'
 						})
 						//刷新页面
-						thisObj.pageRefresh()
+						// thisObj.pageRefresh()
+						item.isHb = 1
+						item.hbNum = item.hbNum + 1
 						
 					})
 					.catch(function(error){
@@ -315,15 +348,18 @@
 				}
 			},
 			//预览图片
-			previewCommunityImage(url){
-				let thisUrls = []
-				thisUrls.push(url)
-				console.info(thisUrls,"预览图片-->",url)
+			previewCommunityImage(idx,thisUrls){
+				console.info(idx,"预览图片-->",thisUrls)
+				let thisImages = []
+				thisUrls.slice(0,9).forEach(function(ele,index){
+					thisImages.push(ele.fileUrl)
+				})
 				uni.previewImage({
-					urls: thisUrls,
+					current: idx,
+					urls: thisImages,
 					indicator: "none"
 				})
-			}
+			},
 		},
 		computed: {
 			
@@ -339,6 +375,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
 	}
 	.community-main {
 		width: 100%;
@@ -346,10 +385,17 @@
 		margin: 128rpx 0 0 0;
 		padding:0;
 		background-color: #F5F6F7;
-		.community-list {
+		.community-list-label {
 			width: 100%;
 			height: auto;
 			margin: 0 0 16rpx 0;
+			padding: 0;
+			background-color: #F5F6F7;
+		}
+		.community-list {
+			width: 100%;
+			height: auto;
+			margin: 0 0 24rpx 0;
 			padding: 0;
 			background-color: #FFFFFF;
 			//列表 头部 列表信息
@@ -395,6 +441,8 @@
 					height: 48rpx;
 					overflow: hidden;
 					float: right;
+					display: flex;
+					align-items: center;
 				}
 				.status {
 					width: auto;
@@ -411,7 +459,7 @@
 					color: #F2731E;
 				}
 				.line-content {
-					width: 1rpx;
+					width: 2rpx;
 					height: 48rpx;
 					overflow: hidden;
 					display: flex;
@@ -419,7 +467,7 @@
 					margin: 0 16rpx 0 0;
 					float: left;
 					.u-line {
-						width: 1rpx;
+						width: 2rpx;
 					}
 				}
 				
@@ -441,11 +489,10 @@
 					height: auto;
 					// max-height: 144rpx;
 					overflow: hidden;
-					// margin: 0 0 32rpx 0;
-					margin: 0 0 0 0;
+					margin: 0 0 32rpx 0;
 					padding: 0;
 					font-weight: 400;
-					line-height: 48rpx;
+					line-height: 42rpx;
 					font-size: 30rpx;
 					color: #222222;
 					// text-overflow: ellipsis;
@@ -464,6 +511,10 @@
 					.grid-img {
 						width: 156rpx;
 						height: 156rpx;
+						border-radius: 8rpx;
+					}
+					video {
+						border-radius: 8rpx;
 					}
 				}
 			}
@@ -508,7 +559,7 @@
 				height: auto;
 				overflow: hidden;
 				padding: 0 32rpx 0 144rpx;
-				border-top: 1rpx solid #EEEEEE;
+				// border-top: 1rpx solid #EEEEEE;
 				.operate-chat,
 				.operate-thumb{
 					width: 50%;
@@ -535,7 +586,9 @@
 				}
 				.operate-thumb {
 					padding: 0 0 0 80rpx;
-					
+					.color-fill {
+						color: #567DF4;
+					}
 				}
 			}
 		}
@@ -594,10 +647,13 @@
 			background-color: #F5F6F7;
 			border-radius: 16rpx;
 			border-color: #F5F6F7;
-		}
+			color: #888888;		}
 		button.community-del-cancel::after {
 			border-color: #F5F6F7;
 		}
+	}
+	.u-read-more /deep/ .u-read-more__content {
+		color: #444251!important;
 	}
 	/* 查看全文样式修正 */
 	.u-read-more /deep/ .u-read-more__toggle {
@@ -612,7 +668,7 @@
 	.u-read-more .u-read-more__toggle__text .u-text /deep/ .u-text__value {
 		display: block!important;
 		text-align: right!important;
-		padding: 0 10rpx 20rpx 0;
+		padding: 0 10rpx 0 0;
 	}
 	// .u-read-more__toggle /deep/ .u-read-more__toggle__text {
 	// 	position: absolute;
@@ -621,5 +677,12 @@
 	// }
 	.u-read-more__toggle /deep/ .u-read-more__toggle__icon {
 		display: none!important;
+	}
+	.information-empty {
+		width: 100%;
+		height: auto;
+		overflow: hidden;
+		padding: 0;
+		background: #FFFFFF;
 	}
 </style>

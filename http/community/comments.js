@@ -6,7 +6,7 @@ const commentsApis = {
 	},
 	// 通过id获取动态信息
 	getUsersByStarId(id) {
-		return http('/learning-interaction-api/community/getCommunitData/' + id, 'GET')
+		return http('/learning-interaction-api/community/getCommunitDataByApp/' + id, 'GET')
 	},
 	//  互动社区获取动态评论列表--有分页--获取动态评论
 	queryInteractionList(data){

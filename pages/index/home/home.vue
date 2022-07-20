@@ -70,6 +70,7 @@
 			const userInfo = uni.getStorageSync('userInfo');
 			if(userInfo.upgradeTips && userInfo.upgradeTips === 1 && userInfo.tipsDate && new Date(userInfo.tipsDate) > new Date()){
 				this.showUpStar = true
+        this.promoteShow = true
 			}
 		},
 		methods: {

@@ -63,7 +63,7 @@
 				locationChoose: 0,
 				storeChoose: "",
 				/* 导航栏高度设置 */
-				navBarHeight: getApp().globalData.statusBarHeight + 48
+				navBarHeight: getApp().globalData.statusBarHeight + 44
 			}
 		},
 		created() {
@@ -108,6 +108,10 @@
 									// }, 10)
 								}
 							});
+						},
+						fail: function (res) {
+							console.info('获取 getLocation 失败-->', res)
+							thisObj.locationChoose = 0
 						}
 					});
 				} else if(item.value === 2){
@@ -122,15 +126,15 @@
 			//返回发布动态页面
 			goReleasePage(type,store,longitude,latitude,address){
 				if(type === 0){
-					uni.navigateTo({
+					uni.redirectTo({
 						url: `/pagesCommunity/community/release/release?type=${type}`
 					})
 				} else if(type === 2){
-					uni.navigateTo({
+					uni.redirectTo({
 						url: `/pagesCommunity/community/release/release?type=${type}&store=${store}`
 					})
 				} else if(type === 1){
-					uni.navigateTo({
+					uni.redirectTo({
 						url: `/pagesCommunity/community/release/release?type=${type}&longitude=${longitude}&latitude=${latitude}&address=${address}`
 					})
 				}
@@ -158,8 +162,18 @@
 							title: "暂无关联门店！",
 							icon: 'none'
 						})
+						thisObj.locationChoose = 0
 						console.info("请求关联门店的接口失败！001")
 					}
+				})
+				.catch(function(error){
+					uni.hideLoading()
+					uni.showToast({
+						title: "暂无关联门店！",
+						icon: 'none'
+					})
+					thisObj.locationChoose = 0
+					console.info("请求关联门店的接口报错！002")
 				})
 			},
 		},
@@ -178,8 +192,12 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		height: 100vh;
 		min-height: 100%;
 		background-color: #F5F6F7;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
 	}
 	.community-main {
 		width: 100%;

@@ -16,10 +16,15 @@
 					<uParseMax :content="infoDetail.contentStr" @preview="previewContent" @navigate="navigateContent" noData="暂无数据"></uParseMax>
 				</view>
 				<!-- 缩略图  -->
-				<view class="info-thumbnail" v-if="infoDetail.informationFileList">
+				<view class="info-thumbnail" v-if="infoDetail.informationFileList && infoDetail.informationFileList.length > 0 && (infoDetail.informationFileList[0].fileType === 'mp4' || infoDetail.informationFileList[0].fileType === 'avi' || infoDetail.informationFileList[0].fileType === 'mkv')">
+					<view class="community-video-label" v-for="(itm, idx) in infoDetail.informationFileList.slice(0,1)" :key="idx">
+						<video id="community-video" :src="itm.fileUrl" object-fit="cover"></video>
+					</view>
+				</view>
+				<view class="info-thumbnail" v-else-if="infoDetail.informationFileList && infoDetail.informationFileList.length > 0">
 					<u-grid :col="3">
 						<u-grid-item v-for="(itm, idx) in infoDetail.informationFileList" :key="idx">
-							<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
+							<image class="grid-img" :src="itm.fileUrl" mode="aspectFit" @click="previewCommunityImage(itm.fileUrl)"></image>
 						</u-grid-item>
 					</u-grid>
 				</view>
@@ -28,10 +33,12 @@
 				<view class="detail-comments-list">
 					<!-- replyCount -->
 					<view class="reply-count">评论<text>{{ infoDetail.replyCount }}</text></view>
-					<!-- readCount -->
-					<view class="read-count">阅读<text>{{ infoDetail.readCount }}</text></view>
-					<!-- fabulousCount -->
-					<view class="fabulous-count">点赞<text>{{ infoDetail.fabulousCount }}</text></view>
+					<view class="read-fabulous">
+						<!-- readCount -->
+						<view class="read-count">阅读<text>{{ infoDetail.readCount }}</text></view>
+						<!-- fabulousCount -->
+						<view class="fabulous-count">点赞<text>{{ infoDetail.fabulousCount }}</text></view>
+					</view>
 					<view class="community-comments" v-for="(item, index) in infoDetail.replyDTOList" :key="item.id">
 						 <view class="comments-user">
 							<image class="user-photo" :src="item.avatar || '../../static/tabBarMyActive.png'" mode="aspectFit"></image>
@@ -39,7 +46,7 @@
 						 </view>
 						 <view class="comments-content">{{ item.content }}</view>
 						 <!-- 评论日期 -->
-						 <view class="comments-timer">{{ item.ctime }}</view>
+						 <view class="comments-timer">{{ item.replyTime }}</view>
 					</view>
 				</view>
 			</view>
@@ -52,18 +59,23 @@
 		<view class="fix-community-comments">
 			<view class="textarea-label">
 				<!--  focus="true" -->
-				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" @blur="commentPost" :formatter="fixCommentsFormatter" border="none" height="36" cursorSpacing="30" autoHeight></u-textarea>
+				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" @blur="commentPostBlur" border="none" :maxlength="200" cursorSpacing="30" fixed autoHeight></u-textarea>
 			</view>
 			<view class="operate-chat" @click="operateChat()">
-				<u-icon name="chat" color="#959BA4" size="24"></u-icon>
+				<image class="chat-photo" src="/static/community/operate-chat.png" mode="aspectFit"></image>
+				<!-- <u-icon name="chat" color="#444251" size="24"></u-icon> -->
 			</view>
 			<view class="operate-thumb" @click="operateThumb(infoDetail.fabulousOrNot)">
-				<u-icon v-if="infoDetail.fabulousOrNot" name="thumb-up-fill" color="#567DF4" size="24"></u-icon>
-				<u-icon v-else name="thumb-up" color="#959BA4" size="24"></u-icon>
+				<!-- <u-icon v-if="infoDetail.fabulousOrNot" name="thumb-up-fill" color="#567DF4" size="24"></u-icon>
+				<u-icon v-else name="thumb-up" color="#444251" size="24"></u-icon> -->
+				<image class="thumb-photo" v-if="infoDetail.fabulousOrNot" src="/static/community/operate-thumb-fill.png" mode="aspectFit"></image>
+				<image class="thumb-photo" v-else src="/static/community/operate-thumb.png" mode="aspectFit"></image>
 			</view>
 			<view class="operate-star" @click="operateStar(infoDetail.collectionOrNot)">
-				<u-icon v-if="infoDetail.collectionOrNot" name="star-fill" color="#FFD940" size="24"></u-icon>
-				<u-icon v-else name="star" color="#959BA4" size="24"></u-icon>
+				<!-- <u-icon v-if="infoDetail.collectionOrNot" name="star-fill" color="#FFD940" size="24"></u-icon>
+				<u-icon v-else name="star" color="#444251" size="24"></u-icon> -->
+				<image class="star-photo" v-if="infoDetail.collectionOrNot" src="/static/community/operate-star-fill.png" mode="aspectFit"></image>
+				<image class="star-photo" v-else src="/static/community/operate-star.png" mode="aspectFit"></image>
 			</view>
 		</view>
 	</view>
@@ -91,6 +103,7 @@
 					replyType: 0,  // 评论类型 0:资讯回复 1:资讯评论的回复
 					subjectId: ""  //被评论主体id 默认是=information_id（即资讯的回复reply_type=0）
 				},
+				timerCommentPost: undefined,
 				tabsCurrent: 0,
 				infoDetail: {},
 				queryReplyList: [
@@ -127,15 +140,15 @@
 				},
 				tabsList: [],
 				/* 导航栏高度设置 */
-				navBarHeight: getApp().globalData.statusBarHeight + 48
+				navBarHeight: getApp().globalData.statusBarHeight + 44
 			}
 		},
 		onLoad(option) {
+			this.queryInfoTypeList()
 			if (option.id) {
 				this.id = option.id || 0
 				this.infoHeartBeatData.informationId = option.id || 0
 				this.queryAppletList()
-				this.queryInfoTypeList()
 			} else {
 				uni.showToast({
 					title: "页面展示异常！",
@@ -149,8 +162,8 @@
 		},
 		onReady() {
 			// 如果需要兼容微信小程序的话，需要用此写法
-			let thisTextarea = (this.$refs.fixCommentsTextarea && this.$refs.fixCommentsTextarea.setFormatter) || undefined
-			thisTextarea && thisTextarea(this.fixCommentsFormatter)
+			// let thisTextarea = (this.$refs.fixCommentsTextarea && this.$refs.fixCommentsTextarea.setFormatter) || undefined
+			// thisTextarea && thisTextarea(this.fixCommentsFormatter)
 		},
 		methods: {
 			queryAppletList(){
@@ -161,15 +174,23 @@
 				}
 				infoDetailApis.apiInfoFindId(thisData).then(res => {
 					if(Object.keys(res).length > 1){
-						console.info("res res res-->",res)
-						//
-						let thisText = decodeURIComponent(res.content)
+						// console.info("res res res-->",res)
+						// let thisText = decodeURIComponent(res.content)
+						let thisText = res.content
 						if(thisText.indexOf('&lt;body&gt;')>-1){
-							thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;')-12)
-							console.info("1-->",thisText)
+							thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;'))
+							// console.info("1-->",thisText)
 							if(thisText.indexOf('&lt;body&gt;')>-1){
-								thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;')-12)
-								console.info("2-->",thisText)
+								thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;'))
+								// console.info("2-->",thisText)
+							}
+						}
+						if(thisText.indexOf('<body>')>-1){
+							thisText = thisText.substring(thisText.indexOf('<body>') + 6, thisText.indexOf('</body>'))
+							// console.info("1-->",thisText)
+							if(thisText.indexOf('<body>')>-1){
+								thisText = thisText.substring(thisText.indexOf('<body>') + 6, thisText.indexOf('</body>'))
+								// console.info("2-->",thisText)
 							}
 						}
 						let tabsList = uni.$u.deepClone(thisObj.tabsList)
@@ -222,8 +243,8 @@
 				console.info("切换!!!!")
 			},
 			/* 资讯操作 */
-			operateChat(state){
-				console.info("评论--->",state)
+			operateChat(){
+				this.commentPost()
 			},
 			// 阅读动作
 			operateRead(){
@@ -282,16 +303,19 @@
 							title: "点赞已取消！",
 							icon: 'none'
 						})
+						thisObj.infoDetail.fabulousOrNot = false
+						thisObj.infoDetail.fabulousCount--
 					} else if(data.hbType === 2) {
 						uni.showToast({
 							title: "收藏已取消！",
 							icon: 'none'
 						})
+						thisObj.infoDetail.collectionOrNot = false
 					} else {
 						return
 					}
 					//刷新页面
-					thisObj.pageRefresh()
+					// thisObj.pageRefresh()
 				})
 				.catch(function(error){
 					if(data.hbType === 1){
@@ -318,16 +342,19 @@
 							title: "点赞成功！",
 							icon: 'none'
 						})
+						thisObj.infoDetail.fabulousOrNot = true
+						thisObj.infoDetail.fabulousCount++
 					} else if(data.hbType === 2) {
 						uni.showToast({
 							title: "收藏成功！",
 							icon: 'none'
 						})
+						thisObj.infoDetail.collectionOrNot = true
 					} else {
 						return
 					}
 					//刷新页面
-					thisObj.pageRefresh()
+					// thisObj.pageRefresh()
 				})
 				.catch(function(error){
 					if(data.hbType === 1){
@@ -344,27 +371,34 @@
 					
 				})
 			},
-			//评论资讯的相关方法
-			fixCommentsFormatter(value){
-				// 让输入框只能输入数值，过滤其他字符
-				// return value.replace(/[^0-9]/ig, "")
-			},
-			commentPost(event){
+			//评论失去焦点
+			commentPostBlur(event){
 				const thisObj = this
 				let {value, cursor} = event.detail
 				let fixComments = thisObj.fixCommentsContent
-				console.info("发布-->",value)
 				if(value){
 					fixComments.content = value
-					fixComments.informationId = parseInt(thisObj.id)
-					fixComments.subjectId = parseInt(thisObj.id)
-					thisObj.queryAddInfoReply(fixComments)
-				} else {
-					uni.showToast({
-						title: "请输入评论！",
-						icon: 'none'
-					})
 				}
+			},
+			/* 发布评论操作 */
+			commentPost(){
+				const thisObj = this
+				thisObj.timerCommentPost = setTimeout(() => {
+				    //TODO 
+					let fixComments = thisObj.fixCommentsContent
+					console.info("发布-->",fixComments.content)
+					if(fixComments.content){
+						fixComments.informationId = parseInt(thisObj.id)
+						fixComments.subjectId = parseInt(thisObj.id)
+						thisObj.queryAddInfoReply(fixComments)
+					} else {
+						uni.showToast({
+							title: "请输入评论！",
+							icon: 'none'
+						})
+					}
+					clearTimeout(thisObj.timerCommentPost)
+				}, 100);
 			},
 			// 新增资讯评论
 			queryAddInfoReply(data){
@@ -375,8 +409,8 @@
 						title: "评论资讯成功！",
 						icon: 'none'
 					})
-					thisObj.pageRefresh()
 					thisObj.fixCommentsContent.content = ""
+					thisObj.pageRefresh()
 				})
 				.catch(function(error){
 					uni.showToast({
@@ -391,7 +425,6 @@
 			pageRefresh(){
 				const thisObj = this
 				thisObj.formData.pageNum = 1
-				thisObj.infoDetail = {}
 				thisObj.queryAppletList()
 			},
 			//正文内容HMTL内容优化方法
@@ -410,6 +443,7 @@
 </script>
 
 <style lang="scss">
+	@import url("@/components/u-parse/u-parse.css");
 	page {
 		height: 100vh;
 	}
@@ -417,6 +451,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
 		.community-main,
 		.community-empty {
 			width: 100%;
@@ -461,17 +498,24 @@
 					font-weight: 400;
 					font-size: 30rpx;
 					color: #444251;
-					text-align: justify;
+					// text-align: justify;
 					
 					.wxParse view {
-						display: inline-block;
+						// display: inline-block;
+					}
+					.wxParse .inline {
+					    display: inline-block;
 					}
 					.wxParse view.text {
-						display: inline;
+						// display: inline;
 					}
 					.wxParse p {
 						display: block;
 						margin: 16rpx 0;
+					}
+					.wxParse .img,
+					.wxParse .video{
+						margin: 28rpx 0;
 					}
 					.wxParse span {
 						display: inline-block;
@@ -484,6 +528,15 @@
 					height: auto;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
+					.community-video-label {
+						width: 484rpx;
+						height: 340rpx;
+						#community-video,
+						video {
+							width: 484rpx;
+							height: 340rpx;
+						}
+					}
 					.u-grid-item {
 						margin: 0 0 8rpx 0;
 					}
@@ -521,26 +574,34 @@
 						padding: 0 10rpx;
 					}
 				}
-				.read-count,
-				.fabulous-count{
-					width: 25%;
-					height: 42rpx;
-					margin: 0 0 32rpx 0;
-					font-weight: 400;
-					font-size: 24rpx;
-					color: #959BA4;
-					line-height: 42rpx;
-					text-align: right;
-					float: left;
-					text {
-						padding: 0 10rpx;
+				.read-fabulous {
+					width: auto;
+					float: right;
+					.read-count,
+					.fabulous-count{
+						width: auto;
+						height: 42rpx;
+						margin: 0 0 32rpx 0;
+						font-weight: 400;
+						font-size: 24rpx;
+						color: #959BA4;
+						line-height: 42rpx;
+						text-align: right;
+						float: left;
+						text {
+							padding: 0 10rpx;
+						}
+					}
+					.read-count {
+						padding: 0 32rpx 0 0;
 					}
 				}
+				
 				.community-comments {
 					width: 686rpx;
 					height: auto;
 					overflow: hidden;
-					margin: 32rpx auto 32rpx auto;
+					margin: 0 auto;
 					padding: 0rpx 0 0 0;
 					clear: both;
 					.comments-user {
@@ -568,7 +629,7 @@
 						}
 					}
 					.comments-content {
-						width: 614rpx;
+						width: 686rpx;
 						// max-height: 352rpx;
 						overflow: hidden;
 						margin: 0 0 8rpx 0;
@@ -642,13 +703,13 @@
 	}
 	.fix-community-comments {
 		width: 750rpx;
-		height: 156rpx;
+		min-height: 156rpx;
 		margin: 0;
 		padding: 0;
 		display: flex;
 		// justify-content: center;
 		align-items: center;
-		z-index: 1000;
+		z-index: 1999;
 		position: fixed;
 		bottom: 0;
 		background-color: white;
@@ -660,21 +721,32 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			border-radius: 36rpx!important;
+			border-radius: 8rpx;
 		}
 		.operate-chat,
 		.operate-thumb,
 		.operate-star {
+			width: 48rpx;
+			height: 48rpx;
 			margin: 0 0 0 32rpx;
+		}
+		.operate-chat .chat-photo,
+		.operate-thumb .thumb-photo,
+		.operate-star .star-photo {
+			width: 48rpx;
+			height: 48rpx;
 		}
 		
 	}
-	/deep/ .u-textarea__field {
-		min-height: 82rpx!important;
-		padding: 8rpx 8rpx 0 8rpx;
+	.textarea-label /deep/ .u-textarea__field {
+		// min-height: 82rpx!important;
 		background: #F5F6F7;
 	}
-	/deep/ .u-textarea {
-		padding: 0!important;
+	.textarea-label /deep/ .u-textarea {
+		// padding: 16rpx 0 14rpx 32rpx!important;
+		max-height: 140rpx!important;
+		overflow: scroll!important;
+		border-radius: 8rpx!important;
+		background: #F5F6F7!important;
 	}
 </style>

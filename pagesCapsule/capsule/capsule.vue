@@ -623,7 +623,9 @@
 			IndexApi.getMyStar(0).then(res => {
 				this.selfStarId = res? res.id : ''
 			})
+			console.log('232323')
 			IndexApi.getGalxyByUserId().then(res => {
+				console.log('23333', res)
 				this.myGalxy = res || {}
 			})
 		},

@@ -54,8 +54,8 @@
 			},
 			myIntegralTop(){
 				myApis.myIntegralTop().then(res =>{
-					this.score = res.totalIntegral
-					this.rank = res.rank
+					this.score = res ? res.totalIntegral : 0
+					this.rank = res ? res.rank : '-'
 				})
 			},
 			arriveBottom(){

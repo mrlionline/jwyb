@@ -1,6 +1,6 @@
 <template>
 	<view class="page-navbar">
-		<u-navbar :is-back="isShowBack" :title="title" :background="backgroundStyle" @leftClick="goBack()" :leftIconSize="leftIconSize" :bgColor="bgColor" :titleStyle="titleStyle" :leftIconColor="leftIconColor"></u-navbar>
+		<u-navbar :is-back="isShowBack" :title="title" :background="backgroundStyle" @leftClick="goBack()" :leftIconSize="leftIconSize" :bgColor="bgColor" :titleStyle="titleStyle" :leftIconColor="leftIconColor" :border="isBorder"></u-navbar>
 	</view>
 </template>
 
@@ -30,6 +30,10 @@
 				default: {}
 			},
 			isShowBack: {
+				type: Boolean,
+				default: true
+			},
+			isBorder: {
 				type: Boolean,
 				default: true
 			},

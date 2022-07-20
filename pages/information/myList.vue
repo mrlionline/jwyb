@@ -11,20 +11,25 @@
 					<view class="info-title" @click="infoToDetail(item.id)">
 						{{ item.title }}
 					</view>
-					<view class="info-content">
+					<view class="info-content" @click="infoToDetail(item.id)">
 						<uParseMax :content="item.contentStr" @preview="previewContent" @navigate="navigateContent" ></uParseMax>
 					</view>
 					<!-- 缩略图  -->
-					<view class="info-thumbnail" v-if="item.informationFileList">
+					<view class="info-thumbnail" v-if="item.informationFileList && item.informationFileList.length > 0 && (item.informationFileList[0].fileType === 'mp4' || item.informationFileList[0].fileType === 'avi' || item.informationFileList[0].fileType === 'mkv')">
+						<view class="community-video-label" v-for="(itm, idx) in item.informationFileList.slice(0,1)" :key="idx">
+							<video id="community-video" :src="itm.fileUrl" object-fit="cover"></video>
+						</view>
+					</view>
+					<view class="info-thumbnail" v-else-if="item.informationFileList && item.informationFileList.length > 0">
 						<u-grid :col="3">
 							<u-grid-item v-for="(itm, idx) in item.informationFileList" :key="idx">
-								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(itm.fileUrl)"></image>
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFit" @click="previewCommunityImage(itm.fileUrl)"></image>
 							</u-grid-item>
 						</u-grid>
 					</view>
 					<view class="info-message">
 						<text class="message-time">{{ item.ctime }}</text>
-						<text v-if="item.informationType" class="message-post">{{ item.informationType }}</text>
+						<text v-if="item.informationTypeName || item.informationType" class="message-post">{{ item.informationTypeName || item.informationType }}</text>
 						<text class="message-name">{{ item.authorName }}</text>
 					</view>
 				</view>
@@ -92,21 +97,23 @@
 					height: "88rpx"
 				},
 				/* 导航栏高度设置 */
-				navBarHeight: getApp().globalData.statusBarHeight + 48
+				navBarHeight: getApp().globalData.statusBarHeight + 44
 			}
 		},
 		created() {
 			console.info("created………………………………")
 		},
-		onLoad(option) {
+		async onLoad(option) {
 			const thisObj = this
 			if (option.currentTab) {
-				thisObj.tabsCurrent = parseInt(option.currentTab)-1
+				let thisCurrent = parseInt(option.currentTab) - 1
+				thisObj.tabsCurrent = thisCurrent
+				thisObj.formData.heartType = thisObj.infoTabList[thisCurrent].type
 			} else {
 				thisObj.tabsCurrent = 0
 			}
-			thisObj.queryAppletList()
-			thisObj.queryInfoTypeList()
+			await thisObj.queryInfoTypeList()
+			await thisObj.queryAppletList()
 			
 		},
 		//上拉加载
@@ -130,24 +137,22 @@
 							for (let i = 0; i < infoTypeList.length; i++) {
 								if(ele.informationTypeId == infoTypeList[i].id){
 									ele.informationType = infoTypeList[i].name
-									return
 								}
 							}
 							// ele.contentStr = (ele.content);
 							// ele.contentStr = marked.parse(ele.content)
-							let thisText = decodeURIComponent(ele.content)
+							// let thisText = decodeURIComponent(ele.content)
+							let thisText = ele.content
 							if(thisText.indexOf('&lt;body&gt;')>-1){
-								thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;')-12)
-								console.info("1-->",thisText)
+								thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;'))
+								// console.info("1-->",thisText)
 								if(thisText.indexOf('&lt;body&gt;')>-1){
-									thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;')-12)
-									console.info("2-->",thisText)
+									thisText = thisText.substring(thisText.indexOf('&lt;body&gt;') + 12, thisText.indexOf('&lt;/body&gt;'))
+									// console.info("2-->",thisText)
 								}
 							}
 							ele.contentStr = thisText
-							console.info("thisText-->",thisText)
-							
-							// console.info("contentStr-->",ele.contentStr)
+							// console.info("thisText-->",thisText)
 						})
 						thisObj.infoList.push(...res)
 						thisObj.hasNext = 1
@@ -228,6 +233,9 @@
 		align-items: center;
 		position: relative;
 		min-height: 100%;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
 		.label-background-img{
 			position: absolute;
 			top: 0;
@@ -264,7 +272,7 @@
 					width: 100%;
 					max-height: 96rpx;
 					overflow: hidden;
-					margin: 32rpx 0 0 0;
+					margin: 32rpx 0 16rpx 0;
 					font-weight: 600;
 					font-size: 34rpx;
 					line-height: 48rpx;
@@ -277,7 +285,7 @@
 				.info-content {
 					width: 100%;
 					height: auto;
-					// max-height: 126rpx;
+					max-height: 126rpx;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
 					padding: 0;
@@ -289,21 +297,50 @@
 					display: -webkit-box;
 					-webkit-line-clamp: 3;
 					-webkit-box-orient: vertical;
+					.wxParse {
+						font-size: 30rpx!important;
+						line-height: 42rpx!important;
+					}
+					.wxParse view {
+						display: inline-block;
+						font-size: 30rpx!important;
+						line-height: 42rpx!important;
+					}
+					.wxParse view.text {
+						display: inline;
+					}
+					.wxParse p {
+						display: block;
+						margin: 8rpx 0;
+					}
 					.wxParse .p {
-						margin: 16rpx 0;
+						margin: 0!important;
 					}
 					.wxParse span {
 						display: inline-block;
 						margin: 0;
 						padding: 0;
+						padding: 0 6rpx;
 					}
-
+					.wxParse image.img,
+					.wxParse view.video {
+						display:none;
+					}
 				}
 				.info-thumbnail {
 					width: 100%;
 					height: auto;
 					overflow: hidden;
 					margin: 0 0 16rpx 0;
+					.community-video-label {
+						width: 484rpx;
+						height: 340rpx;
+						#community-video,
+						video {
+							width: 484rpx;
+							height: 340rpx;
+						}
+					}
 					.u-grid-item {
 						margin: 0 0 8rpx 0;
 					}

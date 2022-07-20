@@ -32,15 +32,15 @@
 						</u-grid>
 						
 					</view> -->
-					<view class="community-media" v-if="communityList.fileList.length && communityList.fileList[0].fileType === 'mp4'">
-						<view class="community-video-label" v-for="(itm, idx) in communityList.fileList" :key="idx">
+					<view class="community-media" v-if="communityList.fileList && communityList.fileList.length && (communityList.fileList[0].fileType === 'mp4' || communityList.fileList[0].fileType === 'avi' || communityList.fileList[0].fileType === 'mkv')">
+						<view class="community-video-label" v-for="(itm, idx) in communityList.fileList.slice(0,1)" :key="idx">
 							<video id="community-video" :src="itm.fileUrl" object-fit="cover"></video>
 						</view>
 					</view>
-					<view class="community-media" v-else>
+					<view class="community-media" v-else-if="communityList.fileList && communityList.fileList.length">
 						<u-grid :col="3">
-							<u-grid-item v-for="(itm, idx) in communityList.fileList" :key="idx">
-								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill"></image>
+							<u-grid-item v-for="(itm, idx) in communityList.fileList.slice(0,9)" :key="idx">
+								<image class="grid-img" :src="itm.fileUrl" mode="aspectFill" @click="previewCommunityImage(idx, communityList.fileList)"></image>
 							</u-grid-item>
 						</u-grid>
 					</view>
@@ -52,6 +52,7 @@
 						</view>
 					</view>
 				</view>
+				<u-line class="u-line-label" length="100%" color="#EEEEEE"></u-line>
 				<!-- 动态评论和点赞数 -->
 				<view class="community-operate">
 					 <view class="operate-chat">
@@ -61,7 +62,7 @@
 					 <view class="operate-thumb" @click="operateThumb(communityList)">
 						<u-icon v-if="communityList.isHb" name="thumb-up-fill" color="#567DF4" size="20"></u-icon>
 						<u-icon v-else name="thumb-up" color="#959BA4" size="20"></u-icon>
-						<view>{{ communityList.hbNum }}</view>
+						<view :class="{'color-fill': communityList.isHb}">{{ communityList.hbNum }}</view>
 					 </view>
 				</view>
 				<!--  评论模块  -->
@@ -83,10 +84,10 @@
 			</view>
 		</view>
 		<!--  评论动态  -->
-		<view class="fix-community-comments" v-if="communityList.status === '2'">
+		<view class="fix-community-comments" v-show="communityList.status === '2'">
 			<view class="textarea-community-label">
 				<!--  focus="true"   @blur="commentPost" -->
-				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" confirmType="完成" :focus="fixCommentsTextareaFocus" :formatter="fixCommentsFormatter" border="none" cursorSpacing="30" :height="21" @blur="commentPostBlur"></u-textarea>
+				<u-textarea ref="fixCommentsTextarea" class="fix-comments-textarea" v-model="fixCommentsContent.content" placeholder="写评论" confirmType="完成" :maxlength="500" :focus="fixCommentsTextareaFocus" border="none" cursorSpacing="30" @blur="commentPostBlur" autoHeight></u-textarea>
 			</view>
 			<view class="comment-post-btn">
 				<button @click="commentPost" color="#567DF4" :disabled="disabledComments">发送</button>
@@ -116,6 +117,7 @@
 	import CommunityComments from '../components/communityComments.vue'
 	import commentsApis from '@/http/community/comments.js'
 	import informationApis from '@/http/community/list.js'
+	import utils from '@/asset/js/utils.js'
 	export default {
 		components: {
 			CommunityComments,
@@ -148,8 +150,9 @@
 				disabledComments: false,
 				/* 写评论是否弹窗 */
 				fixCommentsTextareaFocus: false,
+				timerCommentPost: undefined,
 				/* 导航栏高度设置 */
-				navBarHeight: getApp().globalData.statusBarHeight + 48
+				navBarHeight: getApp().globalData.statusBarHeight + 44
 			}
 		},
 		onLoad(option) {
@@ -176,17 +179,19 @@
 		},
 		onReady() {
 			// 如果需要兼容微信小程序的话，需要用此写法
-			let thisTextarea = (this.$refs.fixCommentsTextarea && this.$refs.fixCommentsTextarea.setFormatter) || undefined
-			thisTextarea && thisTextarea(this.fixCommentsFormatter)
+			// let thisTextarea = (this.$refs.fixCommentsTextarea && this.$refs.fixCommentsTextarea.setFormatter) || undefined
+			// thisTextarea && thisTextarea(this.fixCommentsFormatter)
 		},
 		methods: {
 			listPageOfCommunit(){
 				const thisObj = this
 				commentsApis.getUsersByStarId(this.formData.interactiveCommunityId).then(res => {
 					if(Object.keys(res).length > 1){
+						console.info("测试问题-->",res.commentNum)
 						if(!res.commentNum){
 							thisObj.fixCommentsTextareaFocus = true
 						}
+						res.content = utils.uncodeUtf16(res.content)
 						thisObj.communityList = res
 					} else {
 						console.info("获取社区列表接口失败！001")
@@ -248,24 +253,25 @@
 				const thisObj = this
 				commentsApis.apiDelCommunit(this.formData.interactiveCommunityId).then(res => {
 					console.info("删除动态的请求接口  res-->",res)
-					if(Object.keys(res).length > 1){
-						uni.showToast({
-							title: "删除动态成功！",
-							icon: 'none'
-						})
-					} else {
-						uni.showToast({
-							title: "删除动态失败！",
-							icon: 'none'
-						})
-						console.info("删除动态的请求接口！001")
-					}
+					uni.showToast({
+						title: "删除动态成功！",
+						icon: 'none'
+					})
+					thisObj.goCommunityList()
+				})
+				.catch(function(error){
+					uni.showToast({
+						title: "删除动态失败！",
+						icon: 'none'
+					})
+					console.info("删除动态的请求接口！001")
 				})
 			},
-			//评论动态的相关方法
-			fixCommentsFormatter(value){
-				// 让输入框只能输入数值，过滤其他字符
-				// return value.replace(/[^0-9]/ig, "")
+			// 跳转动态列表页面
+			goCommunityList(){
+				uni.redirectTo({
+					url: `/pagesCommunity/community/list/list`
+				})
 			},
 			commentPostBlur(event){
 				const thisObj = this
@@ -274,20 +280,27 @@
 				if(value){
 					fixComments.content = value
 				}
+				thisObj.fixCommentsTextareaFocus = false
 			},
 			commentPost(event){
 				const thisObj = this
+				thisObj.timerCommentPost = setTimeout(() => {
+				    //TODO 
+					let fixComments = thisObj.fixCommentsContent
+					console.info("发布-->",fixComments.content)
+					if(fixComments.content){
+						thisObj.queryAddCommuityReply(fixComments)
+					} else {
+						uni.showToast({
+							title: "请输入评论！",
+							icon: 'none'
+						})
+					}
+					thisObj.fixCommentsTextareaFocus = false
+					clearTimeout(thisObj.timerCommentPost)
+				}, 100);
 				// let {value, cursor} = event.detail
-				let fixComments = thisObj.fixCommentsContent
-				console.info("发布-->",fixComments.content)
-				if(fixComments.content){
-					thisObj.queryAddCommuityReply(fixComments)
-				} else {
-					uni.showToast({
-						title: "请输入评论！",
-						icon: 'none'
-					})
-				}
+				
 				
 			},
 			// 新增动态评论
@@ -334,7 +347,9 @@
 							icon: 'none'
 						})
 						//刷新页面
-						thisObj.pageRefresh()
+						// thisObj.pageRefresh()
+						item.isHb = 0
+						item.hbNum = item.hbNum - 1
 					})
 					.catch(function(error){
 						uni.showToast({
@@ -350,7 +365,9 @@
 							icon: 'none'
 						})
 						//刷新页面
-						thisObj.pageRefresh()
+						// thisObj.pageRefresh()
+						item.isHb = 1
+						item.hbNum = item.hbNum + 1
 						
 					})
 					.catch(function(error){
@@ -361,6 +378,19 @@
 					})
 				}
 			},
+			//预览图片
+			previewCommunityImage(idx,thisUrls){
+				console.info(idx,"预览图片-->",thisUrls)
+				let thisImages = []
+				thisUrls.slice(0,9).forEach(function(ele,index){
+					thisImages.push(ele.fileUrl)
+				})
+				uni.previewImage({
+					current: idx,
+					urls: thisImages,
+					indicator: "none"
+				})
+			}
 			
 		},
 		computed: {
@@ -377,11 +407,16 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		height: 100vh;
+		background-color: #F5F6F7;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
 	}
 	.community-main {
 		width: 100%;
 		height: auto;
-		margin: 128rpx 0 0 0;
+		margin: 180rpx 0 0 0;
 		padding:0;
 		background-color: #F5F6F7;
 		.community-list {
@@ -500,6 +535,10 @@
 					.grid-img {
 						width: 156rpx;
 						height: 156rpx;
+						border-radius: 8rpx;
+					}
+					video {
+						border-radius: 8rpx;
 					}
 				}
 			}
@@ -545,10 +584,10 @@
 				height: auto;
 				overflow: hidden;
 				padding: 0 32rpx 0 144rpx;
-				border-top: 1rpx solid #EEEEEE;
+				// border-top: 1rpx solid #EEEEEE;
 				border-bottom: 24rpx solid #F5F6F7;
 				.operate-chat,
-				.operate-thumb{
+				.operate-thumb {
 					width: 50%;
 					height: 80rpx;
 					float: left;
@@ -562,8 +601,6 @@
 					text {
 						float: left;
 						padding: 0 0 0 8rpx;
-						font-size: 20px!important;
-						line-height: 20px!important;
 					}
 					.chat-photo {
 						width: 32rpx;
@@ -573,8 +610,11 @@
 				}
 				.operate-thumb {
 					padding: 0 0 0 80rpx;
-					
+					.color-fill {
+						color: #567DF4;
+					}
 				}
+				
 			}
 		}
 	}
@@ -626,7 +666,7 @@
 	}
 	.fix-community-comments {
 		width: 750rpx;
-		height: 200rpx;
+		min-height: 200rpx;
 		margin: 0;
 		padding: 0;
 		display: flex;
@@ -639,11 +679,12 @@
 		.textarea-community-label {
 			// width: 686rpx;
 			width: 556rpx;
-			height: 72rpx;
+			min-height: 72rpx;
+			// line-height: 72rpx;
 			margin: 0 auto;
 			padding: 0;
-			border-radius: 36rpx;
-			
+			// border-radius: 36rpx;
+			border-radius: 8rpx;
 		}
 		.comment-post-btn {
 			width: 114rpx;
@@ -654,24 +695,26 @@
 				width: 114rpx;
 				height: 72rpx;
 				overflow: hidden;
+				padding: 0;
 				background-color: #567DF4;
 				line-height: 72rpx;
 				font-size: 30rpx;
 				color: #FFFFFF;
+				text-align: center;
 			}
 		}
 		
 	}
-	.textarea-community-label /deep/ .u-textarea__field {
-		padding: 16rpx 0 14rpx 0 32rpx !important;
-		
-		
-	}
+	// .textarea-community-label /deep/ .u-textarea__field {
+	// 	padding: 16rpx 0 14rpx 0 32rpx !important;
+	// }
 	.textarea-community-label /deep/ .u-textarea {
 		// height: 72rpx;
-		padding: 16rpx 0 14rpx 32rpx!important;
+		// padding: 16rpx 0 14rpx 32rpx!important;
 		background: #F5F6F7!important;
-		// border-radius: 36rpx!important;
+		border-radius: 8rpx!important;
+		max-height: 180rpx!important;
+		overflow: scroll!important;
 	}
 	.textarea-community-label /deep/ .textarea-placeholder {
 		// padding: 16rpx 0 14rpx 32rpx;
@@ -698,8 +741,4 @@
 		display: none!important;
 	}
 	
-	.community-operate /deep/ .uicon-thumb-up-fill {
-		font-size: 20px!important;
-		line-height: 20px!important;
-	}
 </style>

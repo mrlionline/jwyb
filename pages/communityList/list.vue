@@ -22,14 +22,14 @@
 						</u-read-more>
 					</view>
 					
-					<view class="community-media" v-if="item.fileList.length && item.fileList[0].fileType === 'mp4'">
-						<view class="community-video-label" v-for="(itm, idx) in item.fileList" :key="idx">
+					<view class="community-media" v-if="item.fileList.length && (item.fileList[0].fileType === 'mp4' || item.fileList[0].fileType === 'avi' || item.fileList[0].fileType === 'mkv')">
+						<view class="community-video-label" v-for="(itm, idx) in item.fileList.slice(0,1)" :key="idx">
 							<video id="community-video" :src="itm.fileUrl" object-fit="cover"></video>
 						</view>
 					</view>
 					<view class="community-media" v-else>
 						<u-grid :col="3">
-							<u-grid-item v-for="(itm, idx) in item.fileList" :key="idx">
+							<u-grid-item v-for="(itm, idx) in item.fileList.slice(0,9)" :key="idx">
 								<image class="grid-img" :src="itm.fileUrl" mode="aspectFit"></image>
 							</u-grid-item>
 						</u-grid>
@@ -281,6 +281,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		padding-bottom: 0;
+		padding-bottom: constant(safe-area-inset-bottom);  
+		padding-bottom: env(safe-area-inset-bottom);
 	}
 	.community-main {
 		width: 100%;

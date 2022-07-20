@@ -17,13 +17,13 @@
 			 <view class="comments-reply" v-if="item.replyList && item.replyList.length > 0">
 				<view class="reply-item" v-for="(itm, idx) in item.replyList.slice(0,3)" :key="idx">
 					<view class="reply-content" @click="replyToCommentToReply(item,idx)">
-						<view class="" v-if="itm.responderName">
+						<view class="reply-relation" v-if="itm.responderName">
 							<text class="commenter-name">{{ itm.commenterName }}</text>
 							<text class="reply-symbol">回复</text>
 							<text class="responder-name">{{ itm.responderName }}</text>
 							<text class="with-symbol">：</text>
 						</view>
-						<view class="" v-else>
+						<view class="reply-relation" v-else>
 							<text class="commenter-name">{{ itm.commenterName }}</text>
 							<text class="with-symbol">：</text>
 						</view>
@@ -41,11 +41,12 @@
 			 <view class="operate-chat">
 			 	<image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit" @click="replyToComment(item)"></image>
 			 </view>
+			 <u-line class="u-line-label" length="678rpx" color="#EEEEEE" margin="0 -32rpx 0 72rpx"></u-line>
 		</view>
 		<!--  查看全部回复 -开始-  -->
 		<u-popup class="reply-to-reply-popup" :show="showCommentReply" @close="closeCommentReply" @open="openCommentReply" :round="16" @click="clickCommentReplyPopup" :overlayStyle="overlayReplyToReply">
 			<view class="comment-reply-header">{{ queryReplyTotal + '条回复' }}</view>
-			<scroll-view class="scroll-Y" :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lowerReplyToReply" @scroll="scroll">
+			<scroll-view class="scroll-Y" :scroll-top="scrollTop" :style="{'height': 'calc(100vh - '+((navBarHeight+76)*2)+'rpx)' }" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lowerReplyToReply" @scroll="scroll">
 				<!--  回复列表  inFloorReplies -->
 				<!--  回复评论的头部  -->
 				<view class="in-floor-replies">
@@ -60,19 +61,20 @@
 						 	<u-parse :content="inFloorReplies.content" @load="loadReadMoreReply(1,'uReadMoreInFloor')"></u-parse>
 						 </u-read-more>
 					 </view>
+					 <view class="comments-timer">{{ inFloorReplies.ctime }}</view>
 				</view>
 				<!-- 回复楼中楼 -->
 				<view class="community-comments in-floor-replies-comments" v-for="(item, index) in queryReplyList" :key="index">
-					 <view class="comments-user">
+					 <view class="comments-user" @click="replyToReplyComment(item)">
 						<image class="user-photo" :src="item.commenterAvatar || '/pagesCommunity/static/community/tabBarMyActive.png'" mode="aspectFit"></image>
 						<view class="user-name">
-							<view class="" v-if="item.responderName">
+							<view class="reply-relation" v-if="item.responderName">
 								<text class="commenter-name">{{ item.commenterName }}</text>
 								<text class="reply-symbol">回复</text>
 								<text class="responder-name">{{ item.responderName }}</text>
 								<text class="with-symbol">：</text>
 							</view>
-							<view class="" v-else>
+							<view class="reply-relation" v-else>
 								<text class="commenter-name">{{ item.commenterName }}</text>
 								<text class="with-symbol">：</text>
 							</view>
@@ -87,19 +89,28 @@
 					 </view>
 					 <!-- 评论日期 -->
 					 <view class="comments-timer">{{ item.ctime }}</view>
-					 <view class="operate-chat">
+					 <view class="operate-chat" @click="replyToReplyComment(item)">
 						 <image class="chat-photo" src="/pagesCommunity/static/community/operate-chat.png" mode="aspectFit"></image>
 					 </view>
+					 <u-line class="u-line-label" length="678rpx" margin="0 -32rpx 0 72rpx" color="#EEEEEE"></u-line>
 				</view>
 			</scroll-view>
 			<!--  楼中楼回复  -开始-  -->
 			<!--  回复评论  -->
 			<u-popup :show="showReplyToReply" @close="closeReplyToComment" @open="openReplyToComment" :round="16" overlay="false">
-				<view class="reply-to-comment-header">写回复</view>
+				<!-- <view class="reply-to-comment-header">写回复</view> -->
 				<view class="textarea-label">
-					<!--  focus="true" -->
-					<u-textarea class="fix-comments-textarea" focus="true" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToCommentPost" border="none" ref="fixCommentsTextarea" cursorSpacing="30"></u-textarea>
+					<!--    -->
+					<view class="textarea-community-label">
+						<!--  focus="true" -->
+						<u-textarea class="fix-comments-textarea" :focus="showReplyToReply" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToReplyBlur" border="none" ref="fixCommentsTextarea" cursorSpacing="50" autoHeight></u-textarea>
+					</view>
+					<view class="comment-post-btn">
+						<button @click="replyToCommentPost" color="#567DF4" :disabled="disabledComments">发送</button>
+					</view>
+					<!--    -->
 				</view>
+				
 			</u-popup>
 			<!--  楼中楼回复   -结束-   -->
 		</u-popup>
@@ -122,10 +133,15 @@
 		<!--  删除回复相关  -->
 		<!--  回复评论  -->
 		<u-popup :show="showReplyToComment" @close="closeReplyToComment" @open="openReplyToComment" :round="16" overlay="false">
-			<view class="reply-to-comment-header">写回复</view>
+			<!-- <view class="reply-to-comment-header">写回复</view> -->
 			<view class="textarea-label">
-				<!--  focus="true" -->
-				<u-textarea class="fix-comments-textarea" focus="true" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToCommentPost" border="none" ref="fixCommentsTextarea" cursorSpacing="30"></u-textarea>
+				<view class="textarea-community-label">
+					<!--  focus="true" -->
+					<u-textarea class="fix-comments-textarea" :focus="showReplyToComment" v-model="replyToCommentContent.content" placeholder="写回复" @blur="replyToReplyBlur" border="none" ref="fixCommentsTextarea" cursorSpacing="40" autoHeight></u-textarea>
+				</view>
+				<view class="comment-post-btn">
+					<button @click="replyToCommentPost" color="#567DF4" :disabled="disabledComments">发送</button>
+				</view>
 			</view>
 		</u-popup>
 	</view>
@@ -190,8 +206,11 @@
 				commentsDelIco: false,
 				confirmCommentsDelIco: false,
 				overlayReplyToReply: {
-					background: 'rgba(245,246,247,0.8)'
-				}
+					// background: 'rgba(245,246,247,0.8)'
+					background: 'F5F6F7'
+				},
+				/* 导航栏高度设置 */
+				navBarHeight: getApp().globalData.statusBarHeight + 44
 			}
 		},
 		created() {
@@ -278,6 +297,7 @@
 			},
 			closeCommentReply() {
 			  this.showCommentReply = false
+			  this.queryReplyList = []
 			  console.log('close');
 			},
 			clickCommentReplyPopup(){
@@ -297,6 +317,7 @@
 				let formData = thisObj.formData
 				formData.id = item.id
 				formData.pageNum = 1
+				thisObj.queryReplyList = []
 				console.info("item-->",item)
 				thisObj.queryReplyListByReplyId(formData)
 			},
@@ -340,8 +361,8 @@
 				const thisObj = this
 				//赋值ID
 				let fixComments = thisObj.replyToCommentContent
-				fixComments.subjectId = item.id
 				let itmData = item.replyList[idx]
+				fixComments.subjectId = itmData.id
 				if(!itmData.readMoreReplyState){
 					if(itmData.isMe){
 						// 是本人需选择操作内容
@@ -364,49 +385,47 @@
 			openReplyToComment() {
 			  console.log('open');
 			},
-			replyToCommentPost(event){
+			replyToCommentPost(){
 				const thisObj = this
-				let {value, cursor} = event.detail
-				let fixComments = thisObj.replyToCommentContent
-				console.info("发布-->",value)
-				if(value){
-					fixComments.content = value
-					fixComments.interactiveCommunityId = thisObj.commentId
-					thisObj.queryReplyToCommentPost(fixComments)
-				} else {
-					uni.showToast({
-						title: "请输入评论！",
-						icon: 'none'
-					})
-				}
-				
+				thisObj.timerCommentPost = setTimeout(() => {
+					//TODO 
+					let fixComments = thisObj.replyToCommentContent
+					console.info("发布-fixComments->",fixComments)
+					if(fixComments.content){
+						thisObj.queryReplyToCommentPost(fixComments)
+					} else {
+						uni.showToast({
+							title: "请输入评论！",
+							icon: 'none'
+						})
+					}
+					clearTimeout(thisObj.timerCommentPost)
+				}, 100);
 			},
 			// 新增回复评论
 			queryReplyToCommentPost(data){
 				const thisObj = this
+				console.info("新增回复评论的数据-->",data)
 				commentsApis.apiAddCommuityReply(data).then(res => {
 					console.info("新增回复评论  res-->",res)
 					uni.showToast({
 						title: "回复评论成功！",
 						icon: 'none'
 					})
-					thisObj.showReplyToComment = false
-					thisObj.showReplyToReply = false
-					//刷新页面
-					thisObj.$parent.pageRefresh()
+					thisObj.childPageRefresh()
 				})
 				.catch(function(error){
 					uni.showToast({
 						title: "回复评论失败！",
 						icon: 'none'
 					})
-					console.info("新增回复评论！001")
 				})
 			},
 			/* 楼中楼评论回复 回复动作以及显示全部动作 */
 			replyToReplyComment(item) {
 				console.info("楼中楼点击回复！！！")
 				const thisObj = this
+				thisObj.closeReplyToComment()
 				//
 				let fixComments = thisObj.replyToCommentContent
 				fixComments.subjectId = item.id
@@ -485,8 +504,7 @@
 						title: "删除评论成功！",
 						icon: 'none'
 					})
-					//刷新页面
-					thisObj.$parent.pageRefresh()
+					thisObj.childPageRefresh()
 				})
 				.catch(function(error){
 					uni.showToast({
@@ -508,9 +526,28 @@
 				} else {
 					thisObj.showReplyToComment = true
 				}
-				
-				
-				//
+			},
+			//刷新当前页面 父组件
+			childPageRefresh(){
+				const thisObj = this
+				//回复评论的弹窗
+				thisObj.showReplyToComment = false
+				// 楼中楼回复->回复
+				thisObj.showReplyToReply = false
+				//楼中楼(查看全部回复)的弹窗
+				thisObj.showCommentReply = false
+				//刷新页面
+				thisObj.$parent.pageRefresh()
+			},
+			// 回复 textarea Blur
+			replyToReplyBlur(event){
+				const thisObj = this
+				let {value, cursor} = event.detail
+				let fixComments = thisObj.replyToCommentContent
+				if(value){
+					fixComments.content = value
+					fixComments.interactiveCommunityId = thisObj.commentId
+				}
 			},
 			
 			
@@ -526,7 +563,7 @@
 	width: 750rpx;
 	height: auto;
 	overflow: hidden;
-	padding: 0 0 200rpx 0;
+	margin: 0 0 200rpx 0;
 }
 .community-comments,
 .in-floor-replies {
@@ -534,8 +571,9 @@
 	height: auto;
 	overflow: hidden;
 	margin: 0;
-	padding: 32rpx;
-	border-bottom: 2rpx solid #EEEEEE;
+	padding: 32rpx 32rpx 0 32rpx;
+	position: relative;
+	// border-bottom: 2rpx solid #EEEEEE;
 	clear: both;
 	.comments-user {
 		width: 100%;
@@ -559,6 +597,9 @@
 			color: #444251;
 			line-height: 56rpx;
 			float: left;
+			// .reply-relation {
+			// 	padding: 0 0 8rpx 0;
+			// }
 			.commenter-name,
 			.responder-name,
 			.reply-symbol,
@@ -632,6 +673,9 @@
 		background: #F5F6F7;
 		border-radius: 8rpx;
 		.reply-item {
+			.reply-relation {
+				padding: 0 0 8rpx 0;
+			}
 			.commenter-name,
 			.responder-name,
 			.reply-symbol,
@@ -677,7 +721,7 @@
 		width: 50%;
 		height: 36rpx;
 		float: left;
-		margin: 0 0 0 72rpx;
+		margin: 0 0 32rpx 72rpx;
 		font-weight: 400;
 		font-size: 12px;
 		color: #959BA4;
@@ -696,10 +740,10 @@
 	}
 }
 .in-floor-replies {
-	margin: 32rpx auto 0 auto;
-	padding: 32rpx 32rpx 0 32rpx;
+	margin: 0 auto;
+	padding: 32rpx 32rpx 16rpx 32rpx;
 	.comments-content {
-		margin: 0;
+		margin: 0 0 8rpx 0;
 	}
 }
 .comment-reply-header {
@@ -713,7 +757,7 @@
 	border-bottom: 2rpx solid #EEEEEE;
 }
 	.scroll-Y {
-		height: 1000rpx;
+		height: 1080rpx;
 		.in-floor-replies-comments {
 			background-color: #F5F6F7;
 		}
@@ -739,21 +783,50 @@
 	
 	.textarea-label {
 		width: 686rpx;
-		height: 180rpx;
+		min-height: 180rpx;
 		margin: 0 auto 0 auto;
 		padding: 0;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		
+		.textarea-community-label {
+			// width: 686rpx;
+			width: 556rpx;
+			min-height: 72rpx;
+			// line-height: 72rpx;
+			margin: 0 auto;
+			padding: 0;
+			// border-radius: 36rpx;
+			border-radius: 8rpx;
+			
+		}
+		.comment-post-btn {
+			width: 114rpx;
+			height: 72rpx;
+			overflow: hidden;
+			// margin: 0 32rpx 0 0;
+			button {
+				width: 114rpx;
+				height: 72rpx;
+				overflow: hidden;
+				padding: 0;
+				background-color: #567DF4;
+				line-height: 72rpx;
+				font-size: 30rpx;
+				color: #FFFFFF;
+				text-align: center;
+			}
+		}
 	}
 	.textarea-label /deep/ .u-textarea__field {
-		padding: 16rpx 16rpx 0 16rpx;
+		// padding: 16rpx 16rpx 0 16rpx;
 		background: #F5F6F7;
 	}
 	.textarea-label /deep/ .u-textarea {
-		// height: 120rpx;
-		padding: 0 !important;
+		max-height: 160rpx!important;
+		overflow: scroll!important;
+		border-radius: 8rpx!important;
+		// padding: 0 !important;
 	}
 	.reply-to-comment-header {
 		width: 100%;
@@ -783,7 +856,6 @@
 	.u-read-more__toggle /deep/ .u-read-more__toggle__icon {
 		display: none!important;
 	}
-	
 	/* 删除动态相关 */
 	.comments-del,
 	.confirm-del {
@@ -831,5 +903,10 @@
 		width: 100%;
 		height: auto;
 		overflow: hidden;
+	}
+	.community-comments /deep/ .u-line {
+		position: absolute;
+		bottom: 0;
+		right: 0;
 	}
 </style>

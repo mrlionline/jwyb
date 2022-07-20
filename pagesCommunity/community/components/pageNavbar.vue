@@ -1,6 +1,6 @@
 <template>
 	<view class="page-navbar">
-		<u-navbar :is-back="isShowBack" :title="title" :background="backgroundStyle" @leftClick="goBack()" :leftIconSize="leftIconSize"></u-navbar>
+		<u-navbar :is-back="isShowBack" :title="title" :background="backgroundStyle" @leftClick="goBack()" :leftIconSize="leftIconSize"  :border="isBorder"></u-navbar>
 	</view>
 </template>
 
@@ -29,7 +29,10 @@
 				type: Boolean,
 				default: true
 			},
-			
+			isBorder: {
+				type: Boolean,
+				default: true
+			},
 		},
 		data() {
 			return {
@@ -45,10 +48,27 @@
 		},
 		methods: {
 			goBack(){
-				let pages = getCurrentPages()
-				// console.info("pages-->",pages)
-				if(pages.length > 1){
-					uni.navigateBack()
+				let pagesList = getCurrentPages()
+				let pagesLen = pagesList.length
+				let deltaNum = 1
+				console.info("pages-->",pagesList)
+				if(pagesLen > 1){
+					for (var i = pagesLen-1; i >= 0; i-- ) {
+						let element = pagesList[i].route
+						// if(element === "pagesCommunity/community/release/release" || element === "pagesCommunity/community/location/location"){
+						// 	deltaNum = pagesLen - i
+						// }
+						if(element === "pagesCommunity/community/list/list" && pagesList[i+1] && pagesList[i+1].route === "pagesCommunity/community/list/list"){
+							deltaNum ++
+						}
+					}
+					if(!(deltaNum < pagesLen && deltaNum > 0)){
+						deltaNum = 1
+					}
+					console.info("delta-->",deltaNum)
+					uni.navigateBack({
+						delta: deltaNum
+					});
 				}
 			},
 			// 查询是否刘海屏设备
