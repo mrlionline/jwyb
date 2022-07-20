@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<scroll-view class="content" :scroll-y="true" style="height: 93vh;" @scroll="scroll($event)">
 		<page-header
 			title="绝味人在一起"
 			:showBack="false"
@@ -29,7 +29,7 @@
 				<image class="close" src="/static/home/close.png" @click="promoteShow = false" mode=""></image>
 			</view>
 		</u-popup>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
@@ -74,6 +74,13 @@
 			}
 		},
 		methods: {
+			scroll(e){
+				if(e.detail.scrollTop <= 10){
+					uni.$emit('scroll-top-change',0)
+				}else if(e.detail.scrollTop <= 100){
+					uni.$emit('scroll-top-change',e.detail.scrollTop)
+				}
+			},
 			goto(url){
 				uni.navigateTo({
 					url: url

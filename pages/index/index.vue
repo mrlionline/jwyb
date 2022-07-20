@@ -62,7 +62,7 @@
 		},
 		onPageScroll(res){
 			if(res.scrollTop <= 100){
-				uni.$emit('scroll-top-change',res.scrollTop)
+				// uni.$emit('scroll-top-change',res.scrollTop)
 			}
 		},
 		methods: {
